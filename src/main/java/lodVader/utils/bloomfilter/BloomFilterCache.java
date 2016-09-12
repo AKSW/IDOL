@@ -17,7 +17,7 @@ public class BloomFilterCache {
 	
 
 	// default bloom filter size
-	private int initialSize = 200000;
+	private int initialSize = 400000;
 	
 	// maximun number of elements per BF (notice this is different of initialSize, since it controls the number of added elements)
 	private int threshold = initialSize/2;
@@ -25,7 +25,7 @@ public class BloomFilterCache {
 	private int numberOfElements = 0;
 
 	// default bloom filter fpp
-	private double fpp = 0.000001;
+	private double fpp = 0.0000001;
 
 	private ArrayList<BloomFilterI> caches = new ArrayList<BloomFilterI>();
 

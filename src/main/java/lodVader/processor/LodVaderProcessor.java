@@ -99,6 +99,8 @@ public class LodVaderProcessor {
 					distribution.update(true);
 
 					logger.info("Distribution " + distribution.getDownloadUrl() + " processed! ");
+					logger.info(" = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
+					logger.info(" = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
 
 				} catch (Exception e) {
 					// uptate status of distribution

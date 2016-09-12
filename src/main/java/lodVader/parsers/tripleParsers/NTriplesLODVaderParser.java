@@ -43,6 +43,8 @@ public class NTriplesLODVaderParser extends RDFParserBase {
 			Thread t = new Thread(new Runnable() {
 
 				public void run() {
+					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+
 					try {
 						int nRead;
 						byte[] data = new byte[BUFFER_SIZE];
