@@ -25,9 +25,11 @@ public class SplitAndSaveBF extends SuperTupleManager {
 			stPredicate = "<" + stPredicate + ">";
 		}
 		if (stObject.startsWith("http")) {
+			if(stObject.contains("> <"))
+				stObject = stObject.split("> ")[0];
+			
 			stObject = "<" + stObject + ">";
-			if(stObject.contains(" "))
-				stObject = stObject.split(" <")[0];
+
 		}
 		
 			
