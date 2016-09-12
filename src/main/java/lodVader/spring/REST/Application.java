@@ -34,7 +34,7 @@ public class Application {
 //		else {
 			SpringApplication.run(Application.class, args);
 			StartLODVader s = new StartLODVader(); 
-			DescriptionFileParserLoader.load(new CLODFileParser("http://localhost/urls", "nt"));
+			DescriptionFileParserLoader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "nt"));
 			
 			
 			// get all datasets
