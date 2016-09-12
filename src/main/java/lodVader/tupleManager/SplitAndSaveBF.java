@@ -26,10 +26,10 @@ public class SplitAndSaveBF extends SuperTupleManager {
 		}
 		if (stObject.startsWith("http")) {
 			stObject = "<" + stObject + ">";
+			if(stObject.contains(" "))
+				stObject = stObject.split(" <")[0];
 		}
 		
-		if(stObject.contains(" "))
-			stObject = stObject.split(" <")[0] + " .";
 			
 
 
