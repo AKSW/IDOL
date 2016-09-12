@@ -70,10 +70,10 @@ public class BloomFilterCache {
 		for (BloomFilterI cache : caches) {
 			
 			// if element has already been inserted 
-			if(cache.compare(resource))
-				return;
+//			if(cache.compare(resource))
+//				return;
 			
-			else if (cache.getNumberOfElements() < threshold) {
+			 if (cache.getNumberOfElements() < threshold) {
 				cache.add(resource);
 				numberOfElements++;
 				return;
