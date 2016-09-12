@@ -12,9 +12,11 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import lodVader.API.diagram.DiagramData;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.LinksetDB;
+import lodVader.spring.REST.ServiceAPIOptions;
 
 public class LinksetQueries {
 
@@ -83,7 +85,7 @@ public class LinksetQueries {
 			else if (type.equals(ServiceAPIOptions.DATASET_TYPE_STRENGTH))
 				sort = new BasicDBObject(LinksetDB.LINK_STRENGHT, -1);
 			else if (type.equals(ServiceAPIOptions.DATASET_TYPE_CLASSES))
-				sort = new BasicDBObject(LinksetDB.OWL_CLASS_SIMILARITY, -1);
+				sort = new BasicDBObject(LinksetDB.OWL_CLASS_SIMILARITY, -1); 
 			else if (type.equals(ServiceAPIOptions.DATASET_TYPE_SUBCLASSES))
 				sort = new BasicDBObject(LinksetDB.RDF_SUBCLASS_SIMILARITY, -1);
 			else if (type.equals(ServiceAPIOptions.DATASET_TYPE_RDF_TYPE))

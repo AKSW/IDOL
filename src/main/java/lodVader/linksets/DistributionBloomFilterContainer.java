@@ -8,7 +8,7 @@ import com.mongodb.DBCursor;
 
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
-import lodVader.mongodb.DBSuperClass2;
+import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.gridFS.ObjectsBucket;
 import lodVader.mongodb.collections.gridFS.SubjectsBucket;
 import lodVader.mongodb.collections.namespaces.DistributionObjectNSDB;
@@ -114,7 +114,7 @@ public class DistributionBloomFilterContainer {
 		// query all subjects ns for the distribution
 		BasicDBObject subjectQuery = new BasicDBObject(DistributionSubjectNSDB.DISTRIBUTION_ID, distributionID);
 
-		DBCollection collection = DBSuperClass2.getCollection(DistributionSubjectNSDB.COLLECTION_NAME);
+		DBCollection collection = DBSuperClass.getCollection(DistributionSubjectNSDB.COLLECTION_NAME);
 
 		DBCursor cursor = collection.find(subjectQuery);
 
@@ -140,7 +140,7 @@ public class DistributionBloomFilterContainer {
 		// doing the same for objects ns
 		BasicDBObject objectQuery = new BasicDBObject(DistributionObjectNSDB.DISTRIBUTION_ID, distributionID);
 
-		DBCollection collection = DBSuperClass2.getCollection(DistributionObjectNSDB.COLLECTION_NAME);
+		DBCollection collection = DBSuperClass.getCollection(DistributionObjectNSDB.COLLECTION_NAME);
 
 		DBCursor cursor = collection.find(objectQuery);
 
