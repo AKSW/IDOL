@@ -28,7 +28,7 @@ public class Main {
 		
 		
 		
-		new StartLODVader();
+//		new StartLODVader();
 		 
 //		// parse CLOD file
 		DescriptionFileParserLoader.load(new CLODFileParser("http://localhost/urls", "nt"));
