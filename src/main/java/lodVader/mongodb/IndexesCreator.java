@@ -9,8 +9,8 @@ import lodVader.mongodb.collections.DatasetLinksetDB;
 import lodVader.mongodb.collections.DescriptionFileParserDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.LinksetDB;
-import lodVader.mongodb.collections.RDFResources.GeneralRDFResourceDB;
-import lodVader.mongodb.collections.RDFResources.GeneralRDFResourceRelationDB;
+import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
+import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.gridFS.SuperBucket;
 import lodVader.mongodb.collections.namespaces.DistributionObjectNS0DB;
 import lodVader.mongodb.collections.namespaces.DistributionObjectNSDB;
@@ -62,15 +62,15 @@ public class IndexesCreator {
 		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.OWL_CLASS_SIMILARITY, 1);
 		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.LINK_STRENGHT, 1);
 
-		for (GeneralRDFResourceDB.COLLECTIONS collection : GeneralRDFResourceDB.COLLECTIONS.values()) {
-			addIndex(collection.toString(), GeneralRDFResourceDB.URI, 1, true);
+		for (GeneralResourceDB.COLLECTIONS collection : GeneralResourceDB.COLLECTIONS.values()) {
+			addIndex(collection.toString(), GeneralResourceDB.URI, 1, true);
 		}
 
-		for (GeneralRDFResourceRelationDB.COLLECTIONS collection : GeneralRDFResourceRelationDB.COLLECTIONS.values()) {
-			addIndex(collection.toString(), GeneralRDFResourceRelationDB.CUSTOM_ID, 1, true);
-			addIndex(collection.toString(), GeneralRDFResourceRelationDB.DATASET_ID, 1);
-			addIndex(collection.toString(), GeneralRDFResourceRelationDB.DISTRIBUTION_ID, 1);
-			addIndex(collection.toString(), GeneralRDFResourceRelationDB.PREDICATE_ID, 1);
+		for (GeneralResourceRelationDB.COLLECTIONS collection : GeneralResourceRelationDB.COLLECTIONS.values()) {
+			addIndex(collection.toString(), GeneralResourceRelationDB.CUSTOM_ID, 1, true);
+			addIndex(collection.toString(), GeneralResourceRelationDB.DATASET_ID, 1);
+			addIndex(collection.toString(), GeneralResourceRelationDB.DISTRIBUTION_ID, 1);
+			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1);
 		}
 
 		addIndex(DistributionSubjectNS0DB.COLLECTION_NAME, DistributionSubjectNS0DB.DISTRIBUTION_ID, 1);

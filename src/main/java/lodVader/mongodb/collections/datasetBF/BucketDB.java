@@ -22,11 +22,13 @@ import lodVader.mongodb.DBSuperClass;
 import lodVader.utils.bloomfilter.BloomFilterCache;
 import orestes.bloomfilter.BloomFilter;
 
-public class DatasetBFBucketDB {
+public class BucketDB {
 
-	final static Logger logger = LoggerFactory.getLogger(DatasetBFBucketDB.class);
-
-	public String COLLECTION_NAME = "datasetBucket";
+	final static Logger logger = LoggerFactory.getLogger(BucketDB.class);
+	
+	private COLLECTIONS COLLECTION;
+	
+	public static enum COLLECTIONS {BLOOM_FILTER_SUBJECTS, BLOOM_FILTER_OBJECTS, BLOOM_FILTER_TRIPLES};
 
 	public String SEQUENCE_NR = "sequenceNr";
 
@@ -35,8 +37,16 @@ public class DatasetBFBucketDB {
 	public String SIZE = "size";
 
 	public String FPP = "fpp";
+	
+	/**
+	 * Constructor for Class BucketDB 
+	 */
+	public BucketDB(COLLECTIONS collection) {
+		this.COLLECTION = collection;
+	}
+	
 
-	private void saveBF(BloomFilterI bf, int distributionID, int bfSequenceNr, int size, Double fpp) {
+	public void saveBF(BloomFilterI bf, String distributionID, int bfSequenceNr) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		try {
@@ -46,15 +56,15 @@ public class DatasetBFBucketDB {
 			e1.printStackTrace();
 		}
 
-		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION_NAME);
+		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION.toString());
 		GridFSInputFile gfsFile;
 
 		try {
 			gfsFile = gfs.createFile(new BufferedInputStream(new ByteArrayInputStream(out.toByteArray())));
 			gfsFile.put(DISTRIBUTION_ID, distributionID);
 			gfsFile.put(SEQUENCE_NR, bfSequenceNr);
-			gfsFile.put(SIZE, size);
-			gfsFile.put(FPP, fpp);
+			gfsFile.put(SIZE, bf.getFilterInitialSize());
+			gfsFile.put(FPP, bf.getFPP());
 			gfsFile.save();
 
 		} catch (Exception e) {
@@ -64,12 +74,12 @@ public class DatasetBFBucketDB {
 
 	}
 
-	public void saveCache(BloomFilterCache cache, int distributionID) {
-		int i = 0;
-		for (BloomFilterI bf : cache.getListOfBF()) {
-			saveBF(bf, distributionID, i++, cache.getInitialSize(), cache.getFpp());
-		}
-	}
+//	public void saveCache(BloomFilterCache cache, int distributionID) {
+//		int i = 0;
+//		for (BloomFilterI bf : cache.getListOfBF()) {
+//			saveBF(bf, distributionID, i++, cache.getInitialSize(), cache.getFpp());
+//		}
+//	}
 
 	// public boolean query(int distributionID) {
 	//
@@ -109,32 +119,32 @@ public class DatasetBFBucketDB {
 	// return result;
 	// }
 
-	public BloomFilterCache loadCache(int distributionID) throws IOException {
-
-		BloomFilterCache bfCache = null;
-
-		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION_NAME);
-
-		BasicDBObject distribution = new BasicDBObject(DISTRIBUTION_ID, distributionID);
-
-		List<GridFSDBFile> caches = gfs.find(distribution);
-
-		for (GridFSDBFile cache : caches) {
-			BloomFilterI filter = BloomFilterFactory.newBloomFilter();
-
-			if (bfCache == null) {
-				filter.readFrom(cache.getInputStream());
-				bfCache = new BloomFilterCache(Integer.parseInt(cache.get(SIZE).toString()),
-						Double.parseDouble(cache.get(FPP).toString()), filter);
-			} else {
-				filter.readFrom(cache.getInputStream());
-				bfCache.getListOfBF().add(filter);
-			}
-		}
-
-		return bfCache;
-
-	}
+//	public BloomFilterCache loadCache(int distributionID) throws IOException {
+//
+//		BloomFilterCache bfCache = null;
+//
+//		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION_NAME);
+//
+//		BasicDBObject distribution = new BasicDBObject(DISTRIBUTION_ID, distributionID);
+//
+//		List<GridFSDBFile> caches = gfs.find(distribution);
+//
+//		for (GridFSDBFile cache : caches) {
+//			BloomFilterI filter = BloomFilterFactory.newBloomFilter();
+//
+//			if (bfCache == null) {
+//				filter.readFrom(cache.getInputStream());
+//				bfCache = new BloomFilterCache(Integer.parseInt(cache.get(SIZE).toString()),
+//						Double.parseDouble(cache.get(FPP).toString()), filter);
+//			} else {
+//				filter.readFrom(cache.getInputStream());
+//				bfCache.getListOfBF().add(filter);
+//			}
+//		}
+//
+//		return bfCache;
+//
+//	}
 	//
 	// public ArrayList<DatasetBFBucketDB> getFiltersFromDataset(int datasetID)
 	// {

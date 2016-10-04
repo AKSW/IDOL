@@ -18,7 +18,6 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderProperties;
@@ -366,7 +365,8 @@ public class DBSuperClass {
 	 * @return
 	 */
 
-	public boolean bulkSave2(List<DBObject> objects) {
+	public boolean bulkSave2(List<DBObject> objects) {		
+		
 		boolean isAck = false;
 		try {
 			if (objects.size() == 0)

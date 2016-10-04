@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.RDFResources.GeneralRDFResourceDB;
-import lodVader.mongodb.collections.RDFResources.GeneralRDFResourceRelationDB;
+import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
+import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
 
 /**
  * Class which extracts basic statistical data from the dataset (e.g.
@@ -97,31 +97,31 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	public void saveStatisticalData() {
 
 		logger.info("Saving predicates...");
-		List<GeneralRDFResourceDB> resources = new GeneralRDFResourceDB(
-				GeneralRDFResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES).insertSet(allPredicates.keySet());
+		List<GeneralResourceDB> resources = new GeneralResourceDB(
+				GeneralResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES).insertSet(allPredicates.keySet());
 
-		new GeneralRDFResourceRelationDB(GeneralRDFResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES)
+		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES)
 				.insertSet(allPredicates, resources, distribution.getID(), distribution.getTopDatasetID());
 
 		logger.info("Saving rdf:type objects...");
-		resources = new GeneralRDFResourceDB(GeneralRDFResourceDB.COLLECTIONS.RESOURCES_RDF_TYPE)
+		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_TYPE)
 				.insertSet(rdfTypeObjects.keySet());
 
-		new GeneralRDFResourceRelationDB(GeneralRDFResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE)
+		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE)
 				.insertSet(rdfTypeObjects, resources, distribution.getID(), distribution.getTopDatasetID());
 
 		logger.info("Saving rdfs:subclass objects...");
-		resources = new GeneralRDFResourceDB(GeneralRDFResourceDB.COLLECTIONS.RESOURCES_RDF_SUBCLASS)
+		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_SUBCLASS)
 				.insertSet(rdfSubClassOf.keySet());
 
-		new GeneralRDFResourceRelationDB(GeneralRDFResourceRelationDB.COLLECTIONS.RELATION_RDF_SUBCLASS)
+		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_SUBCLASS)
 				.insertSet(rdfSubClassOf, resources, distribution.getID(), distribution.getTopDatasetID());
 
 		logger.info("Saving owl:Class objects...");
-		resources = new GeneralRDFResourceDB(GeneralRDFResourceDB.COLLECTIONS.RESOURCES_OWL_CLASS)
+		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_OWL_CLASS)
 				.insertSet(owlClasses.keySet());
 
-		new GeneralRDFResourceRelationDB(GeneralRDFResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS)
+		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS)
 				.insertSet(owlClasses, resources, distribution.getID(), distribution.getTopDatasetID());
 		
 		

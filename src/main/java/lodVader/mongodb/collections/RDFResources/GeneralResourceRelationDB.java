@@ -15,7 +15,7 @@ import lodVader.mongodb.DBSuperClass;
  * 
  * Oct 3, 2016
  */
-public class GeneralRDFResourceRelationDB extends DBSuperClass {
+public class GeneralResourceRelationDB extends DBSuperClass {
 
 	public static final String PREDICATE_ID = "predicateID";
 
@@ -32,7 +32,7 @@ public class GeneralRDFResourceRelationDB extends DBSuperClass {
 	
 	// Enum for the name of the collections which will use this class
 	public static enum COLLECTIONS {
-		RELATION_ALL_PREDICATES, RELATION_RDF_TYPE, RELATION_OWL_CLASS, RELATION_RDF_SUBCLASS;
+		RELATION_ALL_PREDICATES, RELATION_RDF_TYPE, RELATION_OWL_CLASS, RELATION_RDF_SUBCLASS, RELATION_SUBJECT_NS, RELATION_OBJECT_NS, RELATION_SUBJECT_NS0, RELATION_OBJECT_NS0;
 	};
 
 	public COLLECTIONS collection;
@@ -45,7 +45,7 @@ public class GeneralRDFResourceRelationDB extends DBSuperClass {
 //	}
 //
 //	
-	public GeneralRDFResourceRelationDB(COLLECTIONS collection) {
+	public GeneralResourceRelationDB(COLLECTIONS collection) {
 		super(collection.toString());
 		setParameters();
 		this.collection = collection;
@@ -99,10 +99,10 @@ public class GeneralRDFResourceRelationDB extends DBSuperClass {
 		addField(AMOUNT, amount);
 	}
 
-	public void insertSet(HashMap<String, Integer> set, List<GeneralRDFResourceDB> resources, String distributionLODVaderID, String topDatasetLODVaderID){
+	public void insertSet(HashMap<String, Integer> set, List<GeneralResourceDB> resources, String distributionLODVaderID, String topDatasetLODVaderID){
 		
 		List<DBObject> objects = new ArrayList<>();
-		for(GeneralRDFResourceDB resource : resources){ 
+		for(GeneralResourceDB resource : resources){ 
 			DBObject object = new BasicDBObject();
 			object.put(DATASET_ID, topDatasetLODVaderID);
 			object.put(DISTRIBUTION_ID, distributionLODVaderID);
