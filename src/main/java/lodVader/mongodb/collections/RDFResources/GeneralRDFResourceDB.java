@@ -1,63 +1,65 @@
 package lodVader.mongodb.collections.RDFResources;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+
 import lodVader.mongodb.DBSuperClass;
-import lodVader.mongodb.collections.LODVaderCounterDB;
 
-public abstract class GeneralRDFResourceDB extends DBSuperClass  {
-
-	public static final String LOD_VADER_ID = "lodVaderID";
+public class GeneralRDFResourceDB extends DBSuperClass {
 
 	public static final String URI = "uri";
 	
+	public static enum COLLECTIONS {RESOURCES_ALL_PREDICATES, RESOURCES_RDF_TYPE, RESOURCES_OWL_CLASS, RESOURCES_RDF_SUBCLASS};
 	
-	public GeneralRDFResourceDB(String collection, int lodVaderID) {
-		super(collection);
-		setVariables();
-		setLODVaderID(lodVaderID);
-		find(true);
-	}
-	
-	public GeneralRDFResourceDB(String collection) {
-		super(collection);
+	public COLLECTIONS collection;
+
+	public GeneralRDFResourceDB(COLLECTIONS collection) {
+		super(collection.toString());
+		this.collection = collection;
 		setVariables();
 	}
-	
-	public GeneralRDFResourceDB(String collection, String uri) {
-		super(collection);
+
+	public GeneralRDFResourceDB(COLLECTIONS collection, String uri) {
+		super(collection.toString());
 		setVariables();
-		setUri(uri);
-		if(!find(true))
-			setLODVaderID(new LODVaderCounterDB().incrementAndGetID());
-		
 	}
-	
-	public void setVariables(){
-		addPK(LOD_VADER_ID);
-		addPK(URI);
-		addMandatoryField(LOD_VADER_ID);
+
+	public void setVariables() {
 		addMandatoryField(URI);
 	}
 
-
-	public int getLodVaderID() {
-		return Integer.parseInt(getField(LOD_VADER_ID).toString()); 
-	}
-	
 	public String getUri() {
 		return getField(URI).toString();
 	}
 
 	public void setUri(String uri) {
 		addField(URI, uri);
-	}	
-	
-	public void setLODVaderID(int lodVaderID) {
-		addField(LOD_VADER_ID, lodVaderID);
 	}
 
-	
-	abstract public void insertSet(Set<String> set);	
-	
+	public List<GeneralRDFResourceDB> insertSet(Set<String> set) {
+		List<GeneralRDFResourceDB> resources = new ArrayList<>();
+		
+		Iterator<String> i = set.iterator();
+		List<DBObject> objects = new ArrayList<>();
+		
+		while (i.hasNext()) {
+			GeneralRDFResourceDB resource = new GeneralRDFResourceDB(collection);
+			resource.setUri(i.next().toString());
+			resource.setID(new ObjectId().toString()); 
+			objects.add(resource.mongoDBObject);
+			resources.add(resource);
+		} 
+		
+		bulkSave2(objects); 
+		
+		return resources;
+	}
+
 }

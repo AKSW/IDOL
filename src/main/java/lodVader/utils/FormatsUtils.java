@@ -2,7 +2,7 @@ package lodVader.utils;
 
 import java.util.ArrayList;
 
-public class Formats {
+public class FormatsUtils {
 	
 	public static final String DEFAULT_TURTLE = "ttl";
 	
@@ -37,7 +37,10 @@ public class Formats {
 	private static final ArrayList<String> JSONLD_FORMATS = new ArrayList<String>(){{
 		add("jsonld");
 		add("json-ld");
-		add("JSON");
+		add("JSONLD");
+		add("JSONld");
+		add("JSON-LD");
+		
 	}};	
 
 	private static final ArrayList<String> SPARQL_FORMATS = new ArrayList<String>(){{
@@ -50,10 +53,12 @@ public class Formats {
 		add("x-nquads");
 		add("application/x-nquads");
 		add("nq");
+		add("NQ");
 		add("gz:nq");
 	}};
 	private static final ArrayList<String> TURTLE_FORMATS = new ArrayList<String>(){{
 	    add("ttl");
+	    add("TTL");
 	    add("turtle");
 	    add("meta/void");
 	    add("meta/rdf-schema");
@@ -62,9 +67,11 @@ public class Formats {
 	    add("example/x-turtle");
 	    add("rdf-turtle");
 	    add("rdf/turtle");
+	    add("7z:ttl");
 	}};		
 	private static final ArrayList<String> NTRIPLES_FORMATS = new ArrayList<String>(){{
 	    add("nt");
+	    add("NT");
 	    add("application/x-ntriples");
 	    add("application/n-ntriples");
 	    add("example/ntriples");
@@ -83,6 +90,7 @@ public class Formats {
 	    add("application/xhtml+xml");
 	    add("rdf");
 	    add("RDF");
+	    add("RDFXML");
 	    add("example/rdf+xml");
 	    add("example/rdf");
 	    add("rdf+xml");
@@ -91,6 +99,31 @@ public class Formats {
 	    add("xml");
 	    add("rdfxml");	    
 	}};
+	
+	
+
+	
+	
+	/**
+	 * Get serialization format for Jena processing
+	 * 
+	 * @param format
+	 * @return
+	 */
+	public String getJenaFormat(String format) {
+		format = FormatsUtils.getEquivalentFormat(format);
+		if (format.equals(FormatsUtils.DEFAULT_NTRIPLES) || format.contains("nt"))
+			return "N-TRIPLES";
+		else if (format.equals(FormatsUtils.DEFAULT_TURTLE) || format.contains("ttl") || format.contains("turtle"))
+			return "TTL";
+		else if (format.equals(FormatsUtils.DEFAULT_JSONLD))
+			return "JSON-LD";
+		else if(format.equals(FormatsUtils.DEFAULT_RDFXML) || format.contains("rdf"))
+			return "RDF/XML";
+		else
+			return "";
+
+	}
 	
 
 }

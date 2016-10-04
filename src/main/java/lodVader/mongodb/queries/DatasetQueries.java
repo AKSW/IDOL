@@ -49,7 +49,7 @@ public class DatasetQueries {
 
 		DBCollection collection = DBSuperClass.getDBInstance().getCollection(DatasetDB.COLLECTION_NAME);
 
-		BasicDBObject uriQuery = new BasicDBObject(DatasetDB.DESCRIPTION_FILE_URL, descriptionFileAddress);
+		BasicDBObject uriQuery = new BasicDBObject(DatasetDB.DESCRIPTION_FILE_PARSER, descriptionFileAddress);
 
 		DBCursor inst = collection.find(uriQuery);
 

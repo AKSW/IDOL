@@ -7,80 +7,73 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mongodb.DBObject;
+
 import lodVader.enumerators.DistributionStatus;
 import lodVader.mongodb.IndexesCreator;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.LODVaderCounterDB;
 import lodVader.mongodb.queries.GeneralQueries;
 import lodVader.utils.FileUtils;
 
 /**
- * start service properly. This class checks whether the application have to
- * keep streaming files (means that app was killed before finish their work),
- * and whether have to create MongoDB indexes
+ * Start service properly. This class loads the properties file, checks whether the application have to
+ * keep streaming files, creates MongoDB indexex, etc.
  * 
  * @author Ciro Baron Neto
  *
  */
-public class StartLODVader {
+public class LODVaderConfigurator {
 
-	private static final long serialVersionUID = 9131804335500741880L;
-	final static Logger logger = LoggerFactory.getLogger(StartLODVader.class);
+	final static Logger logger = LoggerFactory.getLogger(LODVaderConfigurator.class);	
+	
+	/**
+	 * Constructor for Class LODVaderConfigurator 
+	 */
+	public LODVaderConfigurator() {
+		printHeader();
+	}
 
-	public StartLODVader() {
+	
+	/**
+	 * Configure database, folders, etc.
+	 */
+	public void configure() {
 
 		try {
 
-			logger.info("==========================================================");
-			logger.info("");
-			logger.info("");
-			logger.info("====================================================");
-			logger.info("============== LODVader " + LODVaderProperties.VERSION + " Started ===============");
-			logger.info("====================================================");
-			logger.info("");
-			logger.info("");
-
+			// Load properties file
 			logger.info("Reading properties file.");
-
 			LODVaderProperties properties = new LODVaderProperties();
 
 			if (LODVaderProperties.SUBJECT_FILE_DISTRIBUTION_PATH == null) { 
 				properties.loadProperties();
 			}
-
-			logger.info("Creating folders..");
+			
+			// create folders needed to store data
+			logger.info("Creating folders...");
 			FileUtils.checkIfFolderExists();
+
 
 			// creating indexes
 			logger.info("Creating MongoDB indexes...");
-
-			// checking counter
-			try {
-				new LODVaderCounterDB().incrementAndGetID();
-			} catch (Exception e) {
-				LODVaderCounterDB c = new LODVaderCounterDB();
-				c.setCounterValue(1);
-				c.insert(false);
-			}
-
 			new IndexesCreator().createIndexes();
 
-			HashMap<Integer, DatasetDB> datasets = new HashMap<Integer, DatasetDB>();
+			HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
 			logger.info("Resuming Downloads...");
 			
 			if (LODVaderProperties.RESUME) {
 
 				// re-download distributions with "Downloading" status
-				ArrayList<String> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
-						DistributionDB.STATUS, DistributionStatus.STREAMING.toString());
+				ArrayList<DBObject> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
+						DistributionDB.STATUS, DistributionStatus.STREAMING.toString()); 
 				logger.info("re-download distributions with \"" + DistributionStatus.STREAMING + "\" status");
 
-				for (String s : q) {
+				for (DBObject s : q) {
 					DistributionDB dist = new DistributionDB(s);
 					dist.setStatus(DistributionStatus.WAITING_TO_STREAM);
-					dist.update(true);
+					dist.update();
 				}
 
 				// download distributions with "STATUS_WAITING_TO_STREAM" status
@@ -88,10 +81,12 @@ public class StartLODVader {
 						DistributionStatus.WAITING_TO_STREAM.toString());
 				logger.info("download distributions with \"" + DistributionStatus.WAITING_TO_STREAM + "\" status");
 
-				for (String s : q) {
-					DistributionDB dist = new DistributionDB(s);
-					dist.find(true);
-					datasets.put(dist.getTopDatasetID(), new DatasetDB(dist.getTopDatasetID()));
+				for (DBObject s : q) {
+					DistributionDB dist = new DistributionDB(s); 
+					DatasetDB datasetDB = new DatasetDB();
+					datasetDB.setID(dist.getTopDatasetID());
+					datasetDB.find();
+					datasets.put(dist.getTopDatasetID(), datasetDB); 
 				}
 
 			}
@@ -99,15 +94,18 @@ public class StartLODVader {
 			if (LODVaderProperties.RESUME_ERRORS) {
 				// download distributions with "ERROR"
 				// status
-				ArrayList<String> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
+				ArrayList<DBObject> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
 						DistributionDB.STATUS, DistributionStatus.ERROR.toString());
 				logger.info("download distributions with \"" + DistributionStatus.WAITING_TO_STREAM + "\" status");
 
-				for (String s : q) {
+				for (DBObject s : q) {
 					DistributionDB dist = new DistributionDB(s);
 					dist.setStatus(DistributionStatus.WAITING_TO_STREAM);
-					dist.update(true); 
-					datasets.put(dist.getTopDatasetID(),new DatasetDB(dist.getTopDatasetID()));
+					dist.update(); 
+					DatasetDB datasetDB = new DatasetDB();
+					datasetDB.setID(dist.getTopDatasetID());
+					datasetDB.find();
+					datasets.put(dist.getTopDatasetID(),datasetDB);
 				}
 			}
 
@@ -134,4 +132,20 @@ public class StartLODVader {
 
 	}
 
+	
+	/**
+	 * Print header into log output
+	 */
+	public void printHeader(){
+		logger.info("==========================================================");
+		logger.info("");
+		logger.info("");
+		logger.info("====================================================");
+		logger.info("============== LODVader " + LODVaderProperties.VERSION + " Started ===============");
+		logger.info("====================================================");
+		logger.info("");
+		logger.info("");
+	}
+	
+	
 }

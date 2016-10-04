@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -19,10 +23,15 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import lodVader.enumerators.DistributionStatus;
+import lodVader.exceptions.LODVaderMissingPropertiesException;
+import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
+import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.parsers.interfaces.DescriptionFileParserInterface;
-import lodVader.utils.Formats;
+import lodVader.utils.FormatsUtils;
+import lodVader.utils.NSUtils;
+import services.mongodb.dataset.DatasetServices;
 
 public class CLODFileParser implements DescriptionFileParserInterface {
 
@@ -33,13 +42,15 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 	Property urlProp = ResourceFactory.createProperty("http://lodlaundromat.org/ontology/url");
 	Property formatProp = ResourceFactory.createProperty("http://lodlaundromat.org/ontology/fileExtension");
 
-	String downloadURLPrefix = "http://download.lodlaundromat.org";
+	String repositoryAddress = "http://download.lodlaundromat.org";
+
 
 	String URL;
 	String format;
 
+	// list of distributions and datasets found in the file
 	private List<DistributionDB> distributions = new ArrayList<>();
-	private List<DatasetDB> datasets = new ArrayList<>();
+	private HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
 	/**
 	 * Constructor for Class CLODFileParser
@@ -51,7 +62,9 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 
 	public void parse() {
 
-		format = getJenaFormat(format);
+		FormatsUtils formatsUtils = new FormatsUtils();
+		
+		format = formatsUtils.getJenaFormat(format);
 
 		logger.info("Trying to read dataset: " + URL.toString());
 
@@ -68,78 +81,123 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 
 		StmtIterator someIterator = inModel.listStatements(null, urlProp, (RDFNode) null);
 
+		NSUtils nsUtils = new NSUtils();
+
+		
 		while (someIterator.hasNext()) {
 			Statement stmt = someIterator.next();
 
 			try {
 
-				String downloadURL = downloadURLPrefix + stmt.getSubject().toString().split("resource")[1];
+				String downloadURL = repositoryAddress + stmt.getSubject().toString().split("resource")[1];
 
 				String url = stmt.getObject().toString();
 				url = url.split("#")[0];
+				
+				DatasetDB dataset = new DatasetDB();
 
-				DatasetDB dataset = new DatasetDB(url);
+				// try to get dataset URI in the format: http://example.org/dataset/
+				if(nsUtils.getNS1(url) != null){
+					dataset.setUri(nsUtils.getNS1(url));
+				}
+				else{
+					dataset.setUri(nsUtils.getNS0(url));
+				}
+				
 				dataset.setIsVocabulary(false);
-				dataset.setDescriptionFileURL(URL);
+				dataset.setDescriptionFileParser(URL);
 				dataset.setTitle(stmt.getObject().toString());
-				dataset.update(true);
 
-				DistributionDB distribution = new DistributionDB(url);
+				DistributionDB distribution = new DistributionDB();
+				distribution.setUri(url);
 				distribution.setDownloadUrl(downloadURL);
 				distribution.setTitle(url);
 				distribution.setTopDatasetTitle(url);
-				distribution.setTopDataset(dataset.getLODVaderID());
+				distribution.setTopDataset(dataset.getID());
 				distribution.setIsVocabulary(false);
 
-				ArrayList<Integer> defaultDatasets = new ArrayList<Integer>();
-				defaultDatasets.add(dataset.getLODVaderID());
+				ArrayList<String> defaultDatasets = new ArrayList<String>();
+				defaultDatasets.add(dataset.getID());
 				distribution.setDefaultDatasets(defaultDatasets);
 
 				distribution.setStatus(DistributionStatus.WAITING_TO_STREAM);
 
-				StmtIterator otherIterator = inModel.listStatements(stmt.getSubject().asResource(), formatProp,
-						(RDFNode) null);
 				try {
-					distribution.setFormat(Formats.getEquivalentFormat("nt"));
+					distribution.setFormat(FormatsUtils.getEquivalentFormat("nt"));
 				} catch (NoSuchElementException e) {
 					distribution.setFormat("");
 				}
 				distribution.update(true, DistributionDB.URI, url);
 
-				ArrayList<Integer> distributionList = new ArrayList<Integer>();
-				distributionList.add(distribution.getLODVaderID());
+				ArrayList<String> distributionList = new ArrayList<String>();
+				distributionList.add(distribution.getID());
 				dataset.setDistributionsIds(defaultDatasets);
-				dataset.update(true);
 
 				distributions.add(distribution);
-				datasets.add(dataset);
+				datasets.put(dataset.getID(), dataset);
+				
+				dataset.update();
+				distribution.update();
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 
+		organizeDistributionsBasedOnURI();
 	}
 
 	/**
-	 * Get serialization format for Jena processing
-	 * 
-	 * @param format
-	 * @return
+	 * Organize datasets distributions by URI. For example, the dataset with the
+	 * downloadURL http://example.org/path1/path2 is a subset of the
+	 * http://example.org/path1 which is a distribution of the dataset
+	 * http://example.org/
 	 */
-	public String getJenaFormat(String format) {
-		format = Formats.getEquivalentFormat(format);
-		if (format.equals(Formats.DEFAULT_NTRIPLES))
-			return "N-TRIPLES";
-		else if (format.equals(Formats.DEFAULT_TURTLE))
-			return "TTL";
-		else if (format.equals(Formats.DEFAULT_JSONLD))
-			return "JSON-LD";
-		else
-			return "RDF/XML";
+	private void organizeDistributionsBasedOnURI() {
 
+		// sort the distributions by URI
+		Collections.sort(distributions, new Comparator<DistributionDB>() {
+			public int compare(DistributionDB a, DistributionDB b) {
+				return a.getDownloadUrl().compareTo(b.getDownloadUrl());
+			}
+		});
+		
+		HashSet<String> removeSet = new HashSet<String>();
+		
+
+		DatasetDB tmpDataset = null;
+		for (DistributionDB distribution : distributions) {
+			if (tmpDataset == null) {
+				tmpDataset = datasets.get(distribution.getTopDatasetID());
+			} else {
+				if (distribution.getUri().startsWith(tmpDataset.getUri())) {
+					try {
+						tmpDataset.addDistributionID(distribution.getID());
+						tmpDataset.update();
+
+						removeSet.add(distribution.getID());
+
+						distribution.setTopDataset(tmpDataset.getID());
+						distribution.update();
+						
+					} catch (LODVaderMissingPropertiesException e) {
+						e.printStackTrace();
+					}
+
+				} else {
+					tmpDataset.find(true, DatasetDB.ID, distribution.getTopDatasetID());
+				}
+			}
+		}
+		
+		// remove all datasets that don't contain distributions
+		for(String i : removeSet){
+			new DatasetServices().removeDataset(i);
+			datasets.remove(i);
+		}
+		
+		
 	}
 
 	/*
@@ -163,7 +221,28 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 	 */
 	@Override
 	public List<DatasetDB> getDatasets() {
-		return datasets;
+		return new ArrayList<DatasetDB>(datasets.values());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getParserName(
+	 * )
+	 */
+	@Override
+	public String getParserName() {
+		return "CLOD_METADATA_PARSER";
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#getRepositoryAddress()
+	 */
+	@Override
+	public String getRepositoryAddress() {
+		return repositoryAddress;
 	}
 
 }

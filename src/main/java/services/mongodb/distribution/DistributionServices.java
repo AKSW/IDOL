@@ -17,7 +17,7 @@ public class DistributionServices {
 	public void saveAllDistributions(List<DistributionDB> distributions){
 		distributions.forEach((distribution)->{
 			try {
-				distribution.update(true);
+				distribution.update();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 

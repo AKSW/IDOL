@@ -19,6 +19,8 @@ public class NSUtils {
 		String[] split = url.split("/");
 		if (split.length > 4)
 			url = split[0] + "//" + split[2] + "/" + split[3] + "/";
+		else
+			return null;
 		return url;
 	}
 	
@@ -40,10 +42,6 @@ public class NSUtils {
 		}
 	}
 	
-	@Test
-	public void oi(){
-		System.out.println(getNSFromString("http://www.ciro.com////", 1));
-	}
 	
 	public String getNSFromString(String url, int nsLevel) {
 		nsLevel = nsLevel + 3;

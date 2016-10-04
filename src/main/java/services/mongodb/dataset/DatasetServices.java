@@ -6,6 +6,7 @@ package services.mongodb.dataset;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.query.Dataset;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -28,12 +29,13 @@ public class DatasetServices {
 	public void saveAllDatasets(List<DatasetDB> datasets){
 		datasets.forEach((dataset)->{
 			try {
-				dataset.update(true);
+				dataset.update();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
 		});
 	}
+	
 	
 	/**
 	 * Get all datasets
@@ -63,6 +65,16 @@ public class DatasetServices {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	
+	public boolean removeDataset(String datasetID){
+		
+		DBCollection collection = DBSuperClass.getDBInstance().getCollection(
+				DatasetDB.COLLECTION_NAME);
+		collection.remove(new BasicDBObject(DatasetDB.ID, datasetID));
+		
+		return true;
+		
 	}
 
 }

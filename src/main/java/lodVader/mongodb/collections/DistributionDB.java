@@ -1,16 +1,18 @@
 package lodVader.mongodb.collections;
 
 import java.net.MalformedURLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import org.bson.types.ObjectId;
 
 import com.mongodb.DBObject;
 
 import lodVader.enumerators.DistributionStatus;
+import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.queries.DatasetQueries;
 import lodVader.utils.URLUtils;
 
-public class DistributionDB extends ResourceDB {
+public class DistributionDB extends DBSuperClass {
 
 	// Collection name
 	public static final String COLLECTION_NAME = "Distribution";
@@ -18,7 +20,7 @@ public class DistributionDB extends ResourceDB {
 	public DistributionDB() {
 		super(COLLECTION_NAME);
 		setKeys();
-		setLodVaderID(new LODVaderCounterDB().incrementAndGetID());
+		setID(new ObjectId().toString());
 	}
 
 	public DistributionDB(DBObject object) {
@@ -27,51 +29,22 @@ public class DistributionDB extends ResourceDB {
 		setKeys();
 	}
 
-	public DistributionDB(int id) {
-		super(COLLECTION_NAME);
-		setKeys();
-		setLodVaderID(id);
-		find(true, LOD_VADER_ID, id);
-		if (getLODVaderID() == null)
-			setLodVaderID(new LODVaderCounterDB().incrementAndGetID());
-	}
-
-	public DistributionDB(String uri) throws MalformedURLException {
-		super(COLLECTION_NAME);
-		setKeys();
-		setUri(uri);
-		setDownloadUrl(uri);
-		find(true);
-		if (getLODVaderID() == null)
-			setLodVaderID(new LODVaderCounterDB().incrementAndGetID());
-	}
-
 	private void setKeys() {
-		addPK(URI);
-		addPK(DOWNLOAD_URL);
-		addPK(LOD_VADER_ID);
 		addMandatoryField(DOWNLOAD_URL);
 		addMandatoryField(URI);
-		addMandatoryField(LOD_VADER_ID);
 		addMandatoryField(STATUS);
 	}
 
 	// collection properties
 	public static final String DOWNLOAD_URL = "downloadUrl";
 
+	public static final String URI = "uri";
+
 	public static final String TOP_DATASET = "topDataset";
 
 	public static final String TOP_DATASET_TITLE = "topDatasetTitle";
 
-	public static final String NUMBER_OF_SUBJECT_TRIPLES = "numberOfSubjectTriples";
-
-	public static final String NUMBER_OF_OBJECTS_TRIPLES = "numberOfObjectTriples";
-
-	public static final String OBJECTS_COHESION = "objectCohesion";
-
 	public static final String STATUS = "status";
-
-	public static final String SUCCESSFULLY_DOWNLOADED = "successfullyDownloaded";
 
 	public static final String LAST_MSG = "lastMsg";
 
@@ -81,8 +54,6 @@ public class DistributionDB extends ResourceDB {
 
 	public static final String HTTP_LAST_MODIFIED = "httpLastModified";
 
-	public static final String TRIPLES = "triples";
-
 	public static final String FORMAT = "format";
 
 	public static final String RESOURCE_URI = "resourceUri";
@@ -90,12 +61,12 @@ public class DistributionDB extends ResourceDB {
 	public static final String DEFAULT_DATASETS = "defaultDatasets";
 
 	public static final String LAST_TIME_STREAMED = "lastTimeStreamed";
+	
+	public static final String IS_VOCABULARY = "isVocabulary";
 
-	public static final String UNDEFINED_LINKS = "undefinedLinks";
+	public static final String TITLE = "title";
 
-	public static final String OBJECT_FILE = "objectFile";
-
-	public static final String SUBJECT_FILE = "subjectFile";
+	public static final String LABEL = "label";
 
 	public String getDownloadUrl() {
 		return getField(DOWNLOAD_URL).toString();
@@ -103,7 +74,7 @@ public class DistributionDB extends ResourceDB {
 
 	public void setDownloadUrl(String downloadUrl) throws MalformedURLException {
 		URLUtils utils = new URLUtils();
-		utils.validateURL(downloadUrl);
+//		utils.validateURL(downloadUrl);
 		addField(DOWNLOAD_URL, downloadUrl);
 	}
 
@@ -118,48 +89,22 @@ public class DistributionDB extends ResourceDB {
 	public void setHttpByteSize(String httpByteSize) {
 		addField(HTTP_BYTE_SIZE, httpByteSize);
 	}
-
-	public void setObjectCohesion(int objectCohesion) {
-		addField(OBJECTS_COHESION, objectCohesion);
+	
+	public String getUri() {
+		return getField(URI).toString();
 	}
 
-	public int getObjectCohesion() {
-		try {
-			return ((Number) getField(OBJECTS_COHESION)).intValue();
-		} catch (NullPointerException e) {
-			return 0;
-		}
+	public void setUri(String uri) {
+		addField(URI, uri);
 	}
 
-	public Integer getTopDatasetID() {
-		return ((Number) getField(TOP_DATASET)).intValue();
+	
+	public String getTopDatasetID() {
+		return getField(TOP_DATASET).toString();
 	}
 
-	public void setTopDataset(int topDataset) {
+	public void setTopDataset(String topDataset) {
 		addField(TOP_DATASET, topDataset);
-	}
-
-	public int getNumberOfSubjectTriples() {
-		try {
-			return ((Number) getField(NUMBER_OF_SUBJECT_TRIPLES)).intValue();
-		} catch (NullPointerException e) {
-			return 0;
-		}
-	}
-
-	public void setNumberOfSubjectTriples(int numberOfSubjectTriples) {
-		addField(NUMBER_OF_SUBJECT_TRIPLES, numberOfSubjectTriples);
-	}
-
-	public int getNumberOfObjectTriples() {
-		if (getField(NUMBER_OF_OBJECTS_TRIPLES) != null)
-			return ((Number) getField(NUMBER_OF_OBJECTS_TRIPLES)).intValue();
-		else
-			return 0;
-	}
-
-	public void setNumberOfObjectTriples(int numberOfObjectTriples) {
-		addField(NUMBER_OF_OBJECTS_TRIPLES, numberOfObjectTriples);
 	}
 
 	public String getHttpFormat() {
@@ -186,48 +131,12 @@ public class DistributionDB extends ResourceDB {
 		addField(HTTP_LAST_MODIFIED, httpLastModified);
 	}
 
-	public Integer getTriples() {
-		if (getField(TRIPLES) != null)
-			return ((Number) getField(TRIPLES)).intValue();
-		else
-			return 0;
-	}
-
-	public String getTriplesStringFormat() {
-		DecimalFormat formatter = new DecimalFormat("#,###,###,###,###");
-		return formatter.format(((Number) getField(TRIPLES)).intValue());
-	}
-
-	public void setTriples(Integer triples) {
-		addField(TRIPLES, triples);
-	}
-
 	public String getFormat() {
 		return getField(FORMAT).toString();
 	}
 
-	public String getUndefinedLinks() {
-		try {
-			return getField(UNDEFINED_LINKS).toString();
-		} catch (NullPointerException e) {
-			return "0";
-		}
-	}
-
 	public void setFormat(String format) {
 		addField(FORMAT, format);
-	}
-
-	public void setUndefinedLinks(Double undefinedLinks) {
-		addField(UNDEFINED_LINKS, undefinedLinks);
-	}
-
-	public boolean getSuccessfullyDownloaded() {
-		return Boolean.getBoolean(getField(SUCCESSFULLY_DOWNLOADED).toString());
-	}
-
-	public void setSuccessfullyDownloaded(boolean successfullyDownloaded) {
-		addField(SUCCESSFULLY_DOWNLOADED, successfullyDownloaded);
 	}
 
 	public String getLastMsg() {
@@ -286,41 +195,49 @@ public class DistributionDB extends ResourceDB {
 		addField(TOP_DATASET_TITLE, topDatasetTitle);
 	}
 
-	public void setDefaultDatasets(ArrayList<Integer> defaultDatasets) {
+	public void setDefaultDatasets(ArrayList<String> defaultDatasets) {
 		addField(DEFAULT_DATASETS, defaultDatasets);
 	}
-
-	public void setSubjectFile(String subjectFile) {
-		addField(SUBJECT_FILE, subjectFile);
+	
+	public void setIsVocabulary(boolean isVocabulary) {
+		addField(IS_VOCABULARY, isVocabulary);
 	}
 
-	public void setObjectFile(String objectFile) {
-		addField(OBJECT_FILE, objectFile);
-	}
-
-	public String getSubjectFile() {
-		if (getField(SUBJECT_FILE) != null)
-			return getField(SUBJECT_FILE).toString();
-		else
+	public String getTitle() {
+		try {
+			return getField(TITLE).toString();
+		} catch (NullPointerException e) {
 			return "";
+		}
 	}
 
-	public String getObjectFile() {
-		if (getField(OBJECT_FILE) != null)
-			return getField(OBJECT_FILE).toString();
-		else
+	public void setTitle(String title) {
+		addField(TITLE, title);
+	}
+
+	public void setLabel(String label) {
+		addField(LABEL, label);
+	}
+
+	public String getLabel() {
+		try {
+			return getField(LABEL).toString();
+		} catch (NullPointerException e) {
 			return "";
+		}
 	}
 
-	public void addDefaultDatasets(int datasetID) {
-		ArrayList<Integer> ids = (ArrayList<Integer>) getField(DEFAULT_DATASETS);
+
+
+	public void addDefaultDatasets(String datasetID) {
+		ArrayList<String> ids = (ArrayList<String>) getField(DEFAULT_DATASETS);
 		if (ids != null) {
 			if (!ids.contains(datasetID)) {
 				ids.add(datasetID);
 				addField(DEFAULT_DATASETS, ids);
 			}
 		} else {
-			ids = new ArrayList<Integer>();
+			ids = new ArrayList<String>();
 			ids.add(datasetID);
 			addField(DEFAULT_DATASETS, ids);
 		}

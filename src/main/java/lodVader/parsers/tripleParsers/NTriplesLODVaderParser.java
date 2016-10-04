@@ -19,7 +19,7 @@ import org.openrdf.rio.helpers.RDFParserBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.tupleManager.SuperTupleManager;
+import lodVader.tupleManager.BasicTupleManager;
 
 public class NTriplesLODVaderParser extends RDFParserBase {
 
@@ -78,7 +78,7 @@ public class NTriplesLODVaderParser extends RDFParserBase {
 
 	protected void parse() {
 
-		SuperTupleManager splitAndStore = (SuperTupleManager) getRDFHandler();
+		BasicTupleManager splitAndStore = (BasicTupleManager) getRDFHandler();
 
 		try {
 

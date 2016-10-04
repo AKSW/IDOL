@@ -14,7 +14,7 @@ import lodVader.enumerators.DistributionStatus;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.streaming.CheckWhetherToStream;
-import lodVader.streaming.SuperStream;
+import lodVader.streaming.LodVaderStreamProcessor;
 
 /**
  * @author Ciro Baron Neto
@@ -26,12 +26,12 @@ public class LodVaderProcessor {
 	final static Logger logger = LoggerFactory.getLogger(LodVaderProcessor.class);
 
 	/**
-	 * Process a dataset
-	 * @param dataset: the dataset
+	 * Process a dataset and its distributions. 
+	 * @param dataset: the datasetDB instance
 	 * @param streamFile: the dataset streamer processor
 	 * @throws Exception
 	 */
-	public void datasetProcessor(DatasetDB dataset, SuperStream streamFile) throws Exception {
+	public void datasetProcessor(DatasetDB dataset, LodVaderStreamProcessor streamFile) throws Exception {
 
 		// iterate on distributions of current dataset
 		for (DistributionDB distribution : dataset.getDistributionsAsMongoDBObjects()) {
@@ -115,7 +115,7 @@ public class LodVaderProcessor {
 		}
 	}
 
-	private static boolean checkDistributionStatus(DistributionDB distributionMongoDBObj) throws Exception {
+	private boolean checkDistributionStatus(DistributionDB distributionMongoDBObj) throws Exception {
 		boolean needDownload = false;
 
 		if (distributionMongoDBObj.getStatus().equals(DistributionStatus.WAITING_TO_STREAM))

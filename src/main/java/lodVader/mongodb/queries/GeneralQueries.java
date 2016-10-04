@@ -12,19 +12,16 @@ import lodVader.mongodb.collections.ResourceDB;
 
 public class GeneralQueries {
 
-	public  ArrayList<String> getMongoDBObject(String collectionName,
-			String field, String value) {
+	public ArrayList<DBObject> getMongoDBObject(String collectionName, String field, String value) {
 
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<DBObject> list = new ArrayList<DBObject>();
 		try {
-			DBCollection collection = DBSuperClass.getCollection(
-					collectionName);
+			DBCollection collection = DBSuperClass.getCollection(collectionName);
 			DBObject query = new BasicDBObject(field, value);
 			DBCursor instances = collection.find(query);
 
 			for (DBObject instance : instances) {
-				list.add(instance.get(ResourceDB.URI)
-						.toString());
+				list.add(instance);
 			}
 
 		} catch (Exception e) {
@@ -34,4 +31,3 @@ public class GeneralQueries {
 
 	}
 }
-

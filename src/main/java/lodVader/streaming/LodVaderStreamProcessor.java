@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -25,6 +24,7 @@ import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.helpers.BasicParserSettings;
 import org.openrdf.rio.jsonld.JSONLDParser;
 import org.openrdf.rio.n3.N3ParserFactory;
+import org.openrdf.rio.ntriples.NTriplesParser;
 import org.openrdf.rio.rdfxml.RDFXMLParser;
 import org.openrdf.rio.turtle.TurtleParser;
 import org.slf4j.Logger;
@@ -33,15 +33,13 @@ import org.slf4j.LoggerFactory;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.parsers.tripleParsers.NTriplesLODVaderParser;
-import lodVader.tupleManager.SplitAndSaveBF;
-import lodVader.tupleManager.SuperTupleManager;
+import lodVader.tupleManager.BasicTupleManager;
 import lodVader.utils.FileUtils;
-import lodVader.utils.Formats;
+import lodVader.utils.FormatsUtils;
 
-public abstract class SuperStream {
+public class LodVaderStreamProcessor {
 
-	final static Logger logger = LoggerFactory.getLogger(SuperStream.class);
+	final static Logger logger = LoggerFactory.getLogger(LodVaderStreamProcessor.class);
 
 	// HTTP header fields
 	public String httpDisposition = null;
@@ -70,21 +68,21 @@ public abstract class SuperStream {
 	HttpURLConnection httpConn = null;
 
 	String accessURL = null;
-	
-	private SuperTupleManager tupleManager;
-	
+
+	private BasicTupleManager tupleManager;
+
 	/**
 	 * @return the tupleManager
 	 */
-	public SuperTupleManager getTupleManager() {
+	public BasicTupleManager getTupleManager() {
 		return tupleManager;
 	}
 
 	/**
-	 * @param tupleManager 
-	 * Set the tupleManager value.
+	 * @param tupleManager
+	 *            Set the tupleManager value.
 	 */
-	public void setTupleManager(SuperTupleManager tupleManager) {
+	public void setTupleManager(BasicTupleManager tupleManager) {
 		this.tupleManager = tupleManager;
 	}
 
@@ -104,9 +102,9 @@ public abstract class SuperStream {
 		printHeaders();
 
 	}
-	
 
-	protected void startParsing(DistributionDB distributionMongoDBObj) throws IOException, LODVaderLODGeneralException, LODVaderFormatNotAcceptedException {
+	public void startParsing(DistributionDB distributionMongoDBObj)
+			throws IOException, LODVaderLODGeneralException, LODVaderFormatNotAcceptedException {
 		this.downloadUrl = new URL(distributionMongoDBObj.getDownloadUrl());
 		this.RDFFormat = distributionMongoDBObj.getFormat();
 		openStream();
@@ -114,38 +112,37 @@ public abstract class SuperStream {
 	}
 
 	private void setParser() throws IOException, LODVaderFormatNotAcceptedException {
-		
+
 		// instance of rdf parser
 		RDFParser rdfParser = null;
 
-
 		// checking whether to use turtle parser
-		if (RDFFormat.equals(Formats.DEFAULT_TURTLE)) {
+		if (RDFFormat.equals(FormatsUtils.DEFAULT_TURTLE)) {
 			rdfParser = new TurtleParser();
 			logger.info("==== Turtle Parser loaded ====");
 		}
 
 		// checking ntriples to use turtle parser
-		else if (RDFFormat.equals(Formats.DEFAULT_NTRIPLES)) {
-			// rdfParser = new NTriplesParser();
-			rdfParser = new NTriplesLODVaderParser();
+		else if (RDFFormat.equals(FormatsUtils.DEFAULT_NTRIPLES)) {
+			rdfParser = new NTriplesParser();
+			// rdfParser = new NTriplesLODVaderParser();
 			logger.info("==== NTriples Parser loaded ====");
 		}
 
 		// checking rdf/xml to use turtle parser
-		else if (RDFFormat.equals(Formats.DEFAULT_RDFXML)) {
+		else if (RDFFormat.equals(FormatsUtils.DEFAULT_RDFXML)) {
 			rdfParser = new RDFXMLParser();
 			logger.info("==== RDF/XML Parser loaded ====");
 		}
 
 		// checking jsonld to use turtle parser
-		else if (RDFFormat.equals(Formats.DEFAULT_JSONLD)) {
+		else if (RDFFormat.equals(FormatsUtils.DEFAULT_JSONLD)) {
 			rdfParser = new JSONLDParser();
 			logger.info("==== JSON-LD Parser loaded ====");
 		}
 
 		// checking n3 to use turtle parser
-		else if (RDFFormat.equals(Formats.DEFAULT_N3)) {
+		else if (RDFFormat.equals(FormatsUtils.DEFAULT_N3)) {
 			rdfParser = new N3ParserFactory().getParser();
 			logger.info("==== N3Parser loaded ====");
 		}
@@ -154,7 +151,7 @@ public abstract class SuperStream {
 		else {
 			httpConn.disconnect();
 			inputStream.close();
-			logger.info("RDF format not supported: " + RDFFormat);
+			logger.error("RDF format not supported: " + RDFFormat);
 			throw new LODVaderFormatNotAcceptedException("RDF format not supported: " + RDFFormat);
 		}
 
@@ -217,8 +214,8 @@ public abstract class SuperStream {
 				}
 				setExtension(FilenameUtils.getExtension(getFileName()));
 			}
- 
-			else {
+
+			else {				
 				rdfParser.parse(inputStream, downloadUrl.toString());
 			}
 
@@ -234,7 +231,7 @@ public abstract class SuperStream {
 		openConnection();
 
 		// opens input stream from HTTP connection
-		inputStream  = new BufferedInputStream(httpConn.getInputStream());
+		inputStream = new BufferedInputStream(httpConn.getInputStream());
 
 		logger.debug("InputStream from http connection opened");
 
@@ -249,7 +246,8 @@ public abstract class SuperStream {
 
 		// check format and extension
 		if (RDFFormat == null || RDFFormat.equals("")) {
-			DistributionDB dist = new DistributionDB(downloadUrl.toString());
+			DistributionDB dist = new DistributionDB();
+			dist.find(true, DistributionDB.DOWNLOAD_URL, downloadUrl.toString());
 			if (dist.getFormat() == null || dist.getFormat() == "" || dist.getFormat().equals(""))
 				RDFFormat = getExtension();
 			else
@@ -261,7 +259,7 @@ public abstract class SuperStream {
 		httpConn = (HttpURLConnection) downloadUrl.openConnection();
 
 		httpConn.setReadTimeout(5000);
-		httpConn.setConnectTimeout(5000);
+		httpConn.setConnectTimeout(5000); 
 		int responseCode = httpConn.getResponseCode();
 
 		logger.debug("Open HTTP connection for URL: " + downloadUrl.toString());
@@ -295,7 +293,7 @@ public abstract class SuperStream {
 			inputStream = new BZip2CompressorInputStream(new BufferedInputStream(httpConn.getInputStream()), true);
 			setFileName(getFileName().replace(".bz2", ""));
 			setExtension(null);
-			
+
 			logger.info("Done creating BZip2CompressorInputStream! New file name is " + getFileName());
 		}
 	}
@@ -321,7 +319,7 @@ public abstract class SuperStream {
 			logger.info("Done creating GzipCompressorInputStream! New file name is " + getFileName() + ", extension: "
 					+ getExtension());
 		}
-		
+
 	}
 
 	/**
@@ -363,9 +361,9 @@ public abstract class SuperStream {
 		this.downloadUrl = url;
 	}
 
-	public abstract void streamDistribution(DistributionDB distribution)
-			throws IOException, LODVaderLODGeneralException, InterruptedException, RDFHandlerException,
-			RDFParseException, LODVaderFormatNotAcceptedException;
+//	public abstract void streamDistribution(DistributionDB distribution)
+//			throws IOException, LODVaderLODGeneralException, InterruptedException, RDFHandlerException,
+//			RDFParseException, LODVaderFormatNotAcceptedException;
 
 	/**
 	 * Stream a file.

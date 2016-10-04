@@ -43,9 +43,9 @@ import lodVader.mongodb.collections.gridFS.ObjectsBucket;
 import lodVader.mongodb.collections.gridFS.SubjectsBucket;
 import lodVader.parsers.tripleParsers.NTriplesLODVaderParser;
 import lodVader.tupleManager.SplitAndProcess;
-import lodVader.tupleManager.SuperTupleManager;
+import lodVader.tupleManager.BasicTupleManager;
 import lodVader.utils.FileUtils;
-import lodVader.utils.Formats;
+import lodVader.utils.FormatsUtils;
 
 public class StreamAndProcess  {
 //	public class StreamAndProcess extends SuperStream {

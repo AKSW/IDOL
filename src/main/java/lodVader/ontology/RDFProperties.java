@@ -48,8 +48,20 @@ public class RDFProperties {
 
 	public static final Property dataIDDistribution = property(NS.DATAID_URI,
 			"Distribution");
+	
+	public static final Resource dataIDSingleFile = resource(NS.DATAID_URI,
+			"SingleFile");
+	
 	public static final Property dcatDistribution = property(NS.DCAT_URI,
 			"distribution");
+	public static final Property dcatDataset = property(NS.DCAT_URI,
+			"dataset");
+	
+	public static final Property dcatDownloadURL = property(NS.DCAT_URI,
+			"downloadURL");
+	
+	public static final Resource dcatCatalog = resource(NS.DCAT_URI,
+			"Catalog");
 	
 	protected static final Resource resource(String ns, String local) {
 		return ResourceFactory.createResource(ns + local);

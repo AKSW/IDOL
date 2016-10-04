@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteException;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DB;
@@ -16,10 +18,9 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
-import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
 import lodVader.loader.LODVaderProperties;
 
 public class DBSuperClass {
@@ -36,7 +37,7 @@ public class DBSuperClass {
 
 	// defining mongodb _id
 	@JsonIgnore
-	public String ID = "_id";
+	public static String ID = "_id";
 
 	// defining PrimaryKeys field
 	@JsonIgnore
@@ -64,8 +65,22 @@ public class DBSuperClass {
 		this.mongoDBObject = obj;
 	}
 
-	// public DBSuperClass2() {
-	// }
+	/**
+	 * @return the _id
+	 */
+	public String getID() {
+		if (getField(ID) == null)
+			setID(new ObjectId().toString());
+		return getField(ID).toString();
+	}
+
+	/**
+	 * @param _id
+	 *            Set the _id value.
+	 */
+	public void setID(String id) {
+		addField(ID, id);
+	}
 
 	// add pair key/value to the persistence object
 	protected void addField(String key, String val) {
@@ -100,7 +115,7 @@ public class DBSuperClass {
 	}
 
 	// add pair key/value to the persistence object
-	protected void addField(String key, ArrayList<Integer> val) {
+	protected void addField(String key, List val) {
 		mongoDBObject.put(key, val);
 	}
 
@@ -118,38 +133,38 @@ public class DBSuperClass {
 					MongoCredential credential = MongoCredential.createMongoCRCredential(
 							LODVaderProperties.MONGODB_USERNAME, LODVaderProperties.MONGODB_DB,
 							LODVaderProperties.MONGODB_PASSWORD.toCharArray());
-					mongo = new MongoClient(new ServerAddress(LODVaderProperties.MONGODB_HOST), 
+					mongo = new MongoClient(new ServerAddress(LODVaderProperties.MONGODB_HOST),
 							Arrays.asList(credential));
 				} else {
 					mongo = new MongoClient(LODVaderProperties.MONGODB_HOST, LODVaderProperties.MONGODB_PORT);
 				}
 				db = mongo.getDB(LODVaderProperties.MONGODB_DB);
-			} 
-		} catch (Exception e) { 
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 		return db;
 	}
 
-	/**
-	 * Insert a new object in MongoDB database
-	 * 
-	 * @param checkBeforeInsert
-	 *            query database and only insert if object is not there.
-	 * @throws LODVaderObjectAlreadyExistsException
-	 * @throws LODVaderNoPKFoundException
-	 */
-	public void insert(boolean checkBeforeInsert)
-			throws LODVaderObjectAlreadyExistsException, LODVaderNoPKFoundException {
-
-		if (checkBeforeInsert)
-			if (find(false))
-				throw new LODVaderObjectAlreadyExistsException(
-						"Can't save object with PK: " + getPK() + ". Object already exists.");
-
-		// saving object to mongodb
-		getCollection().insert(mongoDBObject);
-	}
+	// /**
+	// * Insert a new object in MongoDB database
+	// *
+	// * @param checkBeforeInsert
+	// * query database and only insert if object is not there.
+	// * @throws LODVaderObjectAlreadyExistsException
+	// * @throws LODVaderNoPKFoundException
+	// */
+	// public void insert(boolean checkBeforeInsert)
+	// throws LODVaderObjectAlreadyExistsException, LODVaderNoPKFoundException {
+	//
+	// if (checkBeforeInsert)
+	// if (find(false))
+	// throw new LODVaderObjectAlreadyExistsException(
+	// "Can't save object with PK: " + getPK() + ". Object already exists.");
+	//
+	// // saving object to mongodb
+	// getCollection().insert(mongoDBObject);
+	// }
 
 	/**
 	 * Query a object based on the list of PKs.
@@ -158,32 +173,52 @@ public class DBSuperClass {
 	 *            update object case found.
 	 * @return true case the object is found.
 	 */
-	public boolean find(boolean update) {
+	// public boolean find(boolean update) {
+	//
+	// BasicDBList list = new BasicDBList();
+	//
+	// for (Object pk : getPK()) {
+	// if (pk instanceof String) {
+	// String pks = (String) pk;
+	// if (getField(pks) != null) {
+	// list.add(new BasicDBObject(pks, getField(pks)));
+	// }
+	// } else if (pk instanceof Integer) {
+	// Integer pks = (Integer) pk;
+	// if (getField(pks) != null) {
+	// list.add(new BasicDBObject(String.valueOf(pks), getField(pks)));
+	// }
+	// }
+	// }
+	//
+	// if (list.size() == 0)
+	// return false;
+	//
+	// DBCursor cursor = getCollection().find(new BasicDBObject("$or", list));
+	//
+	// if (cursor.size() > 0) {
+	// if (update) {
+	// mongoDBObject = cursor.next();
+	// }
+	// return true;
+	// } else
+	// return false;
+	// }
 
-		BasicDBList list = new BasicDBList();
+	/**
+	 * Query a object based on the a key
+	 * 
+	 * @param update
+	 *            update object case found.
+	 * @return true case the object is found.
+	 */
+	public boolean find(Boolean update, String key, Object value) {
 
-		for (Object pk : getPK()) {
-			if (pk instanceof String) {
-				String pks = (String) pk;
-				if (getField(pks) != null) {
-					list.add(new BasicDBObject(pks, getField(pks)));
-				}
-			} else if (pk instanceof Integer) {
-				Integer pks = (Integer) pk;
-				if (getField(pks) != null) {
-					list.add(new BasicDBObject(String.valueOf(pks), getField(pks)));
-				}
-			}
-		}
+		DBObject cursor = getCollection().findOne(new BasicDBObject(key, value));
 
-		if (list.size() == 0)
-			return false;
-
-		DBCursor cursor = getCollection().find(new BasicDBObject("$or", list));
-
-		if (cursor.size() > 0) {
+		if (cursor != null) {
 			if (update) {
-				mongoDBObject = cursor.next();
+				mongoDBObject = cursor;
 			}
 			return true;
 		} else
@@ -197,14 +232,12 @@ public class DBSuperClass {
 	 *            update object case found.
 	 * @return true case the object is found.
 	 */
-	public boolean find(Boolean update, String key, Object value) {
+	public boolean find() {
 
-		DBCursor cursor = getCollection().find(new BasicDBObject(key, value));
+		DBObject cursor = getCollection().findOne(new BasicDBObject(ID, getID()));
 
-		if (cursor.size() > 0) {
-			if (update) {
-				mongoDBObject = cursor.next();
-			}
+		if (cursor != null) {
+			mongoDBObject = cursor;
 			return true;
 		} else
 			return false;
@@ -223,16 +256,17 @@ public class DBSuperClass {
 			checkMandatoryFields();
 			if (create)
 				getCollection().update(new BasicDBObject(key, value), mongoDBObject, true, false);
-//			else 
-//				DBCursor cursor = getCollection().find(new BasicDBObject(key, value)); 
+			// else
+			// DBCursor cursor = getCollection().find(new BasicDBObject(key,
+			// value));
 
-//			if (cursor.size() > 0) {
-//				// mongoDBObject = cursor.next();
-//			} else {
-//				if (create) {
-//					getCollection().insert(mongoDBObject);
-//				}
-//			}
+			// if (cursor.size() > 0) {
+			// // mongoDBObject = cursor.next();
+			// } else {
+			// if (create) {
+			// getCollection().insert(mongoDBObject);
+			// }
+			// }
 
 		} catch (LODVaderMissingPropertiesException e) {
 			// TODO Auto-generated catch block
@@ -248,69 +282,67 @@ public class DBSuperClass {
 	 *            set whether the object should be created case doesn't exist.
 	 * @return true case successfully updated
 	 * @throws LODVaderMissingPropertiesException
-	 * @throws LODVaderNoPKFoundException
-	 * @throws LODVaderObjectAlreadyExistsException
 	 */
-	public boolean update(boolean create) throws LODVaderMissingPropertiesException,
-			LODVaderObjectAlreadyExistsException, LODVaderNoPKFoundException {
+	public boolean update() throws LODVaderMissingPropertiesException {
 
-		if (create)
-			if (!find(false)) {
-				insert(false);
-				return true;
-			}
+		// if (create)
+		// if (!find(false, "_id", getID())) {
+		// getCollection().insert(mongoDBObject);
+		// return true;
+		// }
+		//
+		// BasicDBList list = new BasicDBList();
+		//
+		// for (Object pk : getPK()) {
+		// if (pk instanceof String) {
+		// String pks = (String) pk;
+		// if (getField(pks) != null) {
+		// list.add(new BasicDBObject(pks, getField(pks)));
+		// }
+		// } else if (pk instanceof Integer) {
+		// Integer pks = (Integer) pk;
+		// if (getField(pks) != null) {
+		// list.add(new BasicDBObject(String.valueOf(pks), getField(pks)));
+		// }
+		// }
+		// }
 
 		checkMandatoryFields();
-		BasicDBList list = new BasicDBList();
-
-		for (Object pk : getPK()) {
-			if (pk instanceof String) {
-				String pks = (String) pk;
-				if (getField(pks) != null) {
-					list.add(new BasicDBObject(pks, getField(pks)));
-				}
-			} else if (pk instanceof Integer) {
-				Integer pks = (Integer) pk;
-				if (getField(pks) != null) {
-					list.add(new BasicDBObject(String.valueOf(pks), getField(pks)));
-				}
-			}
-		}
-
-		getCollection().update(new BasicDBObject("$or", list), mongoDBObject);
-
+		getCollection().update(new BasicDBObject("_id", getID()), mongoDBObject, true, false);
+		//
 		return true;
 	}
 
-	public boolean updateBasedOnKeys(boolean create) throws LODVaderMissingPropertiesException,
-			LODVaderObjectAlreadyExistsException, LODVaderNoPKFoundException {
-
-		checkMandatoryFields();
-
-		if (create)
-			if (!find(false))
-				insert(false);
-
-		BasicDBList list = new BasicDBList();
-
-		for (Object pk : getPK()) {
-			if (pk instanceof String) {
-				String pks = (String) pk;
-				if (getField(pks) != null) {
-					list.add(new BasicDBObject(pks, getField(pks)));
-				}
-			} else if (pk instanceof Integer) {
-				Integer pks = (Integer) pk;
-				if (getField(pks) != null) {
-					list.add(new BasicDBObject(String.valueOf(pks), getField(pks)));
-				}
-			}
-		}
-
-		getCollection().update(new BasicDBObject("$and", list), mongoDBObject);
-
-		return true;
-	}
+	// public boolean updateBasedOnKeys(boolean create) throws
+	// LODVaderMissingPropertiesException,
+	// LODVaderObjectAlreadyExistsException, LODVaderNoPKFoundException {
+	//
+	// checkMandatoryFields();
+	//
+	// if (create)
+	// if (!find(false))
+	// insert(false);
+	//
+	// BasicDBList list = new BasicDBList();
+	//
+	// for (Object pk : getPK()) {
+	// if (pk instanceof String) {
+	// String pks = (String) pk;
+	// if (getField(pks) != null) {
+	// list.add(new BasicDBObject(pks, getField(pks)));
+	// }
+	// } else if (pk instanceof Integer) {
+	// Integer pks = (Integer) pk;
+	// if (getField(pks) != null) {
+	// list.add(new BasicDBObject(String.valueOf(pks), getField(pks)));
+	// }
+	// }
+	// }
+	//
+	// getCollection().update(new BasicDBObject("$and", list), mongoDBObject);
+	//
+	// return true;
+	// }
 
 	/**
 	 * Remove an object
@@ -334,15 +366,21 @@ public class DBSuperClass {
 	 * @return
 	 */
 
-	protected boolean bulkSave2(List<DBObject> objects) {
-		if (objects.size() == 0)
-			return false;
-		BulkWriteOperation builder = getCollection().initializeUnorderedBulkOperation();
-		for (DBObject doc : objects) {
-			builder.insert(doc);
+	public boolean bulkSave2(List<DBObject> objects) {
+		boolean isAck = false;
+		try {
+			if (objects.size() == 0)
+				return false;
+			BulkWriteOperation builder = getCollection().initializeUnorderedBulkOperation();
+			for (DBObject doc : objects) {
+				builder.insert(doc);
+			}
+			BulkWriteResult result = builder.execute();
+			isAck = result.isAcknowledged();
+		} catch (BulkWriteException e) {
+
 		}
-		BulkWriteResult result = builder.execute();
-		return result.isAcknowledged();
+		return isAck;
 	}
 
 	@JsonIgnore
@@ -353,21 +391,21 @@ public class DBSuperClass {
 		return collection;
 	}
 
-	protected DBObject search() {
-		DBCursor d = collection.find(mongoDBObject);
-		if (d.hasNext())
-			return d.next();
-		return null;
-	}
+	// protected DBObject search() {
+	// DBCursor d = collection.find(mongoDBObject);
+	// if (d.hasNext())
+	// return d.next();
+	// return null;
+	// }
 
 	@JsonIgnore
 	public ArrayList<Object> getPK() {
 		return primaryKey;
 	}
 
-	protected void addPK(String pK) {
-		primaryKey.add(pK);
-	}
+	// protected void addPK(String pK) {
+	// primaryKey.add(pK);
+	// }
 
 	private void checkMandatoryFields() throws LODVaderMissingPropertiesException {
 		for (String field : mandatoryFields) {
@@ -377,7 +415,7 @@ public class DBSuperClass {
 
 	private boolean checkField(String key) throws LODVaderMissingPropertiesException {
 		if (mongoDBObject.get(key) == null)
-			throw new LODVaderMissingPropertiesException("Missing filed: " + key.toString());
+			throw new LODVaderMissingPropertiesException("Missing field: " + key.toString());
 		return true;
 	}
 
