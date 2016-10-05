@@ -7,7 +7,7 @@ public class Diagram {
 	
 	ArrayList<Link> links = new ArrayList<Link>();
 
-	public HashMap<Integer, Node> nodes = new HashMap<Integer, Node>();
+	public HashMap<String, Node> nodes = new HashMap<String, Node>();
 
 	public Node addNode(Node source) {
 		if (!nodes.containsKey(source.getID())) {
@@ -30,9 +30,9 @@ public class Diagram {
 		links.add(link);
 	} 
 
-	public void printSelectedBubbles(int[] b1) {
+	public void printSelectedBubbles(String[] b1) {
 		for (Node bubble : nodes.values()) {
-			for (int b : b1) {
+			for (String b : b1) {
 				if (bubble.getID() ==  b) {
 					bubble.setColor("rgb(189, 189, 189)");
 				}

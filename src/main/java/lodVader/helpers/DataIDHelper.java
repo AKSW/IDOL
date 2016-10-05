@@ -162,7 +162,6 @@ public class DataIDHelper {
 	 */
 	public String getDownloadURL(String distribution) {
 
-		System.out.println(distribution);
 		StmtIterator stmtdownloadURL = dataIDModel.listStatements(dataIDModel.createResource(distribution),
 				RDFProperties.dcatDownloadURL, (RDFNode) null);
 

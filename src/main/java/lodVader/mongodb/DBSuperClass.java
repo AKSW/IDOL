@@ -15,6 +15,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -69,7 +70,7 @@ public class DBSuperClass {
 	 */
 	public String getID() {
 		if (getField(ID) == null)
-			setID(new ObjectId().toString());
+			return null;
 		return getField(ID).toString();
 	}
 
@@ -253,6 +254,8 @@ public class DBSuperClass {
 
 		try {
 			checkMandatoryFields();
+			if (getID() == null)
+				setID(new ObjectId().toString());
 			if (create)
 				getCollection().update(new BasicDBObject(key, value), mongoDBObject, true, false);
 			// else
@@ -307,7 +310,13 @@ public class DBSuperClass {
 		// }
 
 		checkMandatoryFields();
-		getCollection().update(new BasicDBObject("_id", getID()), mongoDBObject, true, false);
+		if (getID() == null)
+			setID(new ObjectId().toString());
+		try {
+			getCollection().update(new BasicDBObject("_id", getID()), mongoDBObject, true, false);
+		} catch (DuplicateKeyException e) {
+			// TODO: handle exception
+		}
 		//
 		return true;
 	}
@@ -365,8 +374,8 @@ public class DBSuperClass {
 	 * @return
 	 */
 
-	public boolean bulkSave2(List<DBObject> objects) {		
-		
+	public boolean bulkSave2(List<DBObject> objects) {
+
 		boolean isAck = false;
 		try {
 			if (objects.size() == 0)

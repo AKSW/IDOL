@@ -143,7 +143,7 @@ public class NTriplesLODVaderParser extends RDFParserBase {
 							propertyStmt = matcher.group(2);
 							objectStmt = matcher.group(3);
 
-							splitAndStore.saveStatement(subjectStmt, propertyStmt, objectStmt);
+//							splitAndStore.saveStatement(subjectStmt, propertyStmt, objectStmt);
 
 						} catch (ArrayIndexOutOfBoundsException e) {
 							lastLine = triple;

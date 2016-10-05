@@ -1,19 +1,15 @@
 package lodVader.mongodb.queries;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.LinksetDB;
 
 public class DatasetQueries {
 
@@ -27,14 +23,14 @@ public class DatasetQueries {
 
 	private void getTriples(DatasetDB dataset) {
  
-		for (int subset : dataset.getSubsetsIDs()) {
-			getTriples(new DatasetDB(subset));
-		}
-
-		for (int dist : dataset.getDistributionsIDs()) {
-			DistributionDB d = new DistributionDB(dist);
-			triples = triples + d.getTriples();
-		}
+//		for (int subset : dataset.getSubsetsIDs()) {
+//			getTriples(new DatasetDB(subset));
+//		}
+//
+//		for (int dist : dataset.getDistributionsIDs()) {
+//			DistributionDB d = new DistributionDB(dist);
+//			triples = triples + d.getTriples();
+//		}
 	}
 
 
@@ -98,7 +94,7 @@ public class DatasetQueries {
 			DBCollection collection = DBSuperClass.getDBInstance().getCollection(
 					DatasetDB.COLLECTION_NAME);
 			BasicDBObject query = new BasicDBObject();
-			query.put(DatasetDB.LOD_VADER_ID, new BasicDBObject("$in", datasetsIDs));
+			query.put(DatasetDB.ID, new BasicDBObject("$in", datasetsIDs));
 			
 			DBCursor instances = collection.find(query);
 
@@ -143,46 +139,46 @@ public class DatasetQueries {
 	}
 	
 	
-	public ArrayList<DatasetDB> getDatasetsNotVocabWithLinks() {
-
-		ArrayList<DatasetDB> list = new ArrayList<DatasetDB>();
-		try {
-			DBCollection collection = DBSuperClass.getDBInstance().getCollection(
-					LinksetDB.COLLECTION_NAME);
-			BasicDBObject query = new BasicDBObject(LinksetDB.LINK_NUMBER_LINKS,
-					new BasicDBObject("$gt", LODVaderProperties.LINKSET_TRESHOLD));
-			List<Integer> out = collection.distinct(
-					LinksetDB.DATASET_TARGET, query);
-
-			List<Integer> in = collection.distinct(
-					LinksetDB.DATASET_SOURCE, query);
-
-			TreeSet<Integer> t = new TreeSet<Integer>();
-			for (Integer s : out) {
-				t.add(s);
-			}
-			for (Integer s : in) {
-				t.add(s);
-			}
-
-			collection = DBSuperClass.getDBInstance().getCollection(
-					DatasetDB.COLLECTION_NAME);
-			query = new BasicDBObject(DatasetDB.LOD_VADER_ID,
-					new BasicDBObject("$in", t));
-			query.append(DatasetDB.IS_VOCABULARY, false);
-
-			DBCursor instances = collection.find(query).sort(
-					new BasicDBObject(DatasetDB.TITLE, 1));
-
-			for (DBObject instance : instances) {
-				list.add(new DatasetDB(instance));
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+//	public ArrayList<DatasetDB> getDatasetsNotVocabWithLinks() {
+//
+//		ArrayList<DatasetDB> list = new ArrayList<DatasetDB>();
+//		try {
+//			DBCollection collection = DBSuperClass.getDBInstance().getCollection(
+//					LinksetDB.COLLECTION_NAME);
+//			BasicDBObject query = new BasicDBObject(LinksetDB.LINK_NUMBER_LINKS,
+//					new BasicDBObject("$gt", LODVaderProperties.LINKSET_TRESHOLD));
+//			List<Integer> out = collection.distinct(
+//					LinksetDB.DATASET_TARGET, query);
+//
+//			List<Integer> in = collection.distinct(
+//					LinksetDB.DATASET_SOURCE, query);
+//
+//			TreeSet<Integer> t = new TreeSet<Integer>();
+//			for (Integer s : out) {
+//				t.add(s);
+//			}
+//			for (Integer s : in) {
+//				t.add(s);
+//			}
+//
+//			collection = DBSuperClass.getDBInstance().getCollection(
+//					DatasetDB.COLLECTION_NAME);
+//			query = new BasicDBObject(DatasetDB.LOD_VADER_ID,
+//					new BasicDBObject("$in", t));
+//			query.append(DatasetDB.IS_VOCABULARY, false);
+//
+//			DBCursor instances = collection.find(query).sort(
+//					new BasicDBObject(DatasetDB.TITLE, 1));
+//
+//			for (DBObject instance : instances) {
+//				list.add(new DatasetDB(instance));
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return list;
+//	}
 	
 	public ArrayList<DatasetDB> getSubsetsAsMongoDBObject(DatasetDB dataset) {
 
@@ -193,7 +189,7 @@ public class DatasetQueries {
 			DBCollection collection = DBSuperClass.getDBInstance().getCollection(
 					DatasetDB.COLLECTION_NAME);
 			BasicDBObject query = new BasicDBObject(
-					DatasetDB.LOD_VADER_ID, new BasicDBObject("$in", dataset.getSubsetsIDs()));
+					DatasetDB.ID, new BasicDBObject("$in", dataset.getSubsetsIDs()));
 
 			// query.append("$where", "this.distributions_uris.length > 0");
 			DBCursor instances = collection.find(query);
@@ -215,7 +211,7 @@ public class DatasetQueries {
 			DBCollection collection = DBSuperClass.getCollection(
 					DistributionDB.COLLECTION_NAME);
 			BasicDBObject query = new BasicDBObject(
-					DistributionDB.TOP_DATASET, dataset.getLODVaderID());
+					DistributionDB.TOP_DATASET, dataset.getID());
 			DBCursor instances = collection.find(query);
 
 			for (DBObject instance : instances) {
@@ -228,9 +224,9 @@ public class DatasetQueries {
 		return list;
 	}
 	
-	public ArrayList<Integer> getDistributionsIDs(int datasetID) {
+	public ArrayList<String> getDistributionsIDs(int datasetID) {
 
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<String> list = new ArrayList<String>();
 		try {
 			DBCollection collection = DBSuperClass.getCollection(
 					DistributionDB.COLLECTION_NAME);
@@ -239,7 +235,7 @@ public class DatasetQueries {
 			DBCursor instances = collection.find(query);
 
 			for (DBObject instance : instances) {
-				list.add(new DistributionDB(instance).getLODVaderID());
+				list.add(new DistributionDB(instance).getID());
 			}
 
 		} catch (Exception e) {

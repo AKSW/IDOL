@@ -43,11 +43,11 @@ public class Link {
 		return links;
 	}
 	
-	public int getSource(){
+	public String getSource(){
 		return nodeSource.getID();
 	}
 	
-	public int getTarget(){
+	public String getTarget(){
 		return nodeTarget.getID();
 	}
 

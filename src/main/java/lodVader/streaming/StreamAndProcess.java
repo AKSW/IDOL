@@ -1,52 +1,5 @@
 package lodVader.streaming;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.io.FilenameUtils;
-import org.openrdf.rio.ParserConfig;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.helpers.BasicParserSettings;
-import org.openrdf.rio.jsonld.JSONLDParser;
-import org.openrdf.rio.n3.N3ParserFactory;
-import org.openrdf.rio.rdfxml.RDFXMLParser;
-import org.openrdf.rio.turtle.TurtleParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import lodVader.enumerators.TuplePart;
-import lodVader.exceptions.LODVaderFormatNotAcceptedException;
-import lodVader.exceptions.LODVaderLODGeneralException;
-import lodVader.loader.LODVaderProperties;
-import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.RDFResources.allPredicates.AllPredicatesDB;
-import lodVader.mongodb.collections.RDFResources.allPredicates.AllPredicatesRelationDB;
-import lodVader.mongodb.collections.RDFResources.owlClass.OwlClassDB;
-import lodVader.mongodb.collections.RDFResources.owlClass.OwlClassRelationDB;
-import lodVader.mongodb.collections.RDFResources.rdfSubClassOf.RDFSubClassOfDB;
-import lodVader.mongodb.collections.RDFResources.rdfSubClassOf.RDFSubClassOfRelationDB;
-import lodVader.mongodb.collections.RDFResources.rdfType.RDFTypeObjectDB;
-import lodVader.mongodb.collections.RDFResources.rdfType.RDFTypeObjectRelationDB;
-import lodVader.mongodb.collections.gridFS.ObjectsBucket;
-import lodVader.mongodb.collections.gridFS.SubjectsBucket;
-import lodVader.parsers.tripleParsers.NTriplesLODVaderParser;
-import lodVader.tupleManager.SplitAndProcess;
-import lodVader.tupleManager.BasicTupleManager;
-import lodVader.utils.FileUtils;
-import lodVader.utils.FormatsUtils;
-
 public class StreamAndProcess  {
 //	public class StreamAndProcess extends SuperStream {
 	

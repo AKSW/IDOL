@@ -81,14 +81,4 @@ public class DescriptionFileParserLoader {
 		
 	}
 
-	/**
-	 * Save statistical data (e.g. number of datasets found) into MongoDB
-	 * dataset.
-	 * 
-	 * @return
-	 */
-	public  boolean saveStatisticalData() {
-		return true;
-	}
-
 }

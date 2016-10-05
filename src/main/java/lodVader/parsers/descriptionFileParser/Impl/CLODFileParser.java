@@ -104,9 +104,18 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 					dataset.setUri(nsUtils.getNS0(url));
 				}
 				
-				dataset.setIsVocabulary(false);
-				dataset.setDescriptionFileParser(URL);
-				dataset.setTitle(stmt.getObject().toString());
+				DatasetDB datasetFind = new DatasetDB(); 
+				if(datasetFind.find(true, DatasetDB.URI, dataset.getUri())){
+					dataset = datasetFind;
+				}
+				else{
+					dataset.setIsVocabulary(false);
+					dataset.setDescriptionFileParser(URL);
+					dataset.setTitle(stmt.getObject().toString());
+					dataset.update();					
+				}
+				
+
 
 				DistributionDB distribution = new DistributionDB();
 				distribution.setUri(url);
@@ -127,17 +136,17 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				} catch (NoSuchElementException e) {
 					distribution.setFormat("");
 				}
-				distribution.update(true, DistributionDB.URI, url);
+				distribution.update(true, DistributionDB.DOWNLOAD_URL, distribution.getDownloadUrl());
 
 				ArrayList<String> distributionList = new ArrayList<String>();
 				distributionList.add(distribution.getID());
-				dataset.setDistributionsIds(defaultDatasets);
+				dataset.setDistributionsIds(distributionList);
 
 				distributions.add(distribution);
 				datasets.put(dataset.getID(), dataset);
 				
+				
 				dataset.update();
-				distribution.update();
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -176,7 +185,7 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 						tmpDataset.addDistributionID(distribution.getID());
 						tmpDataset.update();
 
-						removeSet.add(distribution.getID());
+//						removeSet.add(tmpDataset.getID());
 
 						distribution.setTopDataset(tmpDataset.getID());
 						distribution.update();

@@ -158,7 +158,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	 *            and dataset/distribution
 	 * @return
 	 */
-	private List<String> saveFileNameSpaces(String file, TYPE_OF_FILE type) {
+	private List<String> saveResources(String file, TYPE_OF_FILE type) {
 
 		logger.info("Saving namespaces from file " + file);
 
@@ -285,9 +285,12 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	public void saveFilters() {
 		closeFiles();
 		sortFiles();
-		saveFileNameSpaces(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
-		saveFileNameSpaces(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
-
+		saveResources(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
+		removeFile(objectTmpFilePath);
+		saveResources(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
+		removeFile(subjectTmpFilePath);
+		saveResources(triplesTmpFilePath, TYPE_OF_FILE.TRIPLES);
+		removeFile(triplesTmpFilePath);
 	}
 
 }

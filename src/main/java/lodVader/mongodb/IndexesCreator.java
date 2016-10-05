@@ -5,17 +5,11 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoCommandException;
 
 import lodVader.mongodb.collections.DatasetDB;
-import lodVader.mongodb.collections.DatasetLinksetDB;
 import lodVader.mongodb.collections.DescriptionFileParserDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.LinksetDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
-import lodVader.mongodb.collections.gridFS.SuperBucket;
-import lodVader.mongodb.collections.namespaces.DistributionObjectNS0DB;
-import lodVader.mongodb.collections.namespaces.DistributionObjectNSDB;
-import lodVader.mongodb.collections.namespaces.DistributionSubjectNS0DB;
-import lodVader.mongodb.collections.namespaces.DistributionSubjectNSDB;
+import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.collections.toplinks.TopInvalidLinks;
 import lodVader.mongodb.collections.toplinks.TopValidLinks;
 
@@ -35,35 +29,17 @@ public class IndexesCreator {
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL, 1, true);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.IS_VOCABULARY, 1);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS, 1);
-		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.URI, 1);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.DEFAULT_DATASETS, 1);
 
 		addIndex(DescriptionFileParserDB.COLLECTION_NAME, DescriptionFileParserDB.REPOSITORY_ADDRESS, 1, true);
 
-		// indexes for datasetsLinksets
-		addIndex(DatasetLinksetDB.COLLECTION_NAME, DatasetLinksetDB.LINKSET_ID, 1);
-		addIndex(DatasetLinksetDB.COLLECTION_NAME, DatasetLinksetDB.DATASET_SOURCE, 1);
-		addIndex(DatasetLinksetDB.COLLECTION_NAME, DatasetLinksetDB.DATASET_TARGET, 1);
-		addIndex(DatasetLinksetDB.COLLECTION_NAME, DatasetLinksetDB.DISTRIBUTION_SOURCE, 1);
-		addIndex(DatasetLinksetDB.COLLECTION_NAME, DatasetLinksetDB.DISTRIBUTION_TARGET, 1);
-		addIndex(DatasetLinksetDB.COLLECTION_NAME, DatasetLinksetDB.LINKS, 1);
-		addIndex(DatasetLinksetDB.COLLECTION_NAME, DatasetLinksetDB.DEAD_LINKS, 1);
-
-		// indexes for linksets
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.LINKSET_ID, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.DATASET_SOURCE, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.DATASET_TARGET, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.DISTRIBUTION_SOURCE, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.DISTRIBUTION_TARGET, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.LINK_NUMBER_LINKS, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.PREDICATE_SIMILARITY, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.RDF_TYPE_SIMILARITY, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.RDF_SUBCLASS_SIMILARITY, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.OWL_CLASS_SIMILARITY, 1);
-		addIndex(LinksetDB.COLLECTION_NAME, LinksetDB.LINK_STRENGHT, 1);
-
 		for (GeneralResourceDB.COLLECTIONS collection : GeneralResourceDB.COLLECTIONS.values()) {
 			addIndex(collection.toString(), GeneralResourceDB.URI, 1, true);
+		}
+		 
+		for (BucketDB.COLLECTIONS collection : BucketDB.COLLECTIONS.values()) {
+			addIndex(collection.toString(), BucketDB.DISTRIBUTION_ID, 1, true);
+			addIndex(collection.toString(), BucketDB.SEQUENCE_NR, 1, true);
 		}
 
 		for (GeneralResourceRelationDB.COLLECTIONS collection : GeneralResourceRelationDB.COLLECTIONS.values()) {
@@ -73,22 +49,6 @@ public class IndexesCreator {
 			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1);
 		}
 
-		addIndex(DistributionSubjectNS0DB.COLLECTION_NAME, DistributionSubjectNS0DB.DISTRIBUTION_ID, 1);
-		addIndex(DistributionSubjectNS0DB.COLLECTION_NAME, DistributionSubjectNS0DB.DATASET_ID, 1);
-		addIndex(DistributionSubjectNS0DB.COLLECTION_NAME, DistributionSubjectNS0DB.NS, 1);
-
-		addIndex(DistributionObjectNS0DB.COLLECTION_NAME, DistributionObjectNS0DB.DISTRIBUTION_ID, 1);
-		addIndex(DistributionObjectNS0DB.COLLECTION_NAME, DistributionObjectNS0DB.DATASET_ID, 1);
-		addIndex(DistributionObjectNS0DB.COLLECTION_NAME, DistributionObjectNS0DB.NS, 1);
-
-		addIndex(DistributionSubjectNSDB.COLLECTION_NAME, DistributionSubjectNSDB.DISTRIBUTION_ID, 1);
-		addIndex(DistributionSubjectNSDB.COLLECTION_NAME, DistributionSubjectNSDB.DATASET_ID, 1);
-		addIndex(DistributionSubjectNSDB.COLLECTION_NAME, DistributionSubjectNSDB.NS, 1);
-
-		addIndex(DistributionObjectNSDB.COLLECTION_NAME, DistributionObjectNSDB.DISTRIBUTION_ID, 1);
-		addIndex(DistributionObjectNSDB.COLLECTION_NAME, DistributionObjectNSDB.DATASET_ID, 1);
-		addIndex(DistributionObjectNSDB.COLLECTION_NAME, DistributionObjectNSDB.NS, 1);
-
 		addIndex(TopInvalidLinks.COLLECTION_NAME, TopInvalidLinks.SOURCE_DISTRIBUTION_ID, 1);
 		addIndex(TopInvalidLinks.COLLECTION_NAME, TopInvalidLinks.TARGET_DISTRIBUTION_ID, 1);
 		addIndex(TopInvalidLinks.COLLECTION_NAME, TopInvalidLinks.AMOUNT, 1);
@@ -97,14 +57,6 @@ public class IndexesCreator {
 		addIndex(TopValidLinks.COLLECTION_NAME, TopValidLinks.TARGET_DISTRIBUTION_ID, 1);
 		addIndex(TopValidLinks.COLLECTION_NAME, TopValidLinks.AMOUNT, 1);
 
-		// indices for gridFS
-		addIndex("ObjectsBucket.files", SuperBucket.DISTRIBUTION_ID, 1);
-		addIndex("ObjectsBucket.files", SuperBucket.FIRST_RESOURCE, 1);
-		addIndex("ObjectsBucket.files", SuperBucket.LAST_RESOURCE, 1);
-
-		addIndex("SubjectsBucket.files", SuperBucket.DISTRIBUTION_ID, 1);
-		addIndex("SubjectsBucket.files", SuperBucket.FIRST_RESOURCE, 1);
-		addIndex("SubjectsBucket.files", SuperBucket.LAST_RESOURCE, 1);
 	}
 
 	public void addIndex(String collection, String field, int value) {

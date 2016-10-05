@@ -37,6 +37,13 @@ public class DataIDFileParser2 implements DescriptionFileParserInterface {
 	DataIDHelper dataidHelper = new DataIDHelper();
 
 	String repositoryAddress;
+	
+	/**
+	 * Constructor for Class DataIDFileParser2 
+	 */
+	public DataIDFileParser2(String dcatFile) {
+		this.repositoryAddress = dcatFile;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -68,14 +75,14 @@ public class DataIDFileParser2 implements DescriptionFileParserInterface {
 	@Override
 	public void parse() {
 
-		DCATHelper dcatHelper = new DCATHelper("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl",
+		DCATHelper dcatHelper = new DCATHelper(repositoryAddress,
 				"ttl");
 		for (String catalog : dcatHelper.getListOfCatalogs()) {
 
 			for (String dcatDataset : dcatHelper.getDatasetsFromCatalog(catalog)) {
-				repositoryAddress = dcatDataset;
+//				repositoryAddress = dcatDataset;
 
-				if (!dataidHelper.loadDataIDFile(repositoryAddress, "ttl"))
+				if (!dataidHelper.loadDataIDFile(dcatDataset, "ttl"))
 					logger.error("We couldn't load the DataID file.");
 
 				else {
@@ -83,7 +90,13 @@ public class DataIDFileParser2 implements DescriptionFileParserInterface {
 					String dataset = dataidHelper.getPrimaryTopic();
 
 					DatasetDB mainDataset = saveDataset(dataset, "");
-					iterateDatasets(dataset, mainDataset.getID());
+					iterateDatasets(dataset, mainDataset);
+					try {
+						mainDataset.update();
+					} catch (LODVaderMissingPropertiesException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
 				}
 			}
@@ -94,51 +107,50 @@ public class DataIDFileParser2 implements DescriptionFileParserInterface {
 
 	public DistributionDB saveDistribution(String distribution, DatasetDB dataset) {
 
-		DistributionDB distributionDB = new DistributionDB();
+		DistributionDB distributionDB = new DistributionDB(dataidHelper.getDownloadURL(distribution));
 		distributionDB.setUri(distribution);
 		distributionDB.setDefaultDatasets(new ArrayList<String>(Arrays.asList(dataset.getID())));
 		distributionDB.setTopDataset(dataset.getID());
-		distributionDB.setTopDataset(dataset.getID());
 		distributionDB.setTopDatasetTitle(dataset.getTitle());
-		
-		try {
-			distributionDB.setDownloadUrl(dataidHelper.getDownloadURL(distribution));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
 		distributionDB.setTitle(dataidHelper.getTitle(distribution));
 		distributionDB.setLabel(dataidHelper.getLabel(distribution));
 		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 
 		distributions.add(distributionDB);
-
+		distributionDB.update(true, DistributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
+		
 		return distributionDB;
-
 	}
 
-	public void iterateDatasets(String dataset, String parentDataset) {
+	public void iterateDatasets(String dataset, DatasetDB parentDataset) {
 		// get all subsets
 		for (String subset : dataidHelper.getSubsets(dataset)) {
 			iterateDatasets(subset, parentDataset);
 		}
 
-		DatasetDB datasetDB = saveDataset(dataset, parentDataset);
-
+		DatasetDB datasetDB = saveDataset(dataset, parentDataset.getID());
+		if(!dataset.equals(parentDataset.getID())){
+			parentDataset.addSubsetID(datasetDB.getID());
+		}
+			
 		List<String> distributions = dataidHelper.getDistributions(dataset);
 		for (String distribution : distributions) {
 			DistributionDB distributionDB = saveDistribution(distribution, datasetDB);
 			datasetDB.addDistributionID(distributionDB.getID());
+			parentDataset.addDistributionID(distributionDB.getID());
+
 		}
 
 	}
 
 	public DatasetDB saveDataset(String dataset, String parentDataset) {
-		DatasetDB mainDataset = new DatasetDB();
+		DatasetDB mainDataset = new DatasetDB(dataset);
 		mainDataset.setTitle(dataidHelper.getTitle(dataset));
 		mainDataset.setLabel(dataidHelper.getLabel(dataset));
 		mainDataset.setIsVocabulary(false);
-		mainDataset.setUri(dataset);
 		mainDataset.setDescriptionFileParser(getParserName());
+		
+		mainDataset.update(true, DatasetDB.URI, dataset);
 		
 		datasets.add(mainDataset);
 

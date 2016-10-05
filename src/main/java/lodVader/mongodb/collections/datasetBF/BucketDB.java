@@ -30,13 +30,13 @@ public class BucketDB {
 	
 	public static enum COLLECTIONS {BLOOM_FILTER_SUBJECTS, BLOOM_FILTER_OBJECTS, BLOOM_FILTER_TRIPLES};
 
-	public String SEQUENCE_NR = "sequenceNr";
+	static public String SEQUENCE_NR = "sequenceNr";
 
-	public String DISTRIBUTION_ID = "distributionID";
+	static public String DISTRIBUTION_ID = "distributionID";
 
-	public String SIZE = "size";
+	static public String SIZE = "size";
 
-	public String FPP = "fpp";
+	static public String FPP = "fpp";
 	
 	/**
 	 * Constructor for Class BucketDB 

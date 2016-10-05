@@ -1,11 +1,8 @@
 package lodVader.mongodb.collections;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import lodVader.mongodb.DBSuperClass;
@@ -54,6 +51,17 @@ public class DatasetDB extends DBSuperClass {
 		super(COLLECTION_NAME);
 		setKeys();
 	}
+	
+	/**
+	 * Constructor for Class DatasetDB 
+	 */
+	public DatasetDB(String uri) {
+		super(COLLECTION_NAME);
+		setKeys();
+		setUri(uri);
+		find(true, URI, uri);
+	}
+	
 
 	public void setKeys() {
 		addMandatoryField(URI);
@@ -95,15 +103,15 @@ public class DatasetDB extends DBSuperClass {
 		return getField(PROVENANCE).toString();
 	}
 
-	public void addSubsetID(int id) {
-		ArrayList<Integer> ids = (ArrayList<Integer>) getField(SUBSET_IDS);
+	public void addSubsetID(String id) {
+		ArrayList<String> ids = (ArrayList<String>) getField(SUBSET_IDS);
 		if (ids != null) {
 			if (!ids.contains(id)) {
 				ids.add(id);
 				addField(SUBSET_IDS, ids);
 			}
 		} else {
-			ids = new ArrayList<Integer>();
+			ids = new ArrayList<String>(); 
 			ids.add(id);
 			addField(SUBSET_IDS, ids);
 		}
@@ -123,8 +131,8 @@ public class DatasetDB extends DBSuperClass {
 		}
 	}
 
-	public ArrayList<Integer> getDistributionsIDs() {
-		return (ArrayList<Integer>) getField(DISTRIBUTIONS_IDS);
+	public ArrayList<String> getDistributionsIDs() {
+		return (ArrayList<String>) getField(DISTRIBUTIONS_IDS);
 	} 
 
 	@JsonIgnore
@@ -132,8 +140,8 @@ public class DatasetDB extends DBSuperClass {
 		return new DatasetQueries().getDistributions(this);
 	}
 
-	public ArrayList<Integer> getSubsetsIDs() {
-		return (ArrayList<Integer>) getField(SUBSET_IDS);
+	public ArrayList<String> getSubsetsIDs() {
+		return (ArrayList<String>) getField(SUBSET_IDS);
 	}
 
 	@JsonIgnore

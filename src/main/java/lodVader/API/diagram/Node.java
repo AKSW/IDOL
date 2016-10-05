@@ -10,7 +10,7 @@ public class Node {
 	Object dynLodObject;
 
 	@JsonIgnore
-	int id;
+    String id;
 
 	String text;
 
@@ -24,7 +24,7 @@ public class Node {
 
 	int radius;
 
-	int group;
+	String group;
 
 	boolean isVocab = false;
 
@@ -33,7 +33,7 @@ public class Node {
 		startBubble(source);
 	}
 
-	public Node(Object source, boolean visible, int group) {
+	public Node(Object source, boolean visible, String group) {
 		this.visible = visible;
 		this.group = group;
 		startBubble(source);
@@ -54,7 +54,7 @@ public class Node {
 			else
 				setText(tmp.getUri());
 			setUrl(tmp.getDownloadUrl());
-			setID(tmp.getLODVaderID());
+			setID(tmp.getID());
 
 			setRadius(31);
 
@@ -79,7 +79,7 @@ public class Node {
 				setText(tmp.getUri());
 
 			setUrl(tmp.getUri());
-			setID(tmp.getLODVaderID());
+			setID(tmp.getID());
 
 			setRadius(31);
 
@@ -113,12 +113,14 @@ public class Node {
 		return url;
 	}
 	
-	public int getName() {
+	public String getName() {
 		return getID();
 	}
 
 	public String getGroup_name() {
-		DatasetDB d = new DatasetDB(group);
+		DatasetDB d = new DatasetDB();
+		d.setID(group);
+		d.find();
 		if (!d.getTitle().equals(""))
 			return d.getTitle();
 		else if (!d.getLabel().equals(""))
@@ -135,7 +137,7 @@ public class Node {
 		return color;
 	}
 	
-	public int getGroup() {
+	public String getGroup() {
 		return group;
 	}
 
@@ -143,11 +145,11 @@ public class Node {
 		this.color = color;
 	}
 
-	public int getID() {
+	public String getID() {
 		return id;
 	}
 
-	public void setID(int id) {
+	public void setID(String id) {
 		this.id = id;
 	}
 

@@ -3,8 +3,6 @@ package lodVader.mongodb.collections;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import org.bson.types.ObjectId;
-
 import com.mongodb.DBObject;
 
 import lodVader.enumerators.DistributionStatus;
@@ -20,7 +18,17 @@ public class DistributionDB extends DBSuperClass {
 	public DistributionDB() {
 		super(COLLECTION_NAME);
 		setKeys();
-		setID(new ObjectId().toString());
+	}
+	
+	public DistributionDB(String downloadURL) {
+		super(COLLECTION_NAME);
+		try {
+			setDownloadUrl(downloadURL);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		setKeys();
+		find(true, DOWNLOAD_URL, downloadURL);
 	}
 
 	public DistributionDB(DBObject object) {
