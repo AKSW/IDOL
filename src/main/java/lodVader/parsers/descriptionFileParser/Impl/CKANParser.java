@@ -119,6 +119,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 		
 		DistributionDB distributionDB = new DistributionDB(resource.getUrl());
 		distributionDB.setTitle(resource.getName());
+		distributionDB.setUri(resource.getUrl());
 
 		try {
 			distributionDB.setDownloadUrl(resource.getUrl());
