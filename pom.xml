@@ -157,7 +157,7 @@
 	</dependencies>
 
 	<repositories>
-		<repository>
+		<!-- repository>
 			<id>maven.aksw.internal</id>
 			<name>University Leipzig, 
 			AKSW Maven2 Repository</name>
@@ -168,7 +168,7 @@
 			<name>University 
 			Leipzig, AKSW Maven2 Repository</name>
 			<url>http://maven.aksw.org/repository/snapshots</url>
-		</repository>
+		</repository -->
 		<repository>
 			<id>ldstack</id>
 			<url>http://mvn.linkeddata.org/content/groups/linkeddata.org/</url>
