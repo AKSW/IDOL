@@ -3,6 +3,7 @@
  */
 package lodVader.application;
 
+import lodVader.application.fileparser.CKANRepositories;
 import lodVader.loader.LODVaderConfigurator;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
 import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
