@@ -95,8 +95,6 @@ public class LOVParser implements DescriptionFileParserInterface {
 	 */
 	public DistributionDB saveDistribution(String url, String title, DatasetDB datasetDB) {
 
-		FormatsUtils formatsUtils = new FormatsUtils();
-
 		DistributionDB distributionDB = new DistributionDB(url);
 		distributionDB.setTitle(title);
 		distributionDB.setUri(url);

@@ -50,7 +50,7 @@ public class LodVaderStreamProcessor {
 	protected static final int BUFFER_SIZE = 1024 * 256;
 	public URL downloadUrl = null;
 
-	protected InputStream inputStream = null;
+	public InputStream inputStream = null;
 
 	final byte[] buffer = new byte[BUFFER_SIZE];
 	int n = 0;
@@ -215,7 +215,7 @@ public class LodVaderStreamProcessor {
 				setExtension(FilenameUtils.getExtension(getFileName()));
 			}
 
-			else {				
+			else {
 				rdfParser.parse(inputStream, downloadUrl.toString());
 			}
 
@@ -255,14 +255,14 @@ public class LodVaderStreamProcessor {
 		}
 	}
 
-	private void openConnection() throws IOException, LODVaderLODGeneralException {
+	public void openConnection() throws IOException, LODVaderLODGeneralException {
 		httpConn = (HttpURLConnection) downloadUrl.openConnection();
 
 		httpConn.setReadTimeout(5000);
-		httpConn.setConnectTimeout(5000); 
+		httpConn.setConnectTimeout(5000);
 		int responseCode = httpConn.getResponseCode();
 
-		logger.debug("Open HTTP connection for URL: " + downloadUrl.toString());
+		logger.info("Open HTTP connection for URL: " + downloadUrl.toString());
 
 		// check HTTP response code
 		if (responseCode != HttpURLConnection.HTTP_OK) {
@@ -270,7 +270,7 @@ public class LodVaderStreamProcessor {
 			throw new LODVaderLODGeneralException("No file to download. Server replied HTTP code: " + responseCode);
 		}
 
-		logger.debug("Successfuly connected with HTTP OK status.");
+		logger.info("Successfuly connected with HTTP OK status.");
 
 	}
 
@@ -298,7 +298,7 @@ public class LodVaderStreamProcessor {
 		}
 	}
 
-	protected void checkGZipInputStream() throws IOException {
+	public void checkGZipInputStream() throws IOException {
 
 		// check whether file is gz type
 		if (getExtension().equals("gz") || getExtension().equals("tgz")) {
@@ -344,7 +344,7 @@ public class LodVaderStreamProcessor {
 		if (extension == null) {
 			logger.info("Setting file extension.");
 			extension = FilenameUtils.getExtension(getFileName());
-			logger.info(extension);
+			logger.info("File extension is: " + extension);
 		}
 		return extension;
 	}
@@ -361,9 +361,10 @@ public class LodVaderStreamProcessor {
 		this.downloadUrl = url;
 	}
 
-//	public abstract void streamDistribution(DistributionDB distribution)
-//			throws IOException, LODVaderLODGeneralException, InterruptedException, RDFHandlerException,
-//			RDFParseException, LODVaderFormatNotAcceptedException;
+	// public abstract void streamDistribution(DistributionDB distribution)
+	// throws IOException, LODVaderLODGeneralException, InterruptedException,
+	// RDFHandlerException,
+	// RDFParseException, LODVaderFormatNotAcceptedException;
 
 	/**
 	 * Stream a file.
@@ -378,6 +379,7 @@ public class LodVaderStreamProcessor {
 			ReadableByteChannel rbc = Channels.newChannel(stream);
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+			fos.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

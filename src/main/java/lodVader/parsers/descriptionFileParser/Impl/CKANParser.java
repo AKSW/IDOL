@@ -109,8 +109,6 @@ public class CKANParser implements DescriptionFileParserInterface {
 	 * @return the DistributionDB instance
 	 */
 	public DistributionDB saveDistribution(CkanResource resource, DatasetDB datasetDB) {
-
-		FormatsUtils formatsUtils = new FormatsUtils();
 		
 		DistributionDB distributionDB = new DistributionDB();
 		distributionDB.setTitle(resource.getName());
@@ -122,6 +120,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 		}
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(resource.getFormat()));
 		distributionDB.setUri(resource.getUrl());
+		distributionDB.setOriginalFormat(resource.getFormat());
 		distributionDB.setTopDataset(datasetDB.getID()); 
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
 		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);

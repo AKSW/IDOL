@@ -133,6 +133,7 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 
 				try {
 					distribution.setFormat(FormatsUtils.getEquivalentFormat("nt"));
+					distribution.setOriginalFormat(FormatsUtils.getEquivalentFormat("nt"));
 				} catch (NoSuchElementException e) {
 					distribution.setFormat("");
 				}

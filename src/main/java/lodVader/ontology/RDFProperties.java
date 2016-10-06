@@ -56,7 +56,12 @@ public class RDFProperties {
 			"distribution");
 	public static final Property dcatDataset = property(NS.DCAT_URI,
 			"dataset");
+	public static final Property dcatAccessURL= property(NS.DCAT_URI,
+			"accessURL");
 	
+	public static final Resource dcatDatasetResource = resource(NS.DCAT_URI,
+			"Dataset");
+
 	public static final Property dcatDownloadURL = property(NS.DCAT_URI,
 			"downloadURL");
 	

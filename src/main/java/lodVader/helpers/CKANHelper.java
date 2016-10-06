@@ -73,9 +73,8 @@ public class CKANHelper {
 		datasetDB.setLabel(dataset.getTitle());
 		datasetDB.setUri(dataset.getDownloadUrl());
 		try {
-			datasetDB.update(true);
-		} catch (LODVaderMissingPropertiesException | LODVaderObjectAlreadyExistsException
-				| LODVaderNoPKFoundException e) {
+			datasetDB.update();
+		} catch (LODVaderMissingPropertiesException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -90,10 +89,10 @@ public class CKANHelper {
 			distributionDB.setTitle(resource.getName());
 			distributionDB.setDownloadUrl(resource.getUrl());
 			distributionDB.setFormat(resource.getFormat());
-			distributionDB.update(true);
-		} catch (LODVaderMissingPropertiesException | LODVaderObjectAlreadyExistsException | LODVaderNoPKFoundException
+			distributionDB.update();
+		} catch (LODVaderMissingPropertiesException
 				| MalformedURLException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block 
 			e.printStackTrace();
 		}
 
@@ -120,13 +119,12 @@ public class CKANHelper {
 
 			for (CkanResource r : d.getResources()) {
 				DistributionDB distributionDB = saveDistribution(r);
-				datasetDB.addDistributionID(distributionDB.getLODVaderID());
+				datasetDB.addDistributionID(distributionDB.getID());
 			}
 
 			try {
-				datasetDB.update(true);
-			} catch (LODVaderMissingPropertiesException | LODVaderObjectAlreadyExistsException
-					| LODVaderNoPKFoundException e) {
+				datasetDB.update();
+			} catch (LODVaderMissingPropertiesException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

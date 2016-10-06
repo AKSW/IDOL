@@ -1,0 +1,123 @@
+/**
+ * 
+ */
+package lodVader.helpers;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+
+import lodVader.ontology.RDFProperties;
+import lodVader.utils.FormatsUtils;
+
+/**
+ * @author Ciro Baron Neto
+ * 
+ *         Sep 27, 2016
+ */
+public class LodCloudHelper {
+
+	final static Logger logger = LoggerFactory.getLogger(LodCloudHelper.class);
+
+	private Model model = ModelFactory.createDefaultModel();
+
+	/**
+	 * Constructor for Class LodCloudHelper
+	 */
+	public LodCloudHelper(Model model) {
+		this.model = model;
+	}
+
+	/**
+	 * Get a list of datasets
+	 * 
+	 * @return the array of datasets URIs
+	 */
+	public List<String> getDatasets() {
+
+		List<String> datasets = new ArrayList<String>();
+
+		StmtIterator stmt = model.listStatements(null, RDFProperties.type, RDFProperties.dcatDatasetResource);
+
+		while (stmt.hasNext()) {
+			datasets.add(stmt.next().getSubject().toString());
+		}
+		return datasets;
+	}
+
+	/**
+	 * Get a list of distributions of a dataset
+	 * 
+	 * @return the array of subsets URIs
+	 */
+	public List<RDFNode> getDistributions(String dataset) {
+
+		List<RDFNode> distributions = new ArrayList<RDFNode>();
+
+		StmtIterator stmtDistributions = model.listStatements(model.createResource(dataset),
+				RDFProperties.dcatDistribution, (RDFNode) null);
+
+		while (stmtDistributions.hasNext()) {
+			distributions.add(stmtDistributions.next().getObject());
+		}
+		return distributions;
+	}
+
+	/**
+	 * Get format of a distribution
+	 * 
+	 * @param URI
+	 * @return
+	 */
+	public String getFormat(RDFNode distribution) {
+		StmtIterator stmtFormat = model.listStatements((distribution).asResource(), RDFProperties.format,
+				(RDFNode) null);
+		if (stmtFormat.hasNext()) {
+			return model
+					.listStatements(stmtFormat.next().getObject().asResource(), RDFProperties.rdfValue, (RDFNode) null)
+					.next().getObject().toString();
+		}
+		return "";
+	}
+	
+	/**
+	 * Get accessURL from a distribution
+	 * 
+	 * @param URI
+	 * @return
+	 */
+	public String getAccessURL(RDFNode distribution) {
+		StmtIterator stmtFormat = model.listStatements((distribution).asResource(), RDFProperties.dcatAccessURL,
+				(RDFNode) null);
+		if (stmtFormat.hasNext()) {
+			return stmtFormat.next().getObject().toString();
+		}
+		return "";
+	}
+
+	/**
+	 * Get title from a dataset, subset or distribution
+	 * 
+	 * @param URI
+	 * @return
+	 */
+	public String getTitle(String dataset) {
+
+		StmtIterator stmtTitle = model.listStatements(model.createResource(dataset), RDFProperties.title, (RDFNode) null);
+
+		if (stmtTitle.hasNext())
+			return stmtTitle.next().getObject().toString();
+		return "";
+
+	}
+}

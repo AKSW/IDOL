@@ -29,7 +29,7 @@ public class DataIDHelper {
 
 	final static Logger logger = LoggerFactory.getLogger(DataIDHelper.class);
 
-	private Model dataIDModel = ModelFactory.createDefaultModel();
+	private Model model = ModelFactory.createDefaultModel();
 
 	/**
 	 * Load a DCAT model from a URL
@@ -50,7 +50,7 @@ public class DataIDHelper {
 		try {
 			URLConnection = (HttpURLConnection) new URL(URL).openConnection();
 			URLConnection.setRequestProperty("Accept", "application/rdf+xml");
-			dataIDModel.read(URLConnection.getInputStream(), null, format);
+			model.read(URLConnection.getInputStream(), null, format);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,12 +68,26 @@ public class DataIDHelper {
 	public String getPrimaryTopic() {
 
 		// find primaryTopic
-		StmtIterator datasetsStmt = dataIDModel.listStatements(null, RDFProperties.primaryTopic, (RDFNode) null);
+		StmtIterator datasetsStmt = model.listStatements(null, RDFProperties.primaryTopic, (RDFNode) null);
 
 		if (datasetsStmt.hasNext())
 			return datasetsStmt.next().getObject().toString();
 		return null;
-
+	}
+	
+	/**
+	 * Get format from a distribution
+	 * 
+	 * @param URI
+	 * @return
+	 */
+	public String getFormat(String distribution) {
+		StmtIterator stmtFormat = model.listStatements(model.createResource(distribution), RDFProperties.format,
+				(RDFNode) null);
+		if (stmtFormat.hasNext()) {
+			return stmtFormat.next().getObject().toString();
+		}
+		return "";
 	}
 
 	/**
@@ -85,7 +99,7 @@ public class DataIDHelper {
 
 		List<String> subsets = new ArrayList<String>();
 
-		StmtIterator stmtSubset = dataIDModel.listStatements(dataIDModel.createResource(dataset), RDFProperties.subset,
+		StmtIterator stmtSubset = model.listStatements(model.createResource(dataset), RDFProperties.subset,
 				(RDFNode) null);
 
 		while (stmtSubset.hasNext()) {
@@ -103,7 +117,7 @@ public class DataIDHelper {
 
 		List<String> distributions = new ArrayList<String>();
 
-		StmtIterator stmtDistributions = dataIDModel.listStatements(dataIDModel.createResource(dataset),
+		StmtIterator stmtDistributions = model.listStatements(model.createResource(dataset),
 				RDFProperties.dcatDistribution, (RDFNode) null);
 
 		while (stmtDistributions.hasNext()) {
@@ -111,7 +125,7 @@ public class DataIDHelper {
 			RDFNode object = stmtDistributions.next().getObject(); 
 
 			// check if it's not a sparql endpoint
-			if (dataIDModel.listStatements(object.asResource(), RDFProperties.type,
+			if (model.listStatements(object.asResource(), RDFProperties.type,
 					RDFProperties.dataIDSingleFile).hasNext()) {
 				distributions.add(object.toString());
 			}
@@ -128,7 +142,7 @@ public class DataIDHelper {
 	 */
 	public String getTitle(String URI) {
 
-		StmtIterator stmtTitle = dataIDModel.listStatements(dataIDModel.createResource(URI), RDFProperties.title,
+		StmtIterator stmtTitle = model.listStatements(model.createResource(URI), RDFProperties.title,
 				(RDFNode) null);
 
 		if (stmtTitle.hasNext())
@@ -145,7 +159,7 @@ public class DataIDHelper {
 	 */
 	public String getLabel(String URI) {
 
-		StmtIterator stmtLabel = dataIDModel.listStatements(dataIDModel.createResource(URI), RDFProperties.label,
+		StmtIterator stmtLabel = model.listStatements(model.createResource(URI), RDFProperties.label,
 				(RDFNode) null);
 
 		if (stmtLabel.hasNext())
@@ -162,7 +176,7 @@ public class DataIDHelper {
 	 */
 	public String getDownloadURL(String distribution) {
 
-		StmtIterator stmtdownloadURL = dataIDModel.listStatements(dataIDModel.createResource(distribution),
+		StmtIterator stmtdownloadURL = model.listStatements(model.createResource(distribution),
 				RDFProperties.dcatDownloadURL, (RDFNode) null);
 
 		if (stmtdownloadURL.hasNext())

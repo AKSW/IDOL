@@ -3,32 +3,31 @@
  */
 package lodVader.parsers.descriptionFileParser.Impl;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.joda.time.format.FormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
-import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
 import lodVader.helpers.DCATHelper;
 import lodVader.helpers.DataIDHelper;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.parsers.interfaces.DescriptionFileParserInterface;
+import lodVader.utils.FormatsUtils;
 
 /**
  * @author Ciro Baron Neto
  * 
  *         Sep 27, 2016
  */
-public class DataIDFileParser2 implements DescriptionFileParserInterface {
+public class DataIDFileParser implements DescriptionFileParserInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(DataIDFileParser2.class);
+	final static Logger logger = LoggerFactory.getLogger(DataIDFileParser.class);
 
 	ArrayList<DatasetDB> datasets = new ArrayList<>();
 
@@ -41,7 +40,7 @@ public class DataIDFileParser2 implements DescriptionFileParserInterface {
 	/**
 	 * Constructor for Class DataIDFileParser2 
 	 */
-	public DataIDFileParser2(String dcatFile) {
+	public DataIDFileParser(String dcatFile) {
 		this.repositoryAddress = dcatFile;
 	}
 
@@ -115,6 +114,8 @@ public class DataIDFileParser2 implements DescriptionFileParserInterface {
 		distributionDB.setTitle(dataidHelper.getTitle(distribution));
 		distributionDB.setLabel(dataidHelper.getLabel(distribution));
 		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
+		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(dataidHelper.getFormat(distribution)));
+		distributionDB.setOriginalFormat(dataidHelper.getFormat(distribution));
 
 		distributions.add(distributionDB);
 		distributionDB.update(true, DistributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
