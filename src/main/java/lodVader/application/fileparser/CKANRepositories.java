@@ -28,7 +28,7 @@ public class CKANRepositories {
 	final int numberOfConcurrentRequests = 5;
 
 	// number of repositories to be analyzed concurrently
-	final int numberOfConcurrentRepositories = 3;
+	final int numberOfConcurrentRepositories = 6;
 //	static ArrayList<String> ckanRepositories = new ArrayList<>(Arrays.asList("http://africaopendata.org/"));
 //	static ArrayList<String> ckanRepositories = new ArrayList<>(Arrays.asList("http://drdsi.jrc.ec.europa.eu"));
 	
