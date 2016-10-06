@@ -132,6 +132,13 @@
 			<artifactId>sesame-rio-jsonld</artifactId>
 			<version>${openrdf-rio.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160810</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.google.code.externalsortinginjava</groupId>
@@ -139,6 +146,12 @@
 			<version>0.1.10-SNAPSHOT</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/src/main/resources/externalsortinginjava-0.1.10-SNAPSHOT-jar-with-dependencies.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.trentorise.opendata</groupId>
+			<artifactId>jackan</artifactId>
+			<version>0.3.3</version>
 		</dependency>
 
 	</dependencies>
@@ -182,21 +195,6 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mainClass>main.Main</mainClass>
 				</configuration>
 			</plugin>
 

@@ -3,7 +3,7 @@ package lodVader.spring.REST;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import lodvader.application.LODVader;
+import lodVader.application.LODVader;
 
 @SpringBootApplication
 public class Application {
