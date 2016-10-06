@@ -17,6 +17,7 @@ import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
 import lodVader.enumerators.DistributionStatus;
+import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
@@ -87,14 +88,20 @@ public class CKANParser implements DescriptionFileParserInterface {
 	 */
 	public DatasetDB saveDataset(CkanDataset dataset, String provenance) {
 
-		DatasetDB datasetDB = new DatasetDB();
+		DatasetDB datasetDB = new DatasetDB(dataset.getName());
 		datasetDB.setIsVocabulary(false);
 		datasetDB.setTitle(dataset.getTitle());
 		datasetDB.setLabel(dataset.getTitle());
 		datasetDB.setDescriptionFileParser(getParserName());
 		datasetDB.addProvenance(provenance);
-		datasetDB.setUri(dataset.getName());
+		
 		logger.info("Dataset found: " + dataset.getName());
+		try {
+			datasetDB.update();
+		} catch (LODVaderMissingPropertiesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		datasets.put(datasetDB.getUri(), datasetDB);
 
@@ -110,7 +117,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 	 */
 	public DistributionDB saveDistribution(CkanResource resource, DatasetDB datasetDB) {
 		
-		DistributionDB distributionDB = new DistributionDB();
+		DistributionDB distributionDB = new DistributionDB(resource.getUrl());
 		distributionDB.setTitle(resource.getName());
 
 		try {
@@ -119,13 +126,17 @@ public class CKANParser implements DescriptionFileParserInterface {
 			e.printStackTrace();
 		}
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(resource.getFormat()));
-		distributionDB.setUri(resource.getUrl());
 		distributionDB.setOriginalFormat(resource.getFormat());
 		distributionDB.setTopDataset(datasetDB.getID()); 
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
 		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 		distributions.put(distributionDB.getUri(), distributionDB);
-
+		try {
+			distributionDB.update();
+		} catch (LODVaderMissingPropertiesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return distributionDB;
 
 	}

@@ -105,7 +105,6 @@ public class CKANHelper {
 
 		@Override
 		public void run() {
-			System.out.println(dataset);
 			CkanDataset d = client.getDataset(dataset);
 			DatasetDB datasetDB = saveDataset(d);
 
