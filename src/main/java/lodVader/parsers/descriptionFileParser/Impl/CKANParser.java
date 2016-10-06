@@ -182,7 +182,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 					DistributionDB distributionDB = saveDistribution(r, datasetDB);
 					datasetDB.addDistributionID(distributionDB.getID());
 					try {
-						distributionDB.update();
+						datasetDB.update();
 					} catch (LODVaderMissingPropertiesException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
