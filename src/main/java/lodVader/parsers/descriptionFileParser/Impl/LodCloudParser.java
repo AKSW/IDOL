@@ -29,11 +29,11 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.helpers.LodCloudHelper;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.parsers.interfaces.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import lodVader.streaming.LodVaderStreamProcessor;
 import lodVader.utils.FormatsUtils;
 
@@ -212,10 +212,6 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static void main(String[] args) {
-		new LodCloudParser().parse();
 	}
 
 	/*

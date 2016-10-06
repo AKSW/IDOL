@@ -25,7 +25,7 @@ import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.parsers.interfaces.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.utils.FormatsUtils;
 
 /**

@@ -28,10 +28,10 @@ import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
 import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.parsers.interfaces.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.services.mongodb.dataset.DatasetServices;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.NSUtils;
-import services.mongodb.dataset.DatasetServices;
 
 public class CLODFileParser implements DescriptionFileParserInterface {
 

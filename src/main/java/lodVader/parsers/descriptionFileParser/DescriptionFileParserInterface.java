@@ -1,4 +1,4 @@
-package lodVader.parsers.interfaces;
+package lodVader.parsers.descriptionFileParser;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.helpers;
+package lodVader.parsers.descriptionFileParser.helpers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import lodVader.ontology.RDFProperties;
+import lodVader.ontology.RDFResourcesTags;
 import lodVader.utils.FormatsUtils;
 
 /**
@@ -68,7 +68,7 @@ public class DataIDHelper {
 	public String getPrimaryTopic() {
 
 		// find primaryTopic
-		StmtIterator datasetsStmt = model.listStatements(null, RDFProperties.primaryTopic, (RDFNode) null);
+		StmtIterator datasetsStmt = model.listStatements(null, RDFResourcesTags.primaryTopic, (RDFNode) null);
 
 		if (datasetsStmt.hasNext())
 			return datasetsStmt.next().getObject().toString();
@@ -82,7 +82,7 @@ public class DataIDHelper {
 	 * @return
 	 */
 	public String getFormat(String distribution) {
-		StmtIterator stmtFormat = model.listStatements(model.createResource(distribution), RDFProperties.format,
+		StmtIterator stmtFormat = model.listStatements(model.createResource(distribution), RDFResourcesTags.format,
 				(RDFNode) null);
 		if (stmtFormat.hasNext()) {
 			return stmtFormat.next().getObject().toString();
@@ -99,7 +99,7 @@ public class DataIDHelper {
 
 		List<String> subsets = new ArrayList<String>();
 
-		StmtIterator stmtSubset = model.listStatements(model.createResource(dataset), RDFProperties.subset,
+		StmtIterator stmtSubset = model.listStatements(model.createResource(dataset), RDFResourcesTags.subset,
 				(RDFNode) null);
 
 		while (stmtSubset.hasNext()) {
@@ -118,15 +118,15 @@ public class DataIDHelper {
 		List<String> distributions = new ArrayList<String>();
 
 		StmtIterator stmtDistributions = model.listStatements(model.createResource(dataset),
-				RDFProperties.dcatDistribution, (RDFNode) null);
+				RDFResourcesTags.dcatDistribution, (RDFNode) null);
 
 		while (stmtDistributions.hasNext()) {
 			
 			RDFNode object = stmtDistributions.next().getObject(); 
 
 			// check if it's not a sparql endpoint
-			if (model.listStatements(object.asResource(), RDFProperties.type,
-					RDFProperties.dataIDSingleFile).hasNext()) {
+			if (model.listStatements(object.asResource(), RDFResourcesTags.type,
+					RDFResourcesTags.dataIDSingleFile).hasNext()) {
 				distributions.add(object.toString());
 			}
 
@@ -142,7 +142,7 @@ public class DataIDHelper {
 	 */
 	public String getTitle(String URI) {
 
-		StmtIterator stmtTitle = model.listStatements(model.createResource(URI), RDFProperties.title,
+		StmtIterator stmtTitle = model.listStatements(model.createResource(URI), RDFResourcesTags.title,
 				(RDFNode) null);
 
 		if (stmtTitle.hasNext())
@@ -159,7 +159,7 @@ public class DataIDHelper {
 	 */
 	public String getLabel(String URI) {
 
-		StmtIterator stmtLabel = model.listStatements(model.createResource(URI), RDFProperties.label,
+		StmtIterator stmtLabel = model.listStatements(model.createResource(URI), RDFResourcesTags.label,
 				(RDFNode) null);
 
 		if (stmtLabel.hasNext())
@@ -177,7 +177,7 @@ public class DataIDHelper {
 	public String getDownloadURL(String distribution) {
 
 		StmtIterator stmtdownloadURL = model.listStatements(model.createResource(distribution),
-				RDFProperties.dcatDownloadURL, (RDFNode) null);
+				RDFResourcesTags.dcatDownloadURL, (RDFNode) null);
 
 		if (stmtdownloadURL.hasNext())
 			return stmtdownloadURL.next().getObject().toString();

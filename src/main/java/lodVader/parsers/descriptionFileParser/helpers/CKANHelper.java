@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.helpers;
+package lodVader.parsers.descriptionFileParser.helpers;
 
 import java.net.MalformedURLException;
 import java.security.KeyManagementException;
@@ -32,14 +32,6 @@ public class CKANHelper {
 	List<DistributionDB> distributions = new ArrayList<>();
 
 	List<DatasetDB> datasets = new ArrayList<>();
-
-	public static void main(String[] args) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-
-		CKANHelper helper = new CKANHelper("http://datahub.io");
-		List<String> datasets = helper.getDatasetList();
-		helper.saveInstances(datasets);
-
-	}
 
 	/**
 	 * Constructor for Class CKANHelper

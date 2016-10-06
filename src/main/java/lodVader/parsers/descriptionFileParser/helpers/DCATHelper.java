@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.helpers;
+package lodVader.parsers.descriptionFileParser.helpers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import arq.uparse;
-import lodVader.ontology.RDFProperties;
+import lodVader.ontology.RDFResourcesTags;
 import lodVader.utils.FormatsUtils;
 
 /**
@@ -83,7 +83,7 @@ public class DCATHelper {
 		List<String> catalogs = new ArrayList<String>();
 
 		// get uri for the catalog
-		StmtIterator stmtCatalogs = dcatModel.listStatements(null, RDFProperties.type, RDFProperties.dcatCatalog);
+		StmtIterator stmtCatalogs = dcatModel.listStatements(null, RDFResourcesTags.type, RDFResourcesTags.dcatCatalog);
 
 		while (stmtCatalogs.hasNext()) {
 			catalogs.add(stmtCatalogs.next().getSubject().toString());
@@ -102,7 +102,7 @@ public class DCATHelper {
 		List<String> datasets = new ArrayList<String>();
 
 		StmtIterator stmtDatasets = dcatModel.listStatements(dcatModel.createResource(catalog),
-				RDFProperties.dcatDataset, (RDFNode) null);
+				RDFResourcesTags.dcatDataset, (RDFNode) null);
 
 		while (stmtDatasets.hasNext()) {
 			datasets.add(stmtDatasets.next().getObject().toString());

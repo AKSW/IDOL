@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.helpers;
+package lodVader.parsers.descriptionFileParser.helpers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import lodVader.ontology.RDFProperties;
+import lodVader.ontology.RDFResourcesTags;
 import lodVader.utils.FormatsUtils;
 
 /**
@@ -47,7 +47,7 @@ public class LodCloudHelper {
 
 		List<String> datasets = new ArrayList<String>();
 
-		StmtIterator stmt = model.listStatements(null, RDFProperties.type, RDFProperties.dcatDatasetResource);
+		StmtIterator stmt = model.listStatements(null, RDFResourcesTags.type, RDFResourcesTags.dcatDatasetResource);
 
 		while (stmt.hasNext()) {
 			datasets.add(stmt.next().getSubject().toString());
@@ -65,7 +65,7 @@ public class LodCloudHelper {
 		List<RDFNode> distributions = new ArrayList<RDFNode>();
 
 		StmtIterator stmtDistributions = model.listStatements(model.createResource(dataset),
-				RDFProperties.dcatDistribution, (RDFNode) null);
+				RDFResourcesTags.dcatDistribution, (RDFNode) null);
 
 		while (stmtDistributions.hasNext()) {
 			distributions.add(stmtDistributions.next().getObject());
@@ -80,11 +80,11 @@ public class LodCloudHelper {
 	 * @return
 	 */
 	public String getFormat(RDFNode distribution) {
-		StmtIterator stmtFormat = model.listStatements((distribution).asResource(), RDFProperties.format,
+		StmtIterator stmtFormat = model.listStatements((distribution).asResource(), RDFResourcesTags.format,
 				(RDFNode) null);
 		if (stmtFormat.hasNext()) {
 			return model
-					.listStatements(stmtFormat.next().getObject().asResource(), RDFProperties.rdfValue, (RDFNode) null)
+					.listStatements(stmtFormat.next().getObject().asResource(), RDFResourcesTags.rdfValue, (RDFNode) null)
 					.next().getObject().toString();
 		}
 		return "";
@@ -97,7 +97,7 @@ public class LodCloudHelper {
 	 * @return
 	 */
 	public String getAccessURL(RDFNode distribution) {
-		StmtIterator stmtFormat = model.listStatements((distribution).asResource(), RDFProperties.dcatAccessURL,
+		StmtIterator stmtFormat = model.listStatements((distribution).asResource(), RDFResourcesTags.dcatAccessURL,
 				(RDFNode) null);
 		if (stmtFormat.hasNext()) {
 			return stmtFormat.next().getObject().toString();
@@ -113,7 +113,7 @@ public class LodCloudHelper {
 	 */
 	public String getTitle(String dataset) {
 
-		StmtIterator stmtTitle = model.listStatements(model.createResource(dataset), RDFProperties.title, (RDFNode) null);
+		StmtIterator stmtTitle = model.listStatements(model.createResource(dataset), RDFResourcesTags.title, (RDFNode) null);
 
 		if (stmtTitle.hasNext())
 			return stmtTitle.next().getObject().toString();

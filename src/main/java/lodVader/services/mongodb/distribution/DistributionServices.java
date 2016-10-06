@@ -1,7 +1,7 @@
 /**
  * 
  */
-package services.mongodb.distribution;
+package lodVader.services.mongodb.distribution;
 
 import java.util.List;
 

@@ -13,9 +13,8 @@ import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
 import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
 import lodVader.loader.LODVaderConfigurator;
 import lodVader.mongodb.collections.DescriptionFileParserDB;
-import lodVader.parsers.interfaces.DescriptionFileParserInterface;
-import services.mongodb.dataset.DatasetServices;
-import services.mongodb.distribution.DistributionServices;
+import lodVader.services.mongodb.dataset.DatasetServices;
+import lodVader.services.mongodb.distribution.DistributionServices;
 
 /**
  * @author Ciro Baron Neto

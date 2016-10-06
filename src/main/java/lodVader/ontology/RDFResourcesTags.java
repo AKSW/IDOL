@@ -7,7 +7,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-public class RDFProperties {
+public class RDFResourcesTags {
 	
 	public static final ArrayList<Property> downloadURL = new ArrayList<Property>() {
 		{

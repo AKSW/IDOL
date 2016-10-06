@@ -4,7 +4,7 @@
 package lodVader.mongodb.collections;
 
 import lodVader.mongodb.DBSuperClass;
-import lodVader.parsers.interfaces.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 
 /**
  * @author Ciro Baron Neto

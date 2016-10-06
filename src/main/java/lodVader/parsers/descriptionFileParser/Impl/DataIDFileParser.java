@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.helpers.DCATHelper;
-import lodVader.helpers.DataIDHelper;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.parsers.interfaces.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.helpers.DCATHelper;
+import lodVader.parsers.descriptionFileParser.helpers.DataIDHelper;
 import lodVader.utils.FormatsUtils;
 
 /**

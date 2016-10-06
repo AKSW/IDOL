@@ -19,11 +19,6 @@ import lodVader.parsers.descriptionFileParser.Impl.LodCloudParser;
  * Oct 1, 2016
  */
 public class LODVader {
-
-	
-	public static void main(String[] args) {
-		new LODVader().Manager();
-	}
 	
 	/**
 	 * Main method
