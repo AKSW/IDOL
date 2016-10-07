@@ -46,7 +46,7 @@ public class PipelineProcessor extends RDFHandlerBase {
 		triplesProcessed ++;
 		
 		// print number of processed triples
-		if(triplesProcessed%100000 == 0){
+		if(triplesProcessed%1000000 == 0){
 			logger.info(triplesProcessed + " triples processed.");
 		}
 		
