@@ -85,13 +85,15 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		// collects owl:class, subclass and rdftype.
 		if (st.getObject().toString().startsWith("http")) {
 			if (st.getObject().toString().equals("http://www.w3.org/2002/07/owl#Class")) {
-				addToMap(owlClasses, st.getObject().toString());
+				addToMap(owlClasses, st.getSubject().toString());
 			}
+
 		} else
 			numberOfLiterals++;
-
+		
 		if (st.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
 			addToMap(rdfSubClassOf, st.getObject().toString());
+
 		} else if (st.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
 			addToMap(rdfTypeObjects, st.getObject().toString());
 		}
