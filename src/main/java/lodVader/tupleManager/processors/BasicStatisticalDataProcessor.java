@@ -10,6 +10,7 @@ import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
@@ -37,7 +38,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 
 	// total number of triples
 	Integer numberOfTriples = 0;
-	
+
 	// number of literals
 	Integer numberOfLiterals = 0;
 
@@ -79,12 +80,14 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		// collects all predicates
 		addToMap(allPredicates, st.getPredicate().toString());
 
+		numberOfTriples++;
+
 		// collects owl:class, subclass and rdftype.
 		if (st.getObject().toString().startsWith("http")) {
 			if (st.getObject().toString().equals("http://www.w3.org/2002/07/owl#Class")) {
 				addToMap(owlClasses, st.getObject().toString());
 			}
-		}else
+		} else
 			numberOfLiterals++;
 
 		if (st.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
@@ -107,8 +110,8 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_TYPE)
 				.insertSet(rdfTypeObjects.keySet());
 
-		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE)
-				.insertSet(rdfTypeObjects, resources, distribution.getID(), distribution.getTopDatasetID());
+		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE).insertSet(rdfTypeObjects,
+				resources, distribution.getID(), distribution.getTopDatasetID());
 
 		logger.info("Saving rdfs:subclass objects...");
 		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_SUBCLASS)
@@ -121,11 +124,18 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_OWL_CLASS)
 				.insertSet(owlClasses.keySet());
 
-		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS)
-				.insertSet(owlClasses, resources, distribution.getID(), distribution.getTopDatasetID());
-		
-		
+		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS).insertSet(owlClasses,
+				resources, distribution.getID(), distribution.getTopDatasetID());
 
+		distribution.setNumberOfLiterals(numberOfLiterals);
+		distribution.setNumberOfTriples(numberOfTriples);
+
+		try {
+			distribution.update();
+		} catch (LODVaderMissingPropertiesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

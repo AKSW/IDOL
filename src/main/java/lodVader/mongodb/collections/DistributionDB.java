@@ -19,7 +19,7 @@ public class DistributionDB extends DBSuperClass {
 		super(COLLECTION_NAME);
 		setKeys();
 	}
-	
+
 	public DistributionDB(String downloadURL) {
 		super(COLLECTION_NAME);
 		try {
@@ -71,12 +71,16 @@ public class DistributionDB extends DBSuperClass {
 	public static final String DEFAULT_DATASETS = "defaultDatasets";
 
 	public static final String LAST_TIME_STREAMED = "lastTimeStreamed";
-	
+
 	public static final String IS_VOCABULARY = "isVocabulary";
 
 	public static final String TITLE = "title";
 
 	public static final String LABEL = "label";
+
+	public static final String NUMBER_OF_TRIPLES = "numberOfTriples";
+
+	public static final String NUMBER_OF_LITERALS = "numberOfLiterals";
 
 	public String getDownloadUrl() {
 		return getField(DOWNLOAD_URL).toString();
@@ -84,7 +88,7 @@ public class DistributionDB extends DBSuperClass {
 
 	public void setDownloadUrl(String downloadUrl) throws MalformedURLException {
 		URLUtils utils = new URLUtils();
-//		utils.validateURL(downloadUrl);
+		// utils.validateURL(downloadUrl);
 		addField(DOWNLOAD_URL, downloadUrl);
 	}
 
@@ -99,7 +103,7 @@ public class DistributionDB extends DBSuperClass {
 	public void setHttpByteSize(String httpByteSize) {
 		addField(HTTP_BYTE_SIZE, httpByteSize);
 	}
-	
+
 	public String getUri() {
 		return getField(URI).toString();
 	}
@@ -108,7 +112,22 @@ public class DistributionDB extends DBSuperClass {
 		addField(URI, uri);
 	}
 
-	
+	public void setNumberOfLiterals(int numberOfLiterals) {
+		addField(NUMBER_OF_LITERALS, numberOfLiterals);
+	}
+
+	public void setNumberOfTriples(int numberOfTriples) {
+		addField(NUMBER_OF_TRIPLES, numberOfTriples);
+	}
+
+	public int getNumberOfTriples() {
+		return ((Number) getField(NUMBER_OF_TRIPLES)).intValue();
+	}
+
+	public int getNumberOfLiterals() {
+		return ((Number) getField(NUMBER_OF_LITERALS)).intValue();
+	}
+
 	public String getTopDatasetID() {
 		return getField(TOP_DATASET).toString();
 	}
@@ -148,7 +167,7 @@ public class DistributionDB extends DBSuperClass {
 	public void setFormat(String format) {
 		addField(FORMAT, format);
 	}
-	
+
 	public String getOriginalFormat() {
 		return getField(ORIGINAL_FORMAT).toString();
 	}
@@ -216,7 +235,7 @@ public class DistributionDB extends DBSuperClass {
 	public void setDefaultDatasets(ArrayList<String> defaultDatasets) {
 		addField(DEFAULT_DATASETS, defaultDatasets);
 	}
-	
+
 	public void setIsVocabulary(boolean isVocabulary) {
 		addField(IS_VOCABULARY, isVocabulary);
 	}
@@ -244,8 +263,6 @@ public class DistributionDB extends DBSuperClass {
 			return "";
 		}
 	}
-
-
 
 	public void addDefaultDatasets(String datasetID) {
 		ArrayList<String> ids = (ArrayList<String>) getField(DEFAULT_DATASETS);

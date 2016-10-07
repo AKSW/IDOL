@@ -12,6 +12,8 @@ public class FormatsUtils {
 
 	public static final String DEFAULT_N3 = "n3";
 
+	public static final String DEFAULT_TQL = "tql";
+
 	public static final String DEFAULT_RDFXML = "rdf";
 
 	public static final String DEFAULT_JSONLD = "jsonld";
@@ -33,6 +35,8 @@ public class FormatsUtils {
 			return DEFAULT_N3;
 		else if (JSONLD_FORMATS.contains(str))
 			return DEFAULT_JSONLD;
+		else if (TQL_FORMATS.contains(str))
+			return DEFAULT_TQL;
 		else {
 			return "";
 		}
@@ -62,6 +66,12 @@ public class FormatsUtils {
 			add("api/sparql");
 			add("sparql");
 			add("SPARQL");
+		}
+	};
+
+	private static final ArrayList<String> TQL_FORMATS = new ArrayList<String>() {
+		{
+			add("tql");
 		}
 	};
 

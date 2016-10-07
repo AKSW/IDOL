@@ -9,7 +9,7 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 import lodVader.tupleManager.processors.BasicProcessorInterface;
 
-public class BasicTupleManager extends RDFHandlerBase {
+public class PipelineProcessor extends RDFHandlerBase {
 
 	// set of statistical data processors
 	List<BasicProcessorInterface> processors = new ArrayList<BasicProcessorInterface>();

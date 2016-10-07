@@ -132,11 +132,23 @@
 			<artifactId>sesame-rio-jsonld</artifactId>
 			<version>${openrdf-rio.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-rio-nquads</artifactId>
+			<version>${openrdf-rio.version}</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.fbk.rdfpro</groupId>
+			<artifactId>rdfpro-tql</artifactId>
+			<version>0.6</version>
 		</dependency>
 
 
@@ -157,18 +169,11 @@
 	</dependencies>
 
 	<repositories>
-		<!-- repository>
-			<id>maven.aksw.internal</id>
-			<name>University Leipzig, 
-			AKSW Maven2 Repository</name>
-			<url>http://maven.aksw.org/repository/internal</url>
-		</repository>
-		<repository>
-			<id>maven.aksw.snapshots</id>
-			<name>University 
-			Leipzig, AKSW Maven2 Repository</name>
-			<url>http://maven.aksw.org/repository/snapshots</url>
-		</repository -->
+		<!-- repository> <id>maven.aksw.internal</id> <name>University Leipzig, 
+			AKSW Maven2 Repository</name> <url>http://maven.aksw.org/repository/internal</url> 
+			</repository> <repository> <id>maven.aksw.snapshots</id> <name>University 
+			Leipzig, AKSW Maven2 Repository</name> <url>http://maven.aksw.org/repository/snapshots</url> 
+			</repository -->
 		<repository>
 			<id>ldstack</id>
 			<url>http://mvn.linkeddata.org/content/groups/linkeddata.org/</url>

@@ -24,22 +24,25 @@ import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.helpers.BasicParserSettings;
 import org.openrdf.rio.jsonld.JSONLDParser;
 import org.openrdf.rio.n3.N3ParserFactory;
+import org.openrdf.rio.nquads.NQuadsParserFactory;
 import org.openrdf.rio.ntriples.NTriplesParser;
 import org.openrdf.rio.rdfxml.RDFXMLParser;
 import org.openrdf.rio.turtle.TurtleParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.fbk.rdfpro.tql.TQL;
+import eu.fbk.rdfpro.tql.TQLParserFactory;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.tupleManager.BasicTupleManager;
+import lodVader.tupleManager.PipelineProcessor;
 import lodVader.utils.FileUtils;
 import lodVader.utils.FormatsUtils;
 
-public class LodVaderStreamProcessor {
+public class LodVaderCoreStream {
 
-	final static Logger logger = LoggerFactory.getLogger(LodVaderStreamProcessor.class);
+	final static Logger logger = LoggerFactory.getLogger(LodVaderCoreStream.class);
 
 	// HTTP header fields
 	public String httpDisposition = null;
@@ -69,12 +72,12 @@ public class LodVaderStreamProcessor {
 
 	String accessURL = null;
 
-	private BasicTupleManager tupleManager;
+	private PipelineProcessor tupleManager;
 
 	/**
 	 * @return the tupleManager
 	 */
-	public BasicTupleManager getTupleManager() {
+	public PipelineProcessor getTupleManager() {
 		return tupleManager;
 	}
 
@@ -82,7 +85,7 @@ public class LodVaderStreamProcessor {
 	 * @param tupleManager
 	 *            Set the tupleManager value.
 	 */
-	public void setTupleManager(BasicTupleManager tupleManager) {
+	public void registerPipelineProcessor(PipelineProcessor tupleManager) {
 		this.tupleManager = tupleManager;
 	}
 
@@ -115,36 +118,51 @@ public class LodVaderStreamProcessor {
 
 		// instance of rdf parser
 		RDFParser rdfParser = null;
-
+	
+		
+		TQL.register();
+		
 		// checking whether to use turtle parser
 		if (RDFFormat.equals(FormatsUtils.DEFAULT_TURTLE)) {
 			rdfParser = new TurtleParser();
 			logger.info("==== Turtle Parser loaded ====");
 		}
 
-		// checking ntriples to use turtle parser
+		// checking ntriples format
 		else if (RDFFormat.equals(FormatsUtils.DEFAULT_NTRIPLES)) {
 			rdfParser = new NTriplesParser();
-			// rdfParser = new NTriplesLODVaderParser();
+			 rdfParser = new NTriplesParser();
 			logger.info("==== NTriples Parser loaded ====");
 		}
 
-		// checking rdf/xml to use turtle parser
+		// checking rdf/xml format
 		else if (RDFFormat.equals(FormatsUtils.DEFAULT_RDFXML)) {
 			rdfParser = new RDFXMLParser();
 			logger.info("==== RDF/XML Parser loaded ====");
 		}
 
-		// checking jsonld to use turtle parser
+		// checking jsonld format
 		else if (RDFFormat.equals(FormatsUtils.DEFAULT_JSONLD)) {
 			rdfParser = new JSONLDParser();
 			logger.info("==== JSON-LD Parser loaded ====");
 		}
 
-		// checking n3 to use turtle parser
+		// checking n3 format
 		else if (RDFFormat.equals(FormatsUtils.DEFAULT_N3)) {
 			rdfParser = new N3ParserFactory().getParser();
 			logger.info("==== N3Parser loaded ====");
+		}
+		
+		// checking TQL format
+		else if (RDFFormat.equals(FormatsUtils.DEFAULT_TQL)) {
+			rdfParser = new TQLParserFactory().getParser();
+			logger.info("==== TQLParser loaded ====");
+		}
+		
+		// checking NQ format
+		else if (RDFFormat.equals(FormatsUtils.DEFAULT_NQUADS)) {
+			rdfParser = new NQuadsParserFactory().getParser();
+			logger.info("==== NQuads loaded ====");
 		}
 
 		// if the format is not supported, throw an exception

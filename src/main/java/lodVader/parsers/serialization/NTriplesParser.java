@@ -1,4 +1,4 @@
-package lodVader.parsers.tripleParsers;
+package lodVader.parsers.serialization;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -19,9 +19,9 @@ import org.openrdf.rio.helpers.RDFParserBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.tupleManager.BasicTupleManager;
+import lodVader.tupleManager.PipelineProcessor;
 
-public class NTriplesLODVaderParser extends RDFParserBase {
+public class NTriplesParser extends RDFParserBase {
 
 	final static Logger logger = LoggerFactory.getLogger(RDFParserBase.class);
 	
@@ -78,7 +78,7 @@ public class NTriplesLODVaderParser extends RDFParserBase {
 
 	protected void parse() {
 
-		BasicTupleManager splitAndStore = (BasicTupleManager) getRDFHandler();
+		PipelineProcessor splitAndStore = (PipelineProcessor) getRDFHandler();
 
 		try {
 

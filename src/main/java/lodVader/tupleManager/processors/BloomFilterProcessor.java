@@ -121,21 +121,13 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	}
 
-	private void sortFiles() {
+	private void sortFile(String file) {
 		try {
-			ExternalSort.sort(new File(objectTmpFilePath), new File(objectTmpFilePath + ".sorted"));
-			removeFile(objectTmpFilePath);
-			Files.move(Paths.get(objectTmpFilePath + ".sorted"), Paths.get(objectTmpFilePath));
+			ExternalSort.sort(new File(file), new File(file + ".sorted"));
+			removeFile(file);
+			Files.move(Paths.get(file + ".sorted"), Paths.get(file));
 
-			ExternalSort.sort(new File(subjectTmpFilePath), new File(subjectTmpFilePath + ".sorted"));
-			removeFile(subjectTmpFilePath);
-			Files.move(Paths.get(subjectTmpFilePath + ".sorted"), Paths.get(subjectTmpFilePath));
-
-			ExternalSort.sort(new File(triplesTmpFilePath), new File(triplesTmpFilePath + ".sorted"));
-			removeFile(triplesTmpFilePath);
-			Files.move(Paths.get(triplesTmpFilePath + ".sorted"), Paths.get(triplesTmpFilePath));
-
-			logger.info("Files sorted.");
+			logger.info("File " + file + " sorted.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -284,7 +276,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	public void saveFilters() {
 		closeFiles();
-		sortFiles();
+		sortFile(objectTmpFilePath); 
+		sortFile(subjectTmpFilePath); 
+		sortFile(triplesTmpFilePath); 
 		saveResources(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
 		removeFile(objectTmpFilePath);
 		saveResources(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
