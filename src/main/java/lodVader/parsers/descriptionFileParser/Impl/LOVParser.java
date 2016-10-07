@@ -4,7 +4,6 @@
 package lodVader.parsers.descriptionFileParser.Impl;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -18,15 +17,11 @@ import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
-import lodVader.utils.FormatsUtils;
 
 /**
  * LOV parser. Using LOV api v2 (http://lov.okfn.org/dataset/lov/api/v2/)
@@ -47,7 +42,7 @@ public class LOVParser implements DescriptionFileParserInterface {
 		
 
 	/**
-	 * Save a LOV Vocabulary or ontology instance the main collection
+	 * Save a LOV Vocabulary or ontology instance the main collection 
 	 * 
 	 * @param the
 	 *            CkanDataset

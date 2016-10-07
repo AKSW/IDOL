@@ -6,13 +6,22 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
 
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.ResourceDB;
 
-public class GeneralQueries {
+public class GeneralQueriesHelper {
 
-	public ArrayList<DBObject> getMongoDBObject(String collectionName, String field, String value) {
+	/**
+	 * Get an array of MongoDB objects.
+	 * 
+	 * @param collectionName
+	 * @param field
+	 * @param value
+	 * @return array of DBObject
+	 */
+	public ArrayList<DBObject> getObjects(String collectionName, String field, String value) {
 
 		ArrayList<DBObject> list = new ArrayList<DBObject>();
 		try {
@@ -28,6 +37,16 @@ public class GeneralQueries {
 			e.printStackTrace();
 		}
 		return list;
-
 	}
+
+	/**
+	 * Remove documents of a collection
+	 * @param collectionName
+	 * @param field
+	 * @param value
+	 */
+	public void removeObjects(String collectionName, String field, String value) {
+		WriteResult a = DBSuperClass.getCollection(collectionName).remove(new BasicDBObject(field, value));
+	}
+
 }

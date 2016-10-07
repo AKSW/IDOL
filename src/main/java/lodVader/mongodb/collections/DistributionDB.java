@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.mongodb.DBObject;
 
-import lodVader.enumerators.DistributionStatus;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.queries.DatasetQueries;
 import lodVader.utils.URLUtils;
@@ -81,6 +80,29 @@ public class DistributionDB extends DBSuperClass {
 	public static final String NUMBER_OF_TRIPLES = "numberOfTriples";
 
 	public static final String NUMBER_OF_LITERALS = "numberOfLiterals";
+	
+	public enum DistributionStatus {
+		
+		STREAMING, 
+
+		STREAMED,
+
+		SEPARATING_SUBJECTS_AND_OBJECTS,
+
+		WAITING_TO_STREAM,
+
+		CREATING_BLOOM_FILTER,
+
+		CREATING_LINKSETS,
+
+		ERROR,
+
+		DONE,
+
+		CREATING_JACCARD_SIMILARITY,
+
+		UPDATING_LINK_STRENGTH
+	}
 
 	public String getDownloadUrl() {
 		return getField(DOWNLOAD_URL).toString();

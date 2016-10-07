@@ -26,7 +26,7 @@ public class BucketDB {
 
 	final static Logger logger = LoggerFactory.getLogger(BucketDB.class);
 	
-	private COLLECTIONS COLLECTION;
+	public COLLECTIONS COLLECTION;
 	
 	public static enum COLLECTIONS {BLOOM_FILTER_SUBJECTS, BLOOM_FILTER_OBJECTS, BLOOM_FILTER_TRIPLES};
 
@@ -74,12 +74,10 @@ public class BucketDB {
 
 	}
 
-//	public void saveCache(BloomFilterCache cache, int distributionID) {
-//		int i = 0;
-//		for (BloomFilterI bf : cache.getListOfBF()) {
-//			saveBF(bf, distributionID, i++, cache.getInitialSize(), cache.getFpp());
-//		}
-//	}
+	public void remove(String distributionID) {
+		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION.toString());
+		gfs.remove(new BasicDBObject(DISTRIBUTION_ID, distributionID));
+	}
 
 	// public boolean query(int distributionID) {
 	//

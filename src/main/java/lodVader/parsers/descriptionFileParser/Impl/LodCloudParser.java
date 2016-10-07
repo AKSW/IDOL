@@ -26,12 +26,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
-import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import lodVader.streaming.LodVaderCoreStream;
@@ -57,7 +57,7 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 	/**
 	 * Constructor for Class LodCloudParser
 	 */
-	public LodCloudParser(String dumpAddress) {
+	public LodCloudParser(String dumpAddress) { 
 		repositoryAddress = dumpAddress;
 	}
 

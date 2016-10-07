@@ -22,12 +22,10 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
-import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.services.mongodb.dataset.DatasetServices;
 import lodVader.utils.FormatsUtils;
@@ -53,7 +51,7 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 	private HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
 	/**
-	 * Constructor for Class CLODFileParser
+	 * Constructor for Class CLODFileParser 
 	 */
 	public CLODFileParser(String URL, String format) {
 		this.format = format;

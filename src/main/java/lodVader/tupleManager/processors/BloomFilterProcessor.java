@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.code.externalsorting.ExternalSort;
 import com.hp.hpl.jena.ontology.OntTools.Path;
+import com.hp.hpl.jena.sparql.lang.SyntaxVarScope.BindScopeChecker;
 
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
@@ -31,6 +32,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
+import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.utils.NSUtils;
 import lodVader.utils.bloomfilter.BloomFilterCache;
 
@@ -241,6 +243,10 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			bucket = new BucketDB(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES);
 		}
 
+		// remove old bloom filters
+		bucket.remove(distribution.getID());
+		
+		// create the new one
 		bucket.saveBF(bloomFilter, distribution.getID(), bfCounter);
 
 	}
@@ -285,6 +291,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 		removeFile(subjectTmpFilePath);
 		saveResources(triplesTmpFilePath, TYPE_OF_FILE.TRIPLES);
 		removeFile(triplesTmpFilePath);
+		logger.info("BFProcessor finished.");
 	}
 
 }

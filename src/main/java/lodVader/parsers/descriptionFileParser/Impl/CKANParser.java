@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 import eu.trentorise.opendata.jackan.ckan.CkanClient;
 import eu.trentorise.opendata.jackan.ckan.CkanDataset;
 import eu.trentorise.opendata.jackan.ckan.CkanResource;
-import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.utils.FormatsUtils;
 
@@ -130,7 +130,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 		distributionDB.setOriginalFormat(resource.getFormat());
 		distributionDB.setTopDataset(datasetDB.getID()); 
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
-		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
+		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM); 
 		distributions.put(distributionDB.getUri(), distributionDB);
 		try {
 			distributionDB.update();

@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.joda.time.format.FormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.enumerators.DistributionStatus;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.DCATHelper;
 import lodVader.parsers.descriptionFileParser.helpers.DataIDHelper;
@@ -40,7 +39,7 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 	/**
 	 * Constructor for Class DataIDFileParser2 
 	 */
-	public DataIDFileParser(String dcatFile) {
+	public DataIDFileParser(String dcatFile) { 
 		this.repositoryAddress = dcatFile;
 	}
 
