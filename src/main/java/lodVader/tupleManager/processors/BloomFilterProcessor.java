@@ -222,7 +222,8 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 				SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
 						GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 			}
-			saveBF(bfResources, type, bfCounter);
+			if(bfResources.size()>0)
+				saveBF(bfResources, type, bfCounter);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -254,6 +255,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 		bucket.remove(distribution.getID());
 		
 		// create the new one
+
 		bucket.saveBF(bloomFilter, distribution.getID(), bfCounter, new ArrayList<String>(set).get(0),new ArrayList<String>(set).get(set.size()-1));
 
 	}
