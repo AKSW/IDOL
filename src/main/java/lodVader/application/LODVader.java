@@ -178,7 +178,7 @@ public class LODVader {
 				e.printStackTrace();
 			}
 
-			logger.info("Datasets to be processed: " + distributionsBeingProcessed.get());
+			logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());
 
 		}
 	}
