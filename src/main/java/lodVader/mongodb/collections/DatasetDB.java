@@ -66,6 +66,8 @@ public class DatasetDB extends DBSuperClass {
 	public void setKeys() {
 		addMandatoryField(URI);
 		addMandatoryField(DESCRIPTION_FILE_PARSER);
+		addMandatoryField(PROVENANCE);
+		
 //		addMandatoryField(SUBSET_IDS);
 //		addMandatoryField(DISTRIBUTIONS_IDS);
 	}

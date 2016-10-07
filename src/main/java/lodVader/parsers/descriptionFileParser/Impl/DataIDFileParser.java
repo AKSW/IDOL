@@ -149,7 +149,7 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 		mainDataset.setLabel(dataidHelper.getLabel(dataset));
 		mainDataset.setIsVocabulary(false);
 		mainDataset.setDescriptionFileParser(getParserName());
-		
+		mainDataset.addProvenance(repositoryAddress);
 		mainDataset.update(true, DatasetDB.URI, dataset);
 		
 		datasets.add(mainDataset);
