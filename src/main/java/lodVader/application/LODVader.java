@@ -110,7 +110,6 @@ public class LODVader {
 		loader.parse();
 		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
 		loader.parse();
-
 		loader.load(new LodCloudParser());
 		loader.parse();
 		loader.load(new LOVParser());

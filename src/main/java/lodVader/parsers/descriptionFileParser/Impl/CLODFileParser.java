@@ -108,7 +108,8 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				}
 				else{
 					dataset.setIsVocabulary(false);
-					dataset.setDescriptionFileParser(URL);
+					dataset.setDescriptionFileParser(getParserName());
+					dataset.addProvenance(repositoryAddress);
 					dataset.setTitle(stmt.getObject().toString());
 					dataset.update();					
 				}
@@ -122,6 +123,7 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				distribution.setTopDatasetTitle(url);
 				distribution.setTopDataset(dataset.getID());
 				distribution.setIsVocabulary(false);
+
 
 				ArrayList<String> defaultDatasets = new ArrayList<String>();
 				defaultDatasets.add(dataset.getID());
