@@ -36,6 +36,10 @@ public class BucketDB {
 
 	static public String SIZE = "size";
 
+	static public String FIRST = "first";
+
+	static public String LAST = "last";
+
 	static public String FPP = "fpp";
 	
 	/**
@@ -46,7 +50,7 @@ public class BucketDB {
 	}
 	
 
-	public void saveBF(BloomFilterI bf, String distributionID, int bfSequenceNr) {
+	public void saveBF(BloomFilterI bf, String distributionID, int bfSequenceNr, String first, String last) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		try {
@@ -65,6 +69,8 @@ public class BucketDB {
 			gfsFile.put(SEQUENCE_NR, bfSequenceNr);
 			gfsFile.put(SIZE, bf.getFilterInitialSize());
 			gfsFile.put(FPP, bf.getFPP());
+			gfsFile.put(FIRST, first);
+			gfsFile.put(LAST, last);
 			gfsFile.save();
 
 		} catch (Exception e) {
