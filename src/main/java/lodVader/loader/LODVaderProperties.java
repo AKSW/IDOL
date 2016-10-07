@@ -165,7 +165,7 @@ public class LODVaderProperties {
 
 	public static boolean ONLY_STREAM_DATASETS_AND_SAVE_NT_FORMAT = false;
 
-	public static String VERSION = "v1.3";
+	public static String VERSION = "v1.4";
 
 	public static int MONGODB_MINIMUM_MAJOR_VERSION = 2;
 	public static int MONGODB_MINIMUM_MINOR_VERSION = 6;

@@ -115,7 +115,7 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				
 
 
-				DistributionDB distribution = new DistributionDB();
+				DistributionDB distribution = new DistributionDB(downloadURL);
 				distribution.setUri(url);
 				distribution.setDownloadUrl(downloadURL);
 				distribution.setTitle(url);
