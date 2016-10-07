@@ -59,7 +59,7 @@ public class LODVader {
 		//
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
-//		parseFiles();
+		parseFiles();
 
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 
