@@ -114,7 +114,8 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 		try {
 			triplesWriter.write(triple + "\n");
-			subjectWriter.write(subject + "\n");
+			if(subject.startsWith("http"))
+				subjectWriter.write(subject + "\n");
 			if (!object.startsWith("\""))
 				objectWriter.write(object + "\n");
 		} catch (IOException e) {
