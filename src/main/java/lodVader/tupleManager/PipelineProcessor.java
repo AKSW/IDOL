@@ -6,14 +6,31 @@ import java.util.List;
 
 import org.openrdf.model.Statement;
 import org.openrdf.rio.helpers.RDFHandlerBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import lodVader.application.LODVader;
 import lodVader.tupleManager.processors.BasicProcessorInterface;
 
 public class PipelineProcessor extends RDFHandlerBase {
+	
+	final static Logger logger = LoggerFactory.getLogger(PipelineProcessor.class);
+
 
 	// set of statistical data processors
 	List<BasicProcessorInterface> processors = new ArrayList<BasicProcessorInterface>();
+	
+	// number of triples processed
+	int triplesProcessed = 0;
 
+	/**
+	 * Constructor for Class PipelineProcessor 
+	 */
+	public PipelineProcessor() {
+		
+	}
+	
+	
 	/**
 	 * Register a new processor
 	 * 
@@ -25,12 +42,22 @@ public class PipelineProcessor extends RDFHandlerBase {
 
 	@Override
 	public void handleStatement(Statement st) {
-
+		
+		triplesProcessed ++;
+		
+		// print number of processed triples
+		if(triplesProcessed%100000 == 0){
+			logger.info(triplesProcessed + " triples processed.");
+		}
+		
 		// invoke all statistical processors
 		if (processors.size() > 0)
 			for (BasicProcessorInterface processor : processors) {
 				processor.process(st);
 			}
 	}
+	
+	
+	
 
 }
