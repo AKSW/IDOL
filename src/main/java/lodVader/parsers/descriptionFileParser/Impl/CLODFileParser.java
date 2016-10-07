@@ -135,7 +135,7 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				} catch (NoSuchElementException e) {
 					distribution.setFormat("");
 				}
-				distribution.update(true, DistributionDB.DOWNLOAD_URL, distribution.getDownloadUrl());
+				distribution.update();
 
 				ArrayList<String> distributionList = new ArrayList<String>();
 				distributionList.add(distribution.getID());
