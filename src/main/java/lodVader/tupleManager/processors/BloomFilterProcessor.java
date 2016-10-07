@@ -201,6 +201,11 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 						}
 						saveBF(bfResources, type, bfCounter);
 
+						ns0 = new HashMap<>();
+						ns = new HashMap<>();
+
+						bfResources = new HashSet<>();
+
 					}
 				}
 			}
