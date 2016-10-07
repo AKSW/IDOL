@@ -61,53 +61,53 @@ public class LODVaderConfigurator {
 
 			HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
-			logger.info("Resuming Downloads...");
-			
-			if (LODVaderProperties.RESUME) {
-
-				// re-download distributions with "Downloading" status
-				ArrayList<DBObject> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
-						DistributionDB.STATUS, DistributionStatus.STREAMING.toString()); 
-				logger.info("re-download distributions with \"" + DistributionStatus.STREAMING + "\" status");
-
-				for (DBObject s : q) {
-					DistributionDB dist = new DistributionDB(s);
-					dist.setStatus(DistributionStatus.WAITING_TO_STREAM);
-					dist.update();
-				}
-
-				// download distributions with "STATUS_WAITING_TO_STREAM" status
-				q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-						DistributionStatus.WAITING_TO_STREAM.toString());
-				logger.info("download distributions with \"" + DistributionStatus.WAITING_TO_STREAM + "\" status");
-
-				for (DBObject s : q) {
-					DistributionDB dist = new DistributionDB(s); 
-					DatasetDB datasetDB = new DatasetDB();
-					datasetDB.setID(dist.getTopDatasetID());
-					datasetDB.find();
-					datasets.put(dist.getTopDatasetID(), datasetDB); 
-				}
-
-			}
-
-			if (LODVaderProperties.RESUME_ERRORS) {
-				// download distributions with "ERROR"
-				// status
-				ArrayList<DBObject> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
-						DistributionDB.STATUS, DistributionStatus.ERROR.toString());
-				logger.info("download distributions with \"" + DistributionStatus.WAITING_TO_STREAM + "\" status");
-
-				for (DBObject s : q) {
-					DistributionDB dist = new DistributionDB(s);
-					dist.setStatus(DistributionStatus.WAITING_TO_STREAM);
-					dist.update(); 
-					DatasetDB datasetDB = new DatasetDB();
-					datasetDB.setID(dist.getTopDatasetID());
-					datasetDB.find();
-					datasets.put(dist.getTopDatasetID(),datasetDB);
-				}
-			}
+//			logger.info("Resuming Downloads...");
+//			
+//			if (LODVaderProperties.RESUME) {
+//
+//				// re-download distributions with "Downloading" status
+//				ArrayList<DBObject> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
+//						DistributionDB.STATUS, DistributionStatus.STREAMING.toString()); 
+//				logger.info("re-download distributions with \"" + DistributionStatus.STREAMING + "\" status");
+//
+//				for (DBObject s : q) {
+//					DistributionDB dist = new DistributionDB(s);
+//					dist.setStatus(DistributionStatus.WAITING_TO_STREAM);
+//					dist.update();
+//				}
+//
+//				// download distributions with "STATUS_WAITING_TO_STREAM" status
+//				q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+//						DistributionStatus.WAITING_TO_STREAM.toString());
+//				logger.info("download distributions with \"" + DistributionStatus.WAITING_TO_STREAM + "\" status");
+//
+//				for (DBObject s : q) {
+//					DistributionDB dist = new DistributionDB(s); 
+//					DatasetDB datasetDB = new DatasetDB();
+//					datasetDB.setID(dist.getTopDatasetID());
+//					datasetDB.find();
+//					datasets.put(dist.getTopDatasetID(), datasetDB); 
+//				}
+//
+//			}
+//
+//			if (LODVaderProperties.RESUME_ERRORS) {
+//				// download distributions with "ERROR"
+//				// status
+//				ArrayList<DBObject> q = new GeneralQueries().getMongoDBObject(DistributionDB.COLLECTION_NAME,
+//						DistributionDB.STATUS, DistributionStatus.ERROR.toString());
+//				logger.info("download distributions with \"" + DistributionStatus.WAITING_TO_STREAM + "\" status");
+//
+//				for (DBObject s : q) {
+//					DistributionDB dist = new DistributionDB(s);
+//					dist.setStatus(DistributionStatus.WAITING_TO_STREAM);
+//					dist.update(); 
+//					DatasetDB datasetDB = new DatasetDB();
+//					datasetDB.setID(dist.getTopDatasetID());
+//					datasetDB.find();
+//					datasets.put(dist.getTopDatasetID(),datasetDB);
+//				}
+//			}
 
 //			// load BF for namespaces
 //			logger.info("Loading nasmespaces... ");

@@ -51,7 +51,7 @@ public class LODVader {
 		s.configure();
 		// parseFiles();
 
-		ExecutorService executor = Executors.newFixedThreadPool(3);
+		ExecutorService executor = Executors.newFixedThreadPool(6);
 
 		// load datasets with the status == waiting to stream
 		GeneralQueries queries = new GeneralQueries();
