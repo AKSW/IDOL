@@ -91,7 +91,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 			numberOfLiterals++;
 
 		if (st.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
-			addToMap(rdfSubClassOf, st.getPredicate().toString());
+			addToMap(rdfSubClassOf, st.getObject().toString());
 		} else if (st.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
 			addToMap(rdfTypeObjects, st.getObject().toString());
 		}
