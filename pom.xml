@@ -155,9 +155,7 @@
 		<dependency>
 			<groupId>com.google.code.externalsortinginjava</groupId>
 			<artifactId>externalsortinginjava</artifactId>
-			<version>0.1.10-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/externalsortinginjava-0.1.10-SNAPSHOT-jar-with-dependencies.jar</systemPath>
+			<version>0.2.2</version>
 		</dependency>
 
 		<dependency>
