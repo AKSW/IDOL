@@ -121,67 +121,67 @@ public class ExternalSortLocal {
 	 * @throws IOException
 	 *             generic IO exception
 	 */
-	public static void main(final String[] args) throws IOException {
-		boolean verbose = false;
-		boolean distinct = false;
-		int maxtmpfiles = DEFAULTMAXTEMPFILES;
-		Charset cs = Charset.defaultCharset();
-		String inputfile = null, outputfile = null;
-		File tempFileStore = null;
-		boolean usegzip = false;
-		boolean parallel = true;
-		int headersize = 0;
-		for (int param = 0; param < args.length; ++param) {
-			if (args[param].equals("-v") || args[param].equals("--verbose")) {
-				verbose = true;
-			} else if ((args[param].equals("-h") || args[param].equals("--help"))) {
-				displayUsage();
-				return;
-			} else if ((args[param].equals("-d") || args[param].equals("--distinct"))) {
-				distinct = true;
-			} else if ((args[param].equals("-t") || args[param].equals("--maxtmpfiles")) && args.length > param + 1) {
-				param++;
-				maxtmpfiles = Integer.parseInt(args[param]);
-				if (headersize < 0) {
-					System.err.println("maxtmpfiles should be positive");
-				}
-			} else if ((args[param].equals("-c") || args[param].equals("--charset")) && args.length > param + 1) {
-				param++;
-				cs = Charset.forName(args[param]);
-			} else if ((args[param].equals("-z") || args[param].equals("--gzip"))) {
-				usegzip = true;
-			} else if ((args[param].equals("-H") || args[param].equals("--header")) && args.length > param + 1) {
-				param++;
-				headersize = Integer.parseInt(args[param]);
-				if (headersize < 0) {
-					System.err.println("headersize should be positive");
-				}
-			} else if ((args[param].equals("-s") || args[param].equals("--store")) && args.length > param + 1) {
-				param++;
-				tempFileStore = new File(args[param]);
-			} else {
-				if (inputfile == null) {
-					inputfile = args[param];
-				} else if (outputfile == null) {
-					outputfile = args[param];
-				} else {
-					System.out.println("Unparsed: " + args[param]);
-				}
-			}
-		}
-		if (outputfile == null) {
-			System.out.println("please provide input and output file names");
-			displayUsage();
-			return;
-		}
-		Comparator<String> comparator = defaultcomparator;
-		List<File> l = sortInBatch(new File(inputfile), comparator, maxtmpfiles, cs, tempFileStore, distinct,
-				headersize, usegzip, parallel);
-		if (verbose) {
-			System.out.println("created " + l.size() + " tmp files");
-		}
-		mergeSortedFiles(l, new File(outputfile), comparator, cs, distinct, false, usegzip);
-	}
+//	public static void main(final String[] args) throws IOException {
+//		boolean verbose = false;
+//		boolean distinct = false;
+//		int maxtmpfiles = DEFAULTMAXTEMPFILES;
+//		Charset cs = Charset.defaultCharset();
+//		String inputfile = null, outputfile = null;
+//		File tempFileStore = null;
+//		boolean usegzip = false;
+//		boolean parallel = true;
+//		int headersize = 0;
+//		for (int param = 0; param < args.length; ++param) {
+//			if (args[param].equals("-v") || args[param].equals("--verbose")) {
+//				verbose = true;
+//			} else if ((args[param].equals("-h") || args[param].equals("--help"))) {
+//				displayUsage();
+//				return;
+//			} else if ((args[param].equals("-d") || args[param].equals("--distinct"))) {
+//				distinct = true;
+//			} else if ((args[param].equals("-t") || args[param].equals("--maxtmpfiles")) && args.length > param + 1) {
+//				param++;
+//				maxtmpfiles = Integer.parseInt(args[param]);
+//				if (headersize < 0) {
+//					System.err.println("maxtmpfiles should be positive");
+//				}
+//			} else if ((args[param].equals("-c") || args[param].equals("--charset")) && args.length > param + 1) {
+//				param++;
+//				cs = Charset.forName(args[param]);
+//			} else if ((args[param].equals("-z") || args[param].equals("--gzip"))) {
+//				usegzip = true;
+//			} else if ((args[param].equals("-H") || args[param].equals("--header")) && args.length > param + 1) {
+//				param++;
+//				headersize = Integer.parseInt(args[param]);
+//				if (headersize < 0) {
+//					System.err.println("headersize should be positive");
+//				}
+//			} else if ((args[param].equals("-s") || args[param].equals("--store")) && args.length > param + 1) {
+//				param++;
+//				tempFileStore = new File(args[param]);
+//			} else {
+//				if (inputfile == null) {
+//					inputfile = args[param];
+//				} else if (outputfile == null) {
+//					outputfile = args[param];
+//				} else {
+//					System.out.println("Unparsed: " + args[param]);
+//				}
+//			}
+//		}
+//		if (outputfile == null) {
+//			System.out.println("please provide input and output file names");
+//			displayUsage();
+//			return;
+//		}
+//		Comparator<String> comparator = defaultcomparator;
+//		List<File> l = sortInBatch(new File(inputfile), comparator, maxtmpfiles, cs, tempFileStore, distinct,
+//				headersize, usegzip, parallel);
+//		if (verbose) {
+//			System.out.println("created " + l.size() + " tmp files");
+//		}
+//		mergeSortedFiles(l, new File(outputfile), comparator, cs, distinct, false, usegzip);
+//	}
 
 	/**
 	 * This merges several BinaryFileBuffer to an output writer.
