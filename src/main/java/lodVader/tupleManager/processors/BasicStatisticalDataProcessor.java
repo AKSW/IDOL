@@ -144,6 +144,22 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		} else if (st.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
 			// addToMap(rdfTypeObjects, st.getObject().toString());
 			writeToFile(st.getObject().toString(), rdfTypeObjectsWriter);
+			if(st.getObject().toString().equals("http://www.")){
+				System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+				System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+				System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+				System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+				System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+				System.out.println();
+				System.out.println();
+				System.out.println(st.getSubject() + " " + st.getPredicate() + " "+ st.getObject());
+				System.out.println();
+				System.out.println();
+				System.out.println();
+				System.out.println();
+				
+			}
+			
 		}
 	}
 
@@ -206,6 +222,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		FileUtils fileUtils = new FileUtils();
 
 		closeWriters();
+		
 		fileUtils.sortFile(allPredicatesFileName);
 		fileUtils.sortFile(owlClassesFileName);
 		fileUtils.sortFile(rdfSubClassOfFileName);

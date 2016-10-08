@@ -269,7 +269,6 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	 */
 	private void SaveNS(HashMap<String, Integer> nss, GeneralResourceDB.COLLECTIONS resourceCollection,
 			GeneralResourceRelationDB.COLLECTIONS relationCollection) {
-		logger.info("Saving NS: " + resourceCollection.toString());
 		List<GeneralResourceDB> resources = new GeneralResourceDB(resourceCollection).insertSet(nss.keySet());
 
 		new GeneralResourceRelationDB(relationCollection).insertSet(nss, resources, distribution.getID(),
