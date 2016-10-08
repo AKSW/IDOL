@@ -1,14 +1,18 @@
 package lodVader.streaming;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.text.DecimalFormat;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -118,10 +122,9 @@ public class LodVaderCoreStream {
 
 		// instance of rdf parser
 		RDFParser rdfParser = null;
-	
-		
+
 		TQL.register();
-		
+
 		// checking whether to use turtle parser
 		if (RDFFormat.equals(FormatsUtils.DEFAULT_TURTLE)) {
 			rdfParser = new TurtleParser();
@@ -131,7 +134,7 @@ public class LodVaderCoreStream {
 		// checking ntriples format
 		else if (RDFFormat.equals(FormatsUtils.DEFAULT_NTRIPLES)) {
 			rdfParser = new NTriplesParser();
-			 rdfParser = new NTriplesParser();
+			rdfParser = new NTriplesParser();
 			logger.info("==== NTriples Parser loaded ====");
 		}
 
@@ -152,13 +155,13 @@ public class LodVaderCoreStream {
 			rdfParser = new N3ParserFactory().getParser();
 			logger.info("==== N3Parser loaded ====");
 		}
-		
+
 		// checking TQL format
 		else if (RDFFormat.equals(FormatsUtils.DEFAULT_TQL)) {
 			rdfParser = new TQLParserFactory().getParser();
 			logger.info("==== TQLParser loaded ====");
 		}
-		
+
 		// checking NQ format
 		else if (RDFFormat.equals(FormatsUtils.DEFAULT_NQUADS)) {
 			rdfParser = new NQuadsParserFactory().getParser();
@@ -272,9 +275,22 @@ public class LodVaderCoreStream {
 				RDFFormat = dist.getFormat();
 		}
 	}
+	
+	
+    public static String read(InputStream input) throws IOException {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+            return buffer.lines().collect(Collectors.joining("\n"));
+        }
+    }
 
 	public void openConnection() throws IOException, LODVaderLODGeneralException {
+
 		httpConn = (HttpURLConnection) downloadUrl.openConnection();
+
+		// if file format is unknown, try to fetch TTL data
+		if (RDFFormat.equals("ttl")) {
+			httpConn.setRequestProperty("Accept", "text/turtle");
+		}
 
 		httpConn.setReadTimeout(5000);
 		httpConn.setConnectTimeout(5000);

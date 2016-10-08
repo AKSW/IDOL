@@ -6,6 +6,7 @@ package lodVader.parsers.descriptionFileParser.Impl;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,10 +91,12 @@ public class LOVParser implements DescriptionFileParserInterface {
 	 */
 	public DistributionDB saveDistribution(String url, String title, DatasetDB datasetDB) {
 
-		DistributionDB distributionDB = new DistributionDB(url);
+		String downloadURL = "http://lov.okfn.org/dataset/lov/sparql?query="+URLEncoder.encode("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"+url+"> { ?s ?p ?o } }");
+		
+		DistributionDB distributionDB = new DistributionDB(downloadURL);
 		distributionDB.setTitle(title);
 		distributionDB.setUri(url);
-		distributionDB.setFormat("");
+		distributionDB.setFormat("ttl");
 		distributionDB.setIsVocabulary(true);
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());

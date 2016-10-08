@@ -128,7 +128,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		numberOfTriples++;
 
 		// collects owl:class, subclass and rdftype.
-		if (st.getObject().toString().startsWith("http")) {
+		if (st.getSubject().toString().startsWith("http")) {
 			if (st.getObject().toString().equals("http://www.w3.org/2002/07/owl#Class")) {
 				// addToMap(owlClasses, st.getSubject().toString());
 				writeToFile(st.getSubject().toString(), owlClassesWriter);

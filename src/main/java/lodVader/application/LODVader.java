@@ -41,9 +41,9 @@ import lodVader.tupleManager.processors.BloomFilterProcessor;
  */
 public class LODVader {
 
-//	public static void main(String[] args) {
-//		new LODVader().Manager();
-//	}
+	public static void main(String[] args) {
+		new LODVader().Manager();
+	}
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
@@ -106,14 +106,15 @@ public class LODVader {
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
 //		loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-		// loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
-//		loader.parse();
-//		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
-//		loader.parse();
-//		loader.load(new LodCloudParser());
-//		loader.parse();
+//		loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
 		loader.load(new LOVParser());
 		loader.parse();
+		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+		loader.parse();
+		loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+		loader.parse();
+//		loader.load(new LodCloudParser());
+//		loader.parse();
 
 	}
 
