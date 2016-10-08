@@ -3,6 +3,12 @@
  */
 package lodVader.tupleManager.processors;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,9 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
+import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
+import lodVader.utils.FileUtils;
 
 /**
  * Class which extracts basic statistical data from the dataset (e.g.
@@ -34,6 +42,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	 */
 	public BasicStatisticalDataProcessor(DistributionDB distribution) {
 		this.distribution = distribution;
+		initializeWriters();
 	}
 
 	// total number of triples
@@ -42,17 +51,40 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	// number of literals
 	Integer numberOfLiterals = 0;
 
-	// map with all predicates and their frequency
-	public HashMap<String, Integer> allPredicates = new HashMap<String, Integer>();
+	// files
+	public String allPredicatesFileName = LODVaderProperties.TMP_FOLDER + "tmpPredicates_" + distribution.getID();
+	public BufferedWriter allPredicatesWriter;
 
-	// saving all rdf type
-	public HashMap<String, Integer> rdfTypeObjects = new HashMap<String, Integer>();
+	public String rdfTypeObjectsFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfTypeObjects_" + distribution.getID();
+	public BufferedWriter rdfTypeObjectsWriter;
 
-	// all classes
-	public HashMap<String, Integer> owlClasses = new HashMap<String, Integer>();
+	public String owlClassesFileName = LODVaderProperties.TMP_FOLDER + "tmpOwlClasses_" + distribution.getID();
+	public BufferedWriter owlClassesWriter;
 
-	// and all subclasses
-	public HashMap<String, Integer> rdfSubClassOf = new HashMap<String, Integer>();
+	public String rdfSubClassOfFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfSubClassOf_" + distribution.getID();
+	public BufferedWriter rdfSubClassOfWriter;
+
+	private void initializeWriters() {
+		try {
+			allPredicatesWriter = new BufferedWriter(new FileWriter(new File(allPredicatesFileName)));
+			rdfTypeObjectsWriter = new BufferedWriter(new FileWriter(new File(rdfTypeObjectsFileName)));
+			owlClassesWriter = new BufferedWriter(new FileWriter(new File(owlClassesFileName)));
+			rdfSubClassOfWriter = new BufferedWriter(new FileWriter(new File(rdfSubClassOfFileName)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void closeWriters() {
+		try {
+			allPredicatesWriter.close();
+			rdfSubClassOfWriter.close();
+			owlClassesWriter.close();
+			rdfSubClassOfWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Add value to a map
@@ -67,6 +99,14 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		map.put(value, n + 1);
 	}
 
+	protected void writeToFile(String resource, BufferedWriter writer) {
+		try {
+			writer.write(resource + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -78,57 +118,111 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	public void process(Statement st) {
 
 		// collects all predicates
-		addToMap(allPredicates, st.getPredicate().toString());
+		// addToMap(allPredicates, st.getPredicate().toString());
+		writeToFile(st.getPredicate().toString(), allPredicatesWriter);
 
 		numberOfTriples++;
 
 		// collects owl:class, subclass and rdftype.
 		if (st.getObject().toString().startsWith("http")) {
 			if (st.getObject().toString().equals("http://www.w3.org/2002/07/owl#Class")) {
-				addToMap(owlClasses, st.getSubject().toString());
+				// addToMap(owlClasses, st.getSubject().toString());
+				writeToFile(st.getSubject().toString(), owlClassesWriter);
 			}
 
 		} else
 			numberOfLiterals++;
-		
+
 		if (st.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
-			addToMap(rdfSubClassOf, st.getObject().toString());
+			// addToMap(rdfSubClassOf, st.getObject().toString());
+			writeToFile(st.getObject().toString(), rdfSubClassOfWriter);
 
 		} else if (st.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
-			addToMap(rdfTypeObjects, st.getObject().toString());
+			// addToMap(rdfTypeObjects, st.getObject().toString());
+			writeToFile(st.getObject().toString(), rdfTypeObjectsWriter);
 		}
 	}
 
+	private void saveResources(String file, GeneralResourceDB.COLLECTIONS resourceCollection,
+			GeneralResourceRelationDB.COLLECTIONS relationCollection) {
+
+		HashMap<String, Integer> resources = new HashMap<String, Integer>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(new File(file)));
+
+			String line;
+			String lastLine = "";
+
+			while ((line = br.readLine()) != null) {
+
+				lastLine = line;
+
+				if (resources.size() % 5000 == 0) {
+					// remove the last element (because will have the counter ==
+					// 1, and the counter is bigger if the current line is
+					// equals the last one
+					if (lastLine.equals(line)) {
+						resources.remove(line);
+					}
+					List<GeneralResourceDB> generalResources = new GeneralResourceDB(resourceCollection)
+							.insertSet(resources.keySet());
+
+					new GeneralResourceRelationDB(relationCollection).insertSet(resources, generalResources, distribution.getID(),
+							distribution.getTopDatasetID());
+
+					resources = new HashMap<String, Integer>();
+
+					// add the last resource into the set
+					if (lastLine.equals(line)) {
+						addToMap(resources, line);
+					}
+
+				}
+
+				addToMap(resources, line);
+			}
+			
+			// save the rest 
+			List<GeneralResourceDB> generalResources = new GeneralResourceDB(resourceCollection)
+					.insertSet(resources.keySet());
+
+			new GeneralResourceRelationDB(relationCollection).insertSet(resources, generalResources, distribution.getID(),
+					distribution.getTopDatasetID());
+			
+			br.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public void saveStatisticalData() {
+		FileUtils fileUtils = new FileUtils();
+
+		closeWriters();
+		fileUtils.sortFile(allPredicatesFileName);
+		fileUtils.sortFile(owlClassesFileName);
+		fileUtils.sortFile(rdfSubClassOfFileName);
+		fileUtils.sortFile(rdfTypeObjectsFileName);
 
 		logger.info("Saving predicates...");
-		List<GeneralResourceDB> resources = new GeneralResourceDB(
-				GeneralResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES).insertSet(allPredicates.keySet());
-
-		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES)
-				.insertSet(allPredicates, resources, distribution.getID(), distribution.getTopDatasetID());
-
+		saveResources(allPredicatesFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES, GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES);
+		fileUtils.removeFile(allPredicatesFileName);
+		
 		logger.info("Saving rdf:type objects...");
-		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_TYPE)
-				.insertSet(rdfTypeObjects.keySet());
-
-		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE).insertSet(rdfTypeObjects,
-				resources, distribution.getID(), distribution.getTopDatasetID());
-
+		saveResources(rdfTypeObjectsFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_TYPE, GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE);
+		fileUtils.removeFile(rdfTypeObjectsFileName);
+				
 		logger.info("Saving rdfs:subclass objects...");
-		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_SUBCLASS)
-				.insertSet(rdfSubClassOf.keySet());
-
-		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_SUBCLASS)
-				.insertSet(rdfSubClassOf, resources, distribution.getID(), distribution.getTopDatasetID());
-
+		saveResources(rdfSubClassOfFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_SUBCLASS, GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_SUBCLASS);
+		fileUtils.removeFile(rdfSubClassOfFileName);
+				
 		logger.info("Saving owl:Class objects...");
-		resources = new GeneralResourceDB(GeneralResourceDB.COLLECTIONS.RESOURCES_OWL_CLASS)
-				.insertSet(owlClasses.keySet());
-
-		new GeneralResourceRelationDB(GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS).insertSet(owlClasses,
-				resources, distribution.getID(), distribution.getTopDatasetID());
-
+		saveResources(owlClassesFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_OWL_CLASS, GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS);
+		fileUtils.removeFile(owlClassesFileName);
+				
 		distribution.setNumberOfLiterals(numberOfLiterals);
 		distribution.setNumberOfTriples(numberOfTriples);
 

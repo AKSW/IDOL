@@ -34,6 +34,7 @@ import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
+import lodVader.utils.FileUtils;
 import lodVader.utils.NSUtils;
 import lodVader.utils.bloomfilter.BloomFilterCache;
 
@@ -94,11 +95,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			e.printStackTrace();
 		}
 	}
-
-	private void removeFile(String file) {
-		new File(file).delete();
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -123,18 +120,6 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			e.printStackTrace();
 		}
 
-	}
-
-	private void sortFile(String file) {
-		try {
-			ExternalSort.sort(new File(file), new File(file + ".sorted"));
-			removeFile(file);
-			Files.move(Paths.get(file + ".sorted"), Paths.get(file));
-
-			logger.info("File " + file + " sorted.");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -253,6 +238,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 		for (String str : set) {
 			bloomFilter.add(str);
 		}
+		
 
 		BucketDB bucket = null;
 
@@ -305,15 +291,18 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	public void saveFilters() {
 		closeFiles();
-		sortFile(objectTmpFilePath);
-		sortFile(subjectTmpFilePath);
-		sortFile(triplesTmpFilePath);
+		
+		FileUtils fileUtils = new FileUtils();
+		
+		fileUtils.sortFile(objectTmpFilePath);
+		fileUtils.sortFile(subjectTmpFilePath);
+		fileUtils.sortFile(triplesTmpFilePath);
 		saveResources(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
-		removeFile(objectTmpFilePath);
+		fileUtils.removeFile(objectTmpFilePath);
 		saveResources(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
-		removeFile(subjectTmpFilePath);
+		fileUtils.removeFile(subjectTmpFilePath);
 		saveResources(triplesTmpFilePath, TYPE_OF_FILE.TRIPLES);
-		removeFile(triplesTmpFilePath);
+		fileUtils.removeFile(triplesTmpFilePath);
 		logger.info("BFProcessor finished.");
 	}
 

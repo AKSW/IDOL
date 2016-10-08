@@ -1,11 +1,16 @@
 package lodVader.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.code.externalsorting.ExternalSort;
 
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.loader.LODVaderProperties;
@@ -92,14 +97,6 @@ public class FileUtils {
 		return null;
 	}
 
-	public static void removeFile(String filePath) {
-		try {
-			File file = new File(filePath);
-			file.delete();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static String getASCIIFormat(String str) {
 		return str.replaceAll("[^A-Za-z0-9]", "");
@@ -128,5 +125,23 @@ public class FileUtils {
 
 		return fileName;
 	}
+	
+	public void sortFile(String file) {
+		try {
+			ExternalSort.sort(new File(file), new File(file + ".sorted"));
+			removeFile(file);
+			Files.move(Paths.get(file + ".sorted"), Paths.get(file));
+
+			logger.info("File " + file + " sorted.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+	public void removeFile(String file) {
+		new File(file).delete();
+	}
+
 
 }
