@@ -141,7 +141,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	 */
 	private List<String> saveResources(String file, TYPE_OF_FILE type) {
 
-		logger.info("Saving namespaces from file " + file);
+		logger.info("Saving resources from file " + file);
 
 		List<String> resources = new ArrayList<>();
 

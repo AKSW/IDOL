@@ -108,12 +108,12 @@ public class LODVader {
 //		loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 		// loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
 //		loader.parse();
-		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
-		loader.parse();
+//		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+//		loader.parse();
 //		loader.load(new LodCloudParser());
 //		loader.parse();
-//		loader.load(new LOVParser());
-//		loader.parse();
+		loader.load(new LOVParser());
+		loader.parse();
 
 	}
 
