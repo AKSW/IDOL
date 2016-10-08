@@ -125,14 +125,14 @@ public class DistributionController {
 //		return compare;
 //	}
 
-//	@RequestMapping(value = "/distribution/triples/size")
-//	public String triplesSize(@RequestParam(value = "isVocab", required = false) Boolean isVocab) {
-//		DecimalFormat format = new DecimalFormat("###,###,###,###");
+	@RequestMapping(value = "/distribution/triples/size")
+	public String triplesSize(@RequestParam(value = "isVocab", required = false) Boolean isVocab) {
+		DecimalFormat format = new DecimalFormat("###,###,###,###");
 //		if (isVocab == null)
-//			return format.format(new DistributionQueries().getNumberOfTriples());
+			return format.format(new DistributionQueries().getNumberOfTriples());
 //		else
 //			return format.format(new DistributionQueries().getNumberOfTriples(isVocab));
-//	}
+	}
 //
 //	@RequestMapping(value = "/distribution/search")
 //	public StatusPageModel search(
