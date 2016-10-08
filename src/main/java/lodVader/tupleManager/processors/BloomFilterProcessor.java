@@ -163,7 +163,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 		HashMap<String, Integer> ns0 = new HashMap<>();
 		HashMap<String, Integer> ns = new HashMap<>();
 
-		HashSet<String> bfTriples = new HashSet<>();
+		HashSet<String> bfResources = new HashSet<>();
 
 		int lineCounter = 0;
 		int bfCounter = 0;
@@ -181,18 +181,17 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 					lastLine = line;
 					lineCounter++;
 
-					if (type == TYPE_OF_FILE.TRIPLES) {
-						bfTriples.add(line);
-					} else {
+					if (type != TYPE_OF_FILE.TRIPLES) {
 						// extract ns if we are processing objects or subjects
 						addToMap(ns, nsUtils.getNSFromString(line));
 						addToMap(ns0, nsUtils.getNS0(line));
 					}
-
-					if (lineCounter % 200000 == 0) {
-						bfCounter++;
-
-						// if counter is 200.000 save ns and bloom filters
+					
+					bfResources.add(line);
+					
+					
+					// save NS into Mongodb each 50k ns
+					if (lineCounter % 20000 == 0) {
 						if (type == TYPE_OF_FILE.OBJECT) {
 							SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
 									GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
@@ -204,13 +203,19 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 							SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
 									GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 						}
-
-						saveBF(bfTriples, type, bfCounter);
-
 						ns0 = new HashMap<>();
 						ns = new HashMap<>();
+					}					
+					
+					
 
-						bfTriples = new HashSet<>();
+					// save Bloom filters each 200k
+					if (lineCounter % 200000 == 0) {
+						bfCounter++;
+
+						saveBF(bfResources, type, bfCounter);
+
+						bfResources = new HashSet<>();
 
 					}
 				}
@@ -228,8 +233,8 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 				SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
 						GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 			}
-			if (bfTriples.size() > 0)
-				saveBF(bfTriples, type, bfCounter);
+			if (bfResources.size() > 0)
+				saveBF(bfResources, type, bfCounter);
 
 			br.close();
 
