@@ -1,5 +1,20 @@
 package lodVader.mongodb.queries;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import com.mongodb.AggregationOutput;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+
+import lodVader.mongodb.DBSuperClass;
+import lodVader.mongodb.collections.DistributionDB;
+
 public class DistributionQueries {
 //
 //	final static Logger logger = LoggerFactory.getLogger(DistributionQueries.class);
@@ -239,38 +254,38 @@ public class DistributionQueries {
 //		return list;
 //	}
 //
-//	/**
-//	 * 
-//	 * @return number of total triples read
-//	 */
-//	public Double getNumberOfTriples() {
-//		Double numberOfTriples = 0.0;
-//		try {
-//			DBCollection collection = DBSuperClass.getDBInstance().getCollection(DistributionDB.COLLECTION_NAME);
-//
-//			BasicDBObject select = new BasicDBObject("$match",
-//					new BasicDBObject(DistributionDB.SUCCESSFULLY_DOWNLOADED, true));
-//
-//			BasicDBObject groupFields = new BasicDBObject("_id", null);
-//
-//			groupFields.append("sum", new BasicDBObject("$sum", "$triples"));
-//
-//			DBObject group = new BasicDBObject("$group", groupFields);
-//
-//			// run aggregation
-//			List<DBObject> pipeline = Arrays.asList(select, group);
-//			AggregationOutput output = collection.aggregate(pipeline);
-//
-//			for (DBObject result : output.results()) {
-//				numberOfTriples = Double.valueOf(result.get("sum").toString());
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return numberOfTriples;
-//	}
-//
+	/**
+	 * 
+	 * @return number of total triples read
+	 */
+	public Double getNumberOfTriples() {
+		Double numberOfTriples = 0.0;
+		try {
+			DBCollection collection = DBSuperClass.getDBInstance().getCollection(DistributionDB.COLLECTION_NAME);
+
+			BasicDBObject select = new BasicDBObject("$match",
+					new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
+
+			BasicDBObject groupFields = new BasicDBObject("_id", null);
+
+			groupFields.append("sum", new BasicDBObject("$sum", "$triples"));
+
+			DBObject group = new BasicDBObject("$group", groupFields);
+
+			// run aggregation
+			List<DBObject> pipeline = Arrays.asList(select, group);
+			AggregationOutput output = collection.aggregate(pipeline);
+
+			for (DBObject result : output.results()) {
+				numberOfTriples = Double.valueOf(result.get("sum").toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return numberOfTriples;
+	}
+
 //	/**
 //	 * 
 //	 * @return number of total triples by vocab
@@ -301,54 +316,54 @@ public class DistributionQueries {
 //		}
 //		return totalTriples;
 //	}
-//
-//	/**
-//	 * Get all distributions
-//	 * 
-//	 * @param vocabularies
-//	 *            specifies whether should vocabularies be added in the return
-//	 *            list. If the value is null, vocabularies ans distrubitions
-//	 *            will be returned
-//	 * @return a ArrayList of DistributionMongoDBObject
-//	 */
-//	public ArrayList<DistributionDB> getDistributions(Boolean vocabularies, String status, Integer datasetID) {
-//
-//		ArrayList<DistributionDB> list = new ArrayList<DistributionDB>();
-//
-//		DBCursor instances;
-//
-//		try {
-//			DBCollection collection = DBSuperClass.getDBInstance().getCollection(DistributionDB.COLLECTION_NAME);
-//
-//			BasicDBList and = new BasicDBList();
-//
-//			if (vocabularies != null) {
-//				if (vocabularies)
-//					and.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, true));
-//				else
-//					and.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
-//			}
-//
-//			if (status != null && status != "")
-//				and.add(new BasicDBObject(DistributionDB.STATUS, status));
-//
-//			if (datasetID != null)
-//				and.add(new BasicDBObject(DistributionDB.TOP_DATASET, datasetID));
-//
-//			if (and.size() > 0)
-//				instances = collection.find(new BasicDBObject("$and", and));
-//			else
-//				instances = collection.find();
-//
-//			for (DBObject instance : instances) {
-//				list.add(new DistributionDB(instance));
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return list;
-//	}
+
+	/**
+	 * Get all distributions
+	 * 
+	 * @param vocabularies
+	 *            specifies whether should vocabularies be added in the return
+	 *            list. If the value is null, vocabularies ans distrubitions
+	 *            will be returned
+	 * @return a ArrayList of DistributionMongoDBObject
+	 */
+	public ArrayList<DistributionDB> getDistributions(Boolean vocabularies, String status, String datasetID) {
+
+		ArrayList<DistributionDB> list = new ArrayList<DistributionDB>();
+
+		DBCursor instances;
+
+		try {
+			DBCollection collection = DBSuperClass.getDBInstance().getCollection(DistributionDB.COLLECTION_NAME);
+
+			BasicDBList and = new BasicDBList();
+
+			if (vocabularies != null) {
+				if (vocabularies)
+					and.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, true));
+				else
+					and.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
+			}
+
+			if (status != null && status != "")
+				and.add(new BasicDBObject(DistributionDB.STATUS, status));
+
+			if (datasetID != null)
+				and.add(new BasicDBObject(DistributionDB.TOP_DATASET, datasetID));
+
+			if (and.size() > 0)
+				instances = collection.find(new BasicDBObject("$and", and));
+			else
+				instances = collection.find();
+
+			for (DBObject instance : instances) {
+				list.add(new DistributionDB(instance));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
 //
 //	/**
 //	 * Get distributions using filters
