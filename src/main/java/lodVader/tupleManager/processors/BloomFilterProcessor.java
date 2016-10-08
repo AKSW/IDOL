@@ -49,6 +49,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	public BloomFilterCache subjectFilters = new BloomFilterCache(200000, 0.0000001);
 	public BloomFilterCache objectFilters = new BloomFilterCache(200000, 0.0000001);
 	public BloomFilterCache triplesFilter = new BloomFilterCache(200000, 0.0000001);
+	
 
 	DistributionDB distribution;
 
