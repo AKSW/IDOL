@@ -49,7 +49,6 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	public BloomFilterCache subjectFilters = new BloomFilterCache(200000, 0.0000001);
 	public BloomFilterCache objectFilters = new BloomFilterCache(200000, 0.0000001);
 	public BloomFilterCache triplesFilter = new BloomFilterCache(200000, 0.0000001);
-	
 
 	DistributionDB distribution;
 
@@ -116,7 +115,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 		try {
 			triplesWriter.write(triple + "\n");
-			if(subject.startsWith("http"))
+			if (subject.startsWith("http"))
 				subjectWriter.write(subject + "\n");
 			if (!object.startsWith("\""))
 				objectWriter.write(object + "\n");
@@ -164,7 +163,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 		HashMap<String, Integer> ns0 = new HashMap<>();
 		HashMap<String, Integer> ns = new HashMap<>();
 
-		HashSet<String> bfResources = new HashSet<>();
+		HashSet<String> bfTriples = new HashSet<>();
 
 		int lineCounter = 0;
 		int bfCounter = 0;
@@ -176,14 +175,19 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			NSUtils nsUtils = new NSUtils();
 			String lastLine = "";
 			while ((line = br.readLine()) != null) {
-				addToMap(ns, nsUtils.getNSFromString(line));
-				addToMap(ns0, nsUtils.getNS0(line));
 
+				// ignore repeated triples/resources
 				if (!line.equals(lastLine)) {
 					lastLine = line;
 					lineCounter++;
 
-					bfResources.add(line);
+					if (type == TYPE_OF_FILE.TRIPLES) {
+						bfTriples.add(line);
+					} else {
+						// extract ns if we are processing objects or subjects
+						addToMap(ns, nsUtils.getNSFromString(line));
+						addToMap(ns0, nsUtils.getNS0(line));
+					}
 
 					if (lineCounter % 200000 == 0) {
 						bfCounter++;
@@ -200,12 +204,13 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 							SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
 									GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 						}
-						saveBF(bfResources, type, bfCounter);
+
+						saveBF(bfTriples, type, bfCounter);
 
 						ns0 = new HashMap<>();
 						ns = new HashMap<>();
 
-						bfResources = new HashSet<>();
+						bfTriples = new HashSet<>();
 
 					}
 				}
@@ -223,11 +228,11 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 				SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
 						GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 			}
-			if(bfResources.size()>0)
-				saveBF(bfResources, type, bfCounter);
+			if (bfTriples.size() > 0)
+				saveBF(bfTriples, type, bfCounter);
 
 			br.close();
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,10 +261,11 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 		// remove old bloom filters
 		bucket.remove(distribution.getID());
-		
+
 		// create the new one
 
-		bucket.saveBF(bloomFilter, distribution.getID(), bfCounter, new ArrayList<String>(set).get(0),new ArrayList<String>(set).get(set.size()-1));
+		bucket.saveBF(bloomFilter, distribution.getID(), bfCounter, new ArrayList<String>(set).get(0),
+				new ArrayList<String>(set).get(set.size() - 1));
 
 	}
 
@@ -294,9 +300,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	public void saveFilters() {
 		closeFiles();
-		sortFile(objectTmpFilePath); 
-		sortFile(subjectTmpFilePath); 
-		sortFile(triplesTmpFilePath); 
+		sortFile(objectTmpFilePath);
+		sortFile(subjectTmpFilePath);
+		sortFile(triplesTmpFilePath);
 		saveResources(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
 		removeFile(objectTmpFilePath);
 		saveResources(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
