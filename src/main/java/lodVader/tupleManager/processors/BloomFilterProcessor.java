@@ -225,6 +225,8 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			if(bfResources.size()>0)
 				saveBF(bfResources, type, bfCounter);
 
+			br.close();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

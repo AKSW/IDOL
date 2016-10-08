@@ -133,7 +133,7 @@ public class DistributionController {
 //		else
 //			return format.format(new DistributionQueries().getNumberOfTriples(isVocab));
 	}
-//
+
 //	@RequestMapping(value = "/distribution/search")
 //	public StatusPageModel search(
 //			@RequestParam(value = "search[value]", required = false, defaultValue = "") String searchValue,
