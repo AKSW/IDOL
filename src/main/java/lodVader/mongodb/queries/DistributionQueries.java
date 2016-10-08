@@ -268,7 +268,7 @@ public class DistributionQueries {
 
 			BasicDBObject groupFields = new BasicDBObject("_id", null);
 
-			groupFields.append("sum", new BasicDBObject("$sum", "$triples"));
+			groupFields.append("sum", new BasicDBObject("$sum", "$numberOfTriples"));
 
 			DBObject group = new BasicDBObject("$group", groupFields);
 
