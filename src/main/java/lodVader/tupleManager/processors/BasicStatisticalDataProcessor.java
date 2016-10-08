@@ -42,6 +42,10 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	 */
 	public BasicStatisticalDataProcessor(DistributionDB distribution) {
 		this.distribution = distribution;
+		allPredicatesFileName = LODVaderProperties.TMP_FOLDER + "tmpPredicates_" + distribution.getID();
+		rdfTypeObjectsFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfTypeObjects_" + distribution.getID();
+		owlClassesFileName = LODVaderProperties.TMP_FOLDER + "tmpOwlClasses_" + distribution.getID();
+		rdfSubClassOfFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfSubClassOf_" + distribution.getID();
 		initializeWriters();
 	}
 
@@ -52,16 +56,16 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	Integer numberOfLiterals = 0;
 
 	// files
-	public String allPredicatesFileName = LODVaderProperties.TMP_FOLDER + "tmpPredicates_" + distribution.getID();
+	public String allPredicatesFileName;
 	public BufferedWriter allPredicatesWriter;
 
-	public String rdfTypeObjectsFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfTypeObjects_" + distribution.getID();
+	public String rdfTypeObjectsFileName;
 	public BufferedWriter rdfTypeObjectsWriter;
 
-	public String owlClassesFileName = LODVaderProperties.TMP_FOLDER + "tmpOwlClasses_" + distribution.getID();
+	public String owlClassesFileName;
 	public BufferedWriter owlClassesWriter;
 
-	public String rdfSubClassOfFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfSubClassOf_" + distribution.getID();
+	public String rdfSubClassOfFileName;
 	public BufferedWriter rdfSubClassOfWriter;
 
 	private void initializeWriters() {
