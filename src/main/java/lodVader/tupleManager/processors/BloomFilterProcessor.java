@@ -47,10 +47,6 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	final static Logger logger = LoggerFactory.getLogger(BloomFilterProcessor.class);
 
-	public BloomFilterCache subjectFilters = new BloomFilterCache(200000, 0.0000001);
-	public BloomFilterCache objectFilters = new BloomFilterCache(200000, 0.0000001);
-	public BloomFilterCache triplesFilter = new BloomFilterCache(200000, 0.0000001);
-
 	DistributionDB distribution;
 
 	String triplesTmpFilePath;

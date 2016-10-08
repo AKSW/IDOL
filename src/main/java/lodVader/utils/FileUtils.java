@@ -127,8 +127,9 @@ public class FileUtils {
 	}
 	
 	public void sortFile(String file) {
+		
 		try {
-			ExternalSort.sort(new File(file), new File(file + ".sorted"));
+			ExternalSortLocal.sort(new File(file), new File(file + ".sorted"));
 			removeFile(file);
 			Files.move(Paths.get(file + ".sorted"), Paths.get(file));
 
