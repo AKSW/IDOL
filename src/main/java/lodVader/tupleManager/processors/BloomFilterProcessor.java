@@ -190,8 +190,8 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 					bfResources.add(line);
 					
 					
-					// save NS into Mongodb each 50k ns
-					if (lineCounter % 20000 == 0) {
+					// save NS into Mongodb each 5k ns
+					if (lineCounter % 5000 == 0) {
 						if (type == TYPE_OF_FILE.OBJECT) {
 							SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
 									GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
