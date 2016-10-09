@@ -76,5 +76,21 @@ public interface BloomFilterI {
 	 * @return - filter size
 	 */
 	public double getFilterInitialSize();
+	
+	
+	/**
+	 * Bloom filter intersection operation
+	 * @param toIntersectWith bloom filter to make intersection with
+	 * @return the approximate number of common elements. 
+	 */
+	public Double intersection(BloomFilterI toIntersectWith);
+	
+	
+	/**
+	 * Return the BF implementation
+	 * @return
+	 */
+	public Object getImplementation();
+	
 
 }

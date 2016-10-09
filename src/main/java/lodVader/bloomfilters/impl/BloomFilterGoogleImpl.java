@@ -114,6 +114,22 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 		filter.writeTo(out);
 	}
 
+	/* (non-Javadoc)
+	 * @see lodVader.bloomfilters.BloomFilterI#intersection(lodVader.bloomfilters.BloomFilterI)
+	 */
+	@Override
+	public Double intersection(BloomFilterI toIntersectWith) {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see lodVader.bloomfilters.BloomFilterI#getImplementation()
+	 */
+	@Override
+	public Object getImplementation() {
+		return filter;
+	}
+
 
 
 }

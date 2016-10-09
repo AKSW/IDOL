@@ -4,12 +4,13 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
@@ -17,18 +18,17 @@ import com.mongodb.gridfs.GridFSInputFile;
 
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
-import lodVader.bloomfilters.impl.BloomFilterOrestesImpl;
 import lodVader.mongodb.DBSuperClass;
-import lodVader.utils.bloomfilter.BloomFilterCache;
-import orestes.bloomfilter.BloomFilter;
 
 public class BucketDB {
 
 	final static Logger logger = LoggerFactory.getLogger(BucketDB.class);
-	
+
 	public COLLECTIONS COLLECTION;
-	
-	public static enum COLLECTIONS {BLOOM_FILTER_SUBJECTS, BLOOM_FILTER_OBJECTS, BLOOM_FILTER_TRIPLES};
+
+	public static enum COLLECTIONS {
+		BLOOM_FILTER_SUBJECTS, BLOOM_FILTER_OBJECTS, BLOOM_FILTER_TRIPLES
+	};
 
 	static public String SEQUENCE_NR = "sequenceNr";
 
@@ -41,14 +41,13 @@ public class BucketDB {
 	static public String LAST = "last";
 
 	static public String FPP = "fpp";
-	
+
 	/**
-	 * Constructor for Class BucketDB 
+	 * Constructor for Class BucketDB
 	 */
 	public BucketDB(COLLECTIONS collection) {
 		this.COLLECTION = collection;
 	}
-	
 
 	public void saveBF(BloomFilterI bf, String distributionID, int bfSequenceNr, String first, String last) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -123,67 +122,36 @@ public class BucketDB {
 	// return result;
 	// }
 
-//	public BloomFilterCache loadCache(int distributionID) throws IOException {
-//
-//		BloomFilterCache bfCache = null;
-//
-//		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION_NAME);
-//
-//		BasicDBObject distribution = new BasicDBObject(DISTRIBUTION_ID, distributionID);
-//
-//		List<GridFSDBFile> caches = gfs.find(distribution);
-//
-//		for (GridFSDBFile cache : caches) {
-//			BloomFilterI filter = BloomFilterFactory.newBloomFilter();
-//
-//			if (bfCache == null) {
-//				filter.readFrom(cache.getInputStream());
-//				bfCache = new BloomFilterCache(Integer.parseInt(cache.get(SIZE).toString()),
-//						Double.parseDouble(cache.get(FPP).toString()), filter);
-//			} else {
-//				filter.readFrom(cache.getInputStream());
-//				bfCache.getListOfBF().add(filter);
-//			}
-//		}
-//
-//		return bfCache;
-//
-//	}
-	//
-	// public ArrayList<DatasetBFBucketDB> getFiltersFromDataset(int datasetID)
+	// public BloomFilterCache loadCache(int distributionID) throws IOException
 	// {
 	//
-	// // get all distributions within the dataset
-	// ArrayList<Integer> distributionsIDs = new
-	// DatasetQueries().getDistributionsIDs(datasetID);
+	// BloomFilterCache bfCache = null;
 	//
-	// ArrayList<DatasetBFBucketDB> result = new ArrayList<DatasetBFBucketDB>();
-	//
-	// // get collection
 	// GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION_NAME);
 	//
-	// // create query
-	// BasicDBObject in = new BasicDBObject("$in", distributionsIDs);
+	// BasicDBObject distribution = new BasicDBObject(DISTRIBUTION_ID,
+	// distributionID);
 	//
-	// BasicDBObject distributions = new BasicDBObject(DISTRIBUTION_ID, in);
+	// List<GridFSDBFile> caches = gfs.find(distribution);
 	//
-	// // make query
-	// List<GridFSDBFile> buckets = gfs.find(distributions);
-	//
-	// for (GridFSDBFile f : buckets) {
+	// for (GridFSDBFile cache : caches) {
 	// BloomFilterI filter = BloomFilterFactory.newBloomFilter();
-	// try {
-	// filter.readFrom(f.getInputStream());
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
+	//
+	// if (bfCache == null) {
+	// filter.readFrom(cache.getInputStream());
+	// bfCache = new
+	// BloomFilterCache(Integer.parseInt(cache.get(SIZE).toString()),
+	// Double.parseDouble(cache.get(FPP).toString()), filter);
+	// } else {
+	// filter.readFrom(cache.getInputStream());
+	// bfCache.getListOfBF().add(filter);
 	// }
-	// result.add(
-	// new DatasetBFBucketDB(filter, f.get(FIRST_RESOURCE).toString(),
-	// f.get(LAST_RESOURCE).toString()));
 	// }
 	//
-	// return result;
+	// return bfCache;
+	//
 	// }
+	//
+
 
 }

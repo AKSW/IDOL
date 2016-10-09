@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.DBObject;
 
+import lodVader.API.application.subsetdetection.SubsetDetection;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -41,9 +42,9 @@ import lodVader.tupleManager.processors.BloomFilterProcessor;
  */
 public class LODVader {
 
-//	public static void main(String[] args) {
-//		new LODVader().Manager();
-//	}
+	 public static void main(String[] args) {
+	 new LODVader().Manager();
+	 }
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
@@ -56,21 +57,53 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-		//
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
-//		parseFiles();
 
+		// parseFiles();
+//		streamDistributions();
+		detectDatasets();
+
+	}
+
+	/**
+	 * Parse description files such as DCAT, VoID, DataID, CKAN repositories,
+	 * etc.
+	 */
+	public void parseFiles() {
+
+		logger.info("Parsing files...");
+		// load ckan repositories into lodvader
+		// CKANRepositories ckanParsers = new CKANRepositories();
+		// ckanParsers.loadAllRepositories();
+
+		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
+		// loader.load(new
+		// CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+		// loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
+		loader.load(new LOVParser());
+		loader.parse();
+		// loader.load(new
+		// DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+		// loader.parse();
+		// loader.load(new
+		// CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+		// loader.parse();
+		// loader.load(new LodCloudParser());
+		// loader.parse();
+
+	}
+	
+	public void streamDistributions(){
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
-
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionStatus.WAITING_TO_STREAM.toString());
+				DistributionStatus.DONE.toString());
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
-		logger.info("Processing " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
+		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
 				+ " threads.");
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
@@ -87,35 +120,32 @@ public class LODVader {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		logger.info("And we are done processing everything!");
 
+		logger.info("And we are done processing everything!");
 	}
 
-	/**
-	 * Parse description files such as DCAT, VoID, DataID, CKAN repositories,
-	 * etc.
-	 */
-	public void parseFiles() {
+	public void detectDatasets() {
+
+//		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+		// load datasets with the status == waiting to stream
+		GeneralQueriesHelper queries = new GeneralQueriesHelper();
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+				DistributionStatus.WAITING_TO_STREAM.toString());
+
+		distributionsBeingProcessed.set(distributionObjects.size());
 
 		
-		logger.info("Parsing files...");
-		// load ckan repositories into lodvader
-		// CKANRepositories ckanParsers = new CKANRepositories();
-		// ckanParsers.loadAllRepositories();
+		for (DBObject object : distributionObjects) {
+			DistributionDB distribution = new DistributionDB(object);
+			logger.info("Discovering subset for " + distribution.getTitle() + ". " + distributionsBeingProcessed.getAndDecrement()
+					+ " to go.");
 
-		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
-//		loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-//		loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
-		loader.load(new LOVParser());
-		loader.parse();
-		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
-		loader.parse();
-		loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-		loader.parse();
-//		loader.load(new LodCloudParser());
-//		loader.parse();
+			SubsetDetection subsetDetection = new SubsetDetection(distribution);
+			subsetDetection.detectSubsets();
+			
+		}
 
+		logger.info("And we are done discovering subsets!");
 	}
 
 	/**

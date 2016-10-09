@@ -10,8 +10,6 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
 import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
-import lodVader.mongodb.collections.toplinks.TopInvalidLinks;
-import lodVader.mongodb.collections.toplinks.TopValidLinks;
 
 public class IndexesCreator {
 
@@ -48,14 +46,6 @@ public class IndexesCreator {
 			addIndex(collection.toString(), GeneralResourceRelationDB.DISTRIBUTION_ID, 1);
 			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1);
 		}
-
-		addIndex(TopInvalidLinks.COLLECTION_NAME, TopInvalidLinks.SOURCE_DISTRIBUTION_ID, 1);
-		addIndex(TopInvalidLinks.COLLECTION_NAME, TopInvalidLinks.TARGET_DISTRIBUTION_ID, 1);
-		addIndex(TopInvalidLinks.COLLECTION_NAME, TopInvalidLinks.AMOUNT, 1);
-
-		addIndex(TopValidLinks.COLLECTION_NAME, TopValidLinks.SOURCE_DISTRIBUTION_ID, 1);
-		addIndex(TopValidLinks.COLLECTION_NAME, TopValidLinks.TARGET_DISTRIBUTION_ID, 1);
-		addIndex(TopValidLinks.COLLECTION_NAME, TopValidLinks.AMOUNT, 1);
 
 	}
 

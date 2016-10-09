@@ -155,6 +155,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			String line;
 			NSUtils nsUtils = new NSUtils();
 			String lastLine = "";
+			int co= 0;
 			while ((line = br.readLine()) != null) {
 
 				// ignore repeated triples/resources
@@ -235,7 +236,6 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			bloomFilter.add(str);
 		}
 		
-
 		BucketDB bucket = null;
 
 		if (type == TYPE_OF_FILE.OBJECT) {

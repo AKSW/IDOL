@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import lodVader.bloomfilters.BloomFilterI;
+import lodVader.utils.Timer;
 import orestes.bloomfilter.BloomFilter;
 import orestes.bloomfilter.FilterBuilder;
 
@@ -137,6 +138,28 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 	
 	public boolean intersect(BloomFilterOrestesImpl bloomFilter){
 		return bf.intersect(bloomFilter.bf);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see lodVader.bloomfilters.BloomFilterI#intersection(lodVader.bloomfilters.BloomFilterI)
+	 */
+	@Override
+	public Double intersection(BloomFilterI toIntersectWith) {
+		
+		BloomFilter<String> newBF = bf.clone();
+		
+		if (newBF.intersect((BloomFilter<String>) toIntersectWith.getImplementation()))
+			return Math.floor(newBF.getEstimatedPopulation());		
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see lodVader.bloomfilters.BloomFilterI#getImplementation()
+	 */
+	@Override
+	public Object getImplementation() {
+		return bf;
 	}
 
 }
