@@ -4,6 +4,7 @@
 package lodVader.application;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.DBObject;
 
-import lodVader.application.subsetdetection.SubsetDetection;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -24,10 +24,10 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
-import lodVader.parsers.descriptionFileParser.Impl.DataIDFileParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
-import lodVader.parsers.descriptionFileParser.Impl.LodCloudParser;
+import lodVader.services.subsetDetection.SubsetDetectionService;
+import lodVader.services.subsetDetection.SubsetDetectorBFImpl;
+import lodVader.services.subsetDetection.SubsetDetectorI;
 import lodVader.streaming.LodVaderCoreStream;
 import lodVader.tupleManager.PipelineProcessor;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
@@ -42,9 +42,9 @@ import lodVader.tupleManager.processors.BloomFilterProcessor;
  */
 public class LODVader {
 
-	 public static void main(String[] args) {
-	 new LODVader().Manager();
-	 }
+	public static void main(String[] args) {
+		new LODVader().Manager();
+	}
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
@@ -61,7 +61,7 @@ public class LODVader {
 		s.configure();
 
 		// parseFiles();
-//		streamDistributions();
+		// streamDistributions();
 		detectDatasets();
 
 	}
@@ -93,8 +93,8 @@ public class LODVader {
 		// loader.parse();
 
 	}
-	
-	public void streamDistributions(){
+
+	public void streamDistributions() {
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
@@ -103,8 +103,8 @@ public class LODVader {
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
-		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
-				+ " threads.");
+		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with "
+				+ numberOfThreads + " threads.");
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
@@ -126,23 +126,29 @@ public class LODVader {
 
 	public void detectDatasets() {
 
-//		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
-		// load datasets with the status == waiting to stream
+
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
+
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
 				DistributionStatus.WAITING_TO_STREAM.toString());
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
-		
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			logger.info("Discovering subset for " + distribution.getTitle() + ". " + distributionsBeingProcessed.getAndDecrement()
-					+ " to go.");
+			logger.info("Discovering subset for " + distribution.getTitle() + "("+ distribution.getID()+"). "
+					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 
-			SubsetDetection subsetDetection = new SubsetDetection(distribution);
-			subsetDetection.detectSubsets();
-			
+			SubsetDetectorI subsetDetector = new SubsetDetectorBFImpl();
+			SubsetDetectionService subsetService = new SubsetDetectionService(subsetDetector, distribution);
+			HashMap<String, Double> r = subsetService.runDetector();
+
+			System.out.println();
+			System.out.println("====================");
+			for (String s : r.keySet()) {
+				System.out.println(s + "    " + r.get(s));
+			}
+
 		}
 
 		logger.info("And we are done discovering subsets!");

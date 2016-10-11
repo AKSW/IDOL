@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.application.subsetdetection;
+package lodVader.services.subsetDetection;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,7 @@ import lodVader.mongodb.collections.DistributionDB;
  * 
  * Oct 11, 2016
  */
-public interface SubsetDetectionI {
+public interface SubsetDetectorI {
 	
 	/**
 	 * Set the main distribution
@@ -26,7 +26,7 @@ public interface SubsetDetectionI {
 	 * Set the distributions which will be compared with the main distribution
 	 * @param targetDistributions
 	 */
-	public void setTargetDistributions(List<DistributionDB> targetDistributions);
+	public void setTargetDistributions(List<String> targetDistributionsIds);
 	
 	/**
 	 * Run the main method
@@ -35,8 +35,8 @@ public interface SubsetDetectionI {
 	
 	/**
 	 * Get the counters.
-	 * @param counters The key is the distribution ID and the value is the intersection counter
+	 * @return counters The key is the distribution ID and the value is the intersection counter
 	 */
-	public void getCounters(HashMap<String, Double> counters);	
+	public HashMap<String, Double> getCounters();	
 	
 }

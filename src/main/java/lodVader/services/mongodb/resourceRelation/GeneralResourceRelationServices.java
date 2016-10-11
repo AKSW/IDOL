@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.mongodb.services;
+package lodVader.services.mongodb.resourceRelation;
 
 import java.util.ArrayList;
 import java.util.List;
