@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.API.application.subsetdetection;
+package lodVader.application.subsetdetection;
 
 import java.util.ArrayList;
 import java.util.HashMap;

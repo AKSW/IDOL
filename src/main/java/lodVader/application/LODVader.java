@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.DBObject;
 
-import lodVader.API.application.subsetdetection.SubsetDetection;
+import lodVader.application.subsetdetection.SubsetDetection;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
