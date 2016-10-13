@@ -44,9 +44,9 @@ import lodVader.tupleManager.PipelineProcessor;
 import lodVader.utils.FileUtils;
 import lodVader.utils.FormatsUtils;
 
-public class LodVaderCoreStream {
+public class LODVaderCoreStream {
 
-	final static Logger logger = LoggerFactory.getLogger(LodVaderCoreStream.class);
+	final static Logger logger = LoggerFactory.getLogger(LODVaderCoreStream.class);
 
 	// HTTP header fields
 	public String httpDisposition = null;
@@ -76,22 +76,29 @@ public class LodVaderCoreStream {
 
 	String accessURL = null;
 
-	private PipelineProcessor tupleManager;
+	private PipelineProcessor pipelineProcessor;
+	
+	/**
+	 * Constructor for Class LODVaderCoreStream 
+	 */
+	public LODVaderCoreStream() {
+		PipelineProcessor pipelineProcessor = new PipelineProcessor();
+		this.pipelineProcessor = pipelineProcessor;
+	}
 
 	/**
 	 * @return the tupleManager
 	 */
 	public PipelineProcessor getTupleManager() {
-		return tupleManager;
+		return pipelineProcessor;
 	}
 
-	/**
-	 * @param tupleManager
-	 *            Set the tupleManager value.
-	 */
-	public void registerPipelineProcessor(PipelineProcessor tupleManager) {
-		this.tupleManager = tupleManager;
+	public PipelineProcessor getPipelineProcessor(){
+		return this.pipelineProcessor;
 	}
+//	public void registerPipelineProcessor(PipelineProcessor tupleManager) {
+//		this.tupleManager = tupleManager;
+//	}
 
 	protected void getMetadataFromHTTPHeaders(HttpURLConnection httpConn) {
 
@@ -179,7 +186,7 @@ public class LodVaderCoreStream {
 		try {
 
 			// set RDF handler
-			rdfParser.setRDFHandler(tupleManager);
+			rdfParser.setRDFHandler(pipelineProcessor);
 
 			// set OpenRDF parset config
 			ParserConfig config = new ParserConfig();

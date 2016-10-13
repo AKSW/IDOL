@@ -4,7 +4,6 @@
 package lodVader.application;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,11 +24,10 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
-import lodVader.services.subsetDetection.SubsetDetectionService;
-import lodVader.services.subsetDetection.SubsetDetectorBFImpl;
-import lodVader.services.subsetDetection.SubsetDetectorI;
-import lodVader.streaming.LodVaderCoreStream;
-import lodVader.tupleManager.PipelineProcessor;
+import lodVader.services.intersection.LODVaderIntersectionPlugin;
+import lodVader.services.intersection.SubsetDetectionService;
+import lodVader.services.intersection.SubsetDetectorBFImpl;
+import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor;
 
@@ -139,15 +137,10 @@ public class LODVader {
 			logger.info("Discovering subset for " + distribution.getTitle() + "("+ distribution.getID()+"). "
 					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 
-			SubsetDetectorI subsetDetector = new SubsetDetectorBFImpl();
-			SubsetDetectionService subsetService = new SubsetDetectionService(subsetDetector, distribution);
-			HashMap<String, Double> r = subsetService.runDetector();
-
-			System.out.println();
-			System.out.println("====================");
-			for (String s : r.keySet()) {
-				System.out.println(s + "    " + r.get(s));
-			}
+			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorBFImpl();
+//			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorHashSetImpl();
+			SubsetDetectionService subsetService = new SubsetDetectionService(subsetDetector, distribution); 
+			subsetService.saveSubsets();
 
 		}
 
@@ -176,19 +169,15 @@ public class LODVader {
 			Logger logger = LoggerFactory.getLogger(ProcessDataset.class);
 
 			// load the main LODVader streamer
-			LodVaderCoreStream coreStream = new LodVaderCoreStream();
-
-			// create a pipeline processor and register it on the streamer
-			PipelineProcessor pipelineProcessor = new PipelineProcessor();
-			coreStream.registerPipelineProcessor(pipelineProcessor);
+			LODVaderCoreStream coreStream = new LODVaderCoreStream();
 
 			// create some processors
 			BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
 			BloomFilterProcessor bfProcessor = new BloomFilterProcessor(distribution);
 
 			// register them into the pipeline
-			pipelineProcessor.registerProcessor(basicStatisticalProcessor);
-			pipelineProcessor.registerProcessor(bfProcessor);
+			coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
+			coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
 
 			// start processing
 			try {

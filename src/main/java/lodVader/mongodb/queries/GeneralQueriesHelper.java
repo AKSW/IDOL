@@ -9,7 +9,6 @@ import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 
 import lodVader.mongodb.DBSuperClass;
-import lodVader.mongodb.collections.ResourceDB;
 
 public class GeneralQueriesHelper {
 

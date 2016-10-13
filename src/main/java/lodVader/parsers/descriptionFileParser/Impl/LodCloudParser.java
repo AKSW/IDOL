@@ -34,7 +34,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
-import lodVader.streaming.LodVaderCoreStream;
+import lodVader.streaming.LODVaderCoreStream;
 import lodVader.utils.FormatsUtils;
 
 /**
@@ -181,7 +181,7 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 	@Override
 	public void parse() {
 
-		LodVaderCoreStream streamProcessor = new LodVaderCoreStream();
+		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
 		try {
 			streamProcessor.downloadUrl = new URL(repositoryAddress);
 			streamProcessor.openConnection();

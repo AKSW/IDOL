@@ -21,15 +21,7 @@ public class PipelineProcessor extends RDFHandlerBase {
 	List<BasicProcessorInterface> processors = new ArrayList<BasicProcessorInterface>();
 	
 	// number of triples processed
-	int triplesProcessed = 0;
-
-	/**
-	 * Constructor for Class PipelineProcessor 
-	 */
-	public PipelineProcessor() {
-		
-	}
-	
+	int triplesProcessed = 0;	
 	
 	/**
 	 * Register a new processor
@@ -56,8 +48,5 @@ public class PipelineProcessor extends RDFHandlerBase {
 				processor.process(st);
 			}
 	}
-	
-	
-	
 
 }

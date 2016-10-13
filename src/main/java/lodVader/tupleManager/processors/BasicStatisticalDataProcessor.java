@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
-import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
+import lodVader.mongodb.collections.Resources.GeneralResourceDB;
+import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.utils.FileUtils;
 
 /**

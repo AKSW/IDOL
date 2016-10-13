@@ -7,8 +7,8 @@ import com.mongodb.MongoCommandException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DescriptionFileParserDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.RDFResources.GeneralResourceDB;
-import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
+import lodVader.mongodb.collections.Resources.GeneralResourceDB;
+import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 
 public class IndexesCreator {

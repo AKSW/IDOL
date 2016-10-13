@@ -1,4 +1,4 @@
-package lodVader.mongodb.collections.RDFResources;
+package lodVader.mongodb.collections.Resources;
 
 import java.util.ArrayList;
 import java.util.HashMap;

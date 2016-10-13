@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.mongodb.BasicDBObject;
 
-import lodVader.mongodb.collections.RDFResources.GeneralResourceRelationDB;
+import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 
 /**
  * @author Ciro Baron Neto

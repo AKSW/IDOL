@@ -52,7 +52,7 @@ public class DBSuperClass {
 	// list of mandatory fields to check before store the object
 	protected ArrayList<String> mandatoryFields = new ArrayList<String>();
 
-	protected void addMandatoryField(String field) {
+	public void addMandatoryField(String field) {
 		mandatoryFields.add(field);
 	}
 
@@ -83,26 +83,26 @@ public class DBSuperClass {
 	}
 
 	// add pair key/value to the persistence object
-	protected void addField(String key, String val) {
+	public void addField(String key, String val) {
 		mongoDBObject.put(key, val);
 	}
 
-	protected void addField(String key, Double val) {
-		mongoDBObject.put(key, val);
-	}
-
-	// add pair key/value to the persistence object
-	protected void addField(String key, int val) {
+	public void addField(String key, Double val) {
 		mongoDBObject.put(key, val);
 	}
 
 	// add pair key/value to the persistence object
-	protected void addField(String key, boolean val) {
+	public void addField(String key, int val) {
+		mongoDBObject.put(key, val);
+	}
+
+	// add pair key/value to the persistence object
+	public void addField(String key, boolean val) {
 		mongoDBObject.put(key, val);
 	}
 
 	// get a value given a key
-	protected Object getField(String key) {
+	public Object getField(String key) {
 		// if (mongoDBObject.get(key) != null)
 		return mongoDBObject.get(key);
 		// else
