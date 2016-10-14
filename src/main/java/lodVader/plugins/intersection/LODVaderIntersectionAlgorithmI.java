@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.services.intersection;
+package lodVader.plugins.intersection;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +31,7 @@ public interface LODVaderIntersectionAlgorithmI {
 	 * @return counters The key is the distribution ID and the value is the
 	 *         intersection counter
 	 */
-	public HashMap<String, Double> detectSubsets(DistributionDB sourceDistribution,
+	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution,
 			List<String> targetDistributionsIDs);
 
 }

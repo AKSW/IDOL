@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.services.intersection;
+package lodVader.plugins.intersection.subset.linkset;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +12,7 @@ import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTI
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.collections.datasetBF.BucketDBHelper;
 import lodVader.plugins.LODVaderPlugin;
+import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.services.mongodb.resourceRelation.GeneralResourceRelationServices;
 
 /**
@@ -19,7 +20,7 @@ import lodVader.services.mongodb.resourceRelation.GeneralResourceRelationService
  * 
  * Oct 11, 2016
  */
-public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin{
+public class LinksetDetectorBFImpl extends LODVaderIntersectionPlugin{
 
 	
 	public static String PLUGIN_NAME = "SUBSET_BLOOM_FILTER_DETECTOR";
@@ -28,13 +29,13 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin{
 	 * Constructor for Class SubsetDetectorBFImpl 
 	 * @param pluginName
 	 */
-	public SubsetDetectorBFImpl() {
+	public LinksetDetectorBFImpl() {
 		super(PLUGIN_NAME);
 	}
 
 	private HashMap<String, List<BloomFilterI>> getBucketFromDatasets(List<String> distributions) {
 
-		return new BucketDBHelper().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributions);
+		return new BucketDBHelper().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_SUBJECTS, distributions);
 
 	}
 
@@ -42,7 +43,7 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin{
 	 * @see lodVader.application.subsetdetection.SubsetDetectionI#detectSubsets()
 	 */
 	@Override
-	public HashMap<String, Double> detectSubsets(DistributionDB sourceDistribution, List<String> targetDistributionsIDs) {
+	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution, List<String> targetDistributionsIDs) {
 		
 		HashMap<String, Double> returnMap = new HashMap<String, Double>();
 		

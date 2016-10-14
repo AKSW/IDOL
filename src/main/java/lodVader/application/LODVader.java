@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.DBObject;
 
+import lodVader.application.fileparser.CKANRepositories;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -24,9 +25,10 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
-import lodVader.services.intersection.LODVaderIntersectionPlugin;
-import lodVader.services.intersection.SubsetDetectionService;
-import lodVader.services.intersection.SubsetDetectorBFImpl;
+import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
+import lodVader.plugins.intersection.subset.SubsetDetectionService;
+import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
+import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor;
@@ -72,7 +74,7 @@ public class LODVader {
 
 		logger.info("Parsing files...");
 		// load ckan repositories into lodvader
-		// CKANRepositories ckanParsers = new CKANRepositories();
+		 CKANRepositories ckanParsers = new CKANRepositories();
 		// ckanParsers.loadAllRepositories();
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
@@ -137,9 +139,9 @@ public class LODVader {
 			logger.info("Discovering subset for " + distribution.getTitle() + "("+ distribution.getID()+"). "
 					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 
-			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorBFImpl();
+			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
 //			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorHashSetImpl();
-			SubsetDetectionService subsetService = new SubsetDetectionService(subsetDetector, distribution); 
+			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution); 
 			subsetService.saveSubsets();
 
 		}

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.services.intersection;
+package lodVader.plugins.intersection;
 
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.plugins.LODVaderPlugin;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.services.intersection;
+package lodVader.plugins.intersection.subset.distribution;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,6 +16,7 @@ import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.plugins.LODVaderPlugin;
+import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.SaveRawDataProcessor;
 
@@ -24,7 +25,7 @@ import lodVader.tupleManager.processors.SaveRawDataProcessor;
  * 
  *         Oct 11, 2016
  */
-public class SubsetDetectorHashSetImpl extends LODVaderIntersectionPlugin{
+public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionPlugin{
 	
 
 	public final static String PLUGIN_NAME = "SUBSET_HASH_SET_DETECTOR";
@@ -33,7 +34,7 @@ public class SubsetDetectorHashSetImpl extends LODVaderIntersectionPlugin{
 	 * Constructor for Class SubsetDetectorHashSetImpl 
 	 * @param pluginName
 	 */
-	public SubsetDetectorHashSetImpl() {
+	public SubsetDistributionDetectorHashSetImpl() {
 		super(PLUGIN_NAME);
 	}
 
@@ -45,7 +46,7 @@ public class SubsetDetectorHashSetImpl extends LODVaderIntersectionPlugin{
 	 * lodVader.application.subsetdetection.SubsetDetectionI#detectSubsets()
 	 */
 	@Override
-	public HashMap<String, Double> detectSubsets(DistributionDB sourceDistribution,
+	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution,
 			List<String> targetDistributionsIDs) {
 		
 		HashMap<String, Double> returnMap = new HashMap<String, Double>();
