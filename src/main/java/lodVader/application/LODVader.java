@@ -26,9 +26,8 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
-import lodVader.plugins.intersection.subset.SubsetDetectionService;
-import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
-import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
+import lodVader.plugins.intersection.subset.linkset.LinksetDetectionService;
+import lodVader.plugins.intersection.subset.linkset.LinksetDetectorBFImpl;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor;
@@ -139,10 +138,13 @@ public class LODVader {
 			logger.info("Discovering subset for " + distribution.getTitle() + "("+ distribution.getID()+"). "
 					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 
-			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
+//			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
 //			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorHashSetImpl();
-			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution); 
-			subsetService.saveSubsets();
+//			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution); 
+//			subsetService.saveSubsets();
+			LODVaderIntersectionPlugin linksetDetector = new LinksetDetectorBFImpl();
+			LinksetDetectionService linksetService = new LinksetDetectionService(linksetDetector, distribution); 
+			linksetService.saveSubsets();
 
 		}
 

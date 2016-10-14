@@ -29,6 +29,8 @@ import java.util.zip.GZIPOutputStream;
 
 import com.google.code.externalsorting.StringSizeEstimator;
 
+import lodVader.loader.LODVaderProperties;
+
 /**
  * Goal: offer a generic external-memory sorting program in Java.
  *
@@ -482,7 +484,7 @@ public class ExternalSortLocal {
 		} else {
 			Collections.sort(tmplist, cmp);
 		}
-		File newtmpfile = File.createTempFile("sortInBatch", "flatfile", tmpdirectory);
+		File newtmpfile = File.createTempFile("sortInBatch", "flatfile", new File(LODVaderProperties.TMP_FOLDER));
 		newtmpfile.deleteOnExit();
 		OutputStream out = new FileOutputStream(newtmpfile);
 		int ZIPBUFFERSIZE = 2048;

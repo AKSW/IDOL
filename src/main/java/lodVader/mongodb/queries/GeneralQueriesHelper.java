@@ -6,7 +6,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
 
 import lodVader.mongodb.DBSuperClass;
 
@@ -45,7 +44,7 @@ public class GeneralQueriesHelper {
 	 * @param value
 	 */
 	public void removeObjects(String collectionName, String field, String value) {
-		WriteResult a = DBSuperClass.getCollection(collectionName).remove(new BasicDBObject(field, value));
+		DBSuperClass.getCollection(collectionName).remove(new BasicDBObject(field, value));
 	}
 
 }

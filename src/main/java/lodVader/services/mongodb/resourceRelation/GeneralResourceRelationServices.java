@@ -6,6 +6,8 @@ package lodVader.services.mongodb.resourceRelation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.mongodb.BasicDBObject;
 
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
@@ -23,14 +25,14 @@ public class GeneralResourceRelationServices {
 	 * @param collection: the collection which should be queries 
 	 * @return a list is resources IDs
 	 */
-	public List<String> getSetOfResourcesID(String distriutionID, GeneralResourceRelationDB.COLLECTIONS collection) {
+	public List<ObjectId> getSetOfResourcesID(String distriutionID, GeneralResourceRelationDB.COLLECTIONS collection) {
 
-		List<String> resourcesIDs = new ArrayList<>();
+		List<ObjectId> resourcesIDs = new ArrayList<>();
 
 		BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distriutionID);
 		GeneralResourceRelationDB.getCollection(collection.toString())
 				.find(query).forEach((object) -> {
-					resourcesIDs.add(object.get(GeneralResourceRelationDB.PREDICATE_ID).toString());
+					resourcesIDs.add(new ObjectId(object.get(GeneralResourceRelationDB.PREDICATE_ID).toString()));
 				});
 
 		return resourcesIDs;
@@ -43,7 +45,7 @@ public class GeneralResourceRelationServices {
 	 * @param collection
 	 * @return a list of distributionIDs
 	 */
-	public List<String> getCommonDistributionsByResourceID(List<String> resourcesID, GeneralResourceRelationDB.COLLECTIONS collection) {
+	public List<String> getCommonDistributionsByResourceID(List<ObjectId> resourcesID, GeneralResourceRelationDB.COLLECTIONS collection) {
 
 		List<String> distributionsIDs = new ArrayList<>();
 

@@ -5,6 +5,8 @@ package lodVader.plugins.intersection.subset.distribution;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
@@ -34,10 +36,10 @@ public class SubsetDistributionDetectionService extends SubsetDetectionService{
 	 */
 	@Override
 	public List<String> loadTargetDatasetsIds() {
-		List<String> sourceNamespace = new GeneralResourceRelationServices().getSetOfResourcesID(distribution.getID(),
-				COLLECTIONS.RELATION_SUBJECT_NS);
+		List<ObjectId> sourceNamespace = new GeneralResourceRelationServices().getSetOfResourcesID(distribution.getID(),
+				COLLECTIONS.RELATION_SUBJECT_NS0);
 		return new GeneralResourceRelationServices().getCommonDistributionsByResourceID(sourceNamespace,
-				COLLECTIONS.RELATION_SUBJECT_NS);
+				COLLECTIONS.RELATION_SUBJECT_NS0);
 	}
 
 
