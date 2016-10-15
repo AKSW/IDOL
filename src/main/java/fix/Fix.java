@@ -26,6 +26,7 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
  */
 public class Fix {
 
+	ExecutorService ex = Executors.newFixedThreadPool(3);
 	/**
 	 * Constructor for Class Fix 
 	 */
@@ -43,6 +44,15 @@ public class Fix {
 				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS.toString());
 //		
 		
+		System.out.println("-- - - - - end");
+		try {
+			ex.awaitTermination(50, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ex.shutdown();
+		
 
 	}
 
@@ -54,7 +64,6 @@ public class Fix {
 		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
 				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 10000);
 		
-		ExecutorService ex = Executors.newFixedThreadPool(3);
 
 		int i = 0;
 		while (objects.size() > 0) {
@@ -72,14 +81,8 @@ public class Fix {
 					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 10000);
 		}
 		
+
 		System.out.println("end ");
-		try {
-			ex.awaitTermination(50, TimeUnit.DAYS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ex.shutdown();
 
 	}
 	
