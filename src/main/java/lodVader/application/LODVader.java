@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.DBObject;
 
-import lodVader.application.fileparser.CKANRepositories;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -59,9 +58,9 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 
-		// parseFiles();
-		// streamDistributions();
-		detectDatasets();
+		 parseFiles();
+		 streamDistributions();
+//		detectDatasets();
 
 	}
 
@@ -73,7 +72,7 @@ public class LODVader {
 
 		logger.info("Parsing files...");
 		// load ckan repositories into lodvader
-		 CKANRepositories ckanParsers = new CKANRepositories();
+//		 CKANRepositories ckanParsers = new CKANRepositories();
 		// ckanParsers.loadAllRepositories();
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
@@ -98,7 +97,7 @@ public class LODVader {
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionStatus.DONE.toString());
+				DistributionStatus.WAITING_TO_STREAM.toString());
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 

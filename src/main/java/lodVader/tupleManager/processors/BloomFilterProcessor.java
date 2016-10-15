@@ -6,14 +6,10 @@ package lodVader.tupleManager.processors;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,10 +18,6 @@ import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.code.externalsorting.ExternalSort;
-import com.hp.hpl.jena.ontology.OntTools.Path;
-import com.hp.hpl.jena.sparql.lang.SyntaxVarScope.BindScopeChecker;
-
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
 import lodVader.loader.LODVaderProperties;
@@ -33,10 +25,8 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
-import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.utils.FileUtils;
 import lodVader.utils.NSUtils;
-import lodVader.utils.bloomfilter.BloomFilterCache;
 
 /**
  * @author Ciro Baron Neto
