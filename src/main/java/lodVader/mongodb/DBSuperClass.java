@@ -391,6 +391,30 @@ public class DBSuperClass {
 		}
 		return isAck;
 	}
+	
+	
+	/**
+	 * MongoDB bulk remove
+	 * @param objects
+	 * @return
+	 */
+	public boolean bulkRemove(List<DBObject> objects) {
+
+		boolean isAck = false;
+		try {
+			if (objects.size() == 0)
+				return false;
+			BulkWriteOperation builder = getCollection().initializeUnorderedBulkOperation();
+			for (DBObject doc : objects) {
+				builder.find(doc).remove();
+			}
+			BulkWriteResult result = builder.execute();
+			isAck = result.isAcknowledged();
+		} catch (BulkWriteException e) {
+
+		}
+		return isAck;
+	}
 
 	@JsonIgnore
 	protected DBCollection getCollection() {

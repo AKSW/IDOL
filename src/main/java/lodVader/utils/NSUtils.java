@@ -14,10 +14,10 @@ public class NSUtils {
 			url = split[0] + "//" + split[2] + "/";
 		else if (!url.endsWith("/"))
 			url = url + "/";
-		if (url.startsWith("htt"))
+//		if (url.startsWith("htt"))
 			return url;
-		else
-			return "";
+//		else
+//			return "";
 	}
 
 	public String getNS1(String url) {
@@ -30,10 +30,10 @@ public class NSUtils {
 			url = split[0] + "//" + split[2] + "/" + split[3] + "/";
 		else
 			return null;
-		if (url.startsWith("htt"))
+//		if (url.startsWith("htt"))
 			return url;
-		else
-			return "";
+//		else
+//			return "";
 	}
 
 	public String getNSFromString(String url) {

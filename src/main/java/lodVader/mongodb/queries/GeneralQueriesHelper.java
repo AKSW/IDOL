@@ -20,12 +20,31 @@ public class GeneralQueriesHelper {
 	 * @return array of DBObject
 	 */
 	public ArrayList<DBObject> getObjects(String collectionName, String field, String value) {
+		return getObjects(collectionName, new BasicDBObject(field, value), null);
+	}
+
+	public ArrayList<DBObject> getObjects(String collectionName, DBObject query) {
+		return getObjects(collectionName, query, null);
+	}
+
+	/**
+	 * Get an array of MongoDB objects.
+	 * 
+	 * @param collectionName
+	 * @param object
+	 *            query
+	 * @return array of DBObject
+	 */
+	public ArrayList<DBObject> getObjects(String collectionName, DBObject query, Integer limit) {
 
 		ArrayList<DBObject> list = new ArrayList<DBObject>();
 		try {
 			DBCollection collection = DBSuperClass.getCollection(collectionName);
-			DBObject query = new BasicDBObject(field, value);
-			DBCursor instances = collection.find(query);
+			DBCursor instances;
+			if (limit == null)
+				instances = collection.find(query);
+			else
+				instances = collection.find(query).limit(limit);
 
 			for (DBObject instance : instances) {
 				list.add(instance);
@@ -39,6 +58,7 @@ public class GeneralQueriesHelper {
 
 	/**
 	 * Remove documents of a collection
+	 * 
 	 * @param collectionName
 	 * @param field
 	 * @param value
