@@ -26,7 +26,7 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
  */
 public class Fix {
 
-	ExecutorService ex = Executors.newFixedThreadPool(3);
+//	ExecutorService ex = Executors.newFixedThreadPool(3);
 	/**
 	 * Constructor for Class Fix 
 	 */
@@ -45,13 +45,13 @@ public class Fix {
 //		
 		
 		System.out.println("-- - - - - end");
-		try {
-			ex.awaitTermination(50, TimeUnit.DAYS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ex.shutdown();
+//		try {
+//			ex.awaitTermination(50, TimeUnit.DAYS);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		ex.shutdown();
 		
 
 	}
@@ -62,7 +62,7 @@ public class Fix {
 		List<DBObject> resourceIDs = new ArrayList<>();
 
 		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
-				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 10000);
+				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 50000);
 		
 
 		int i = 0;
@@ -74,11 +74,11 @@ public class Fix {
 				resourceIDs.add((new BasicDBObject("_id", new ObjectId(object.get("_id").toString()))));
 			}
 
-			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
-//			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
+//			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
+			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
 
 			objects = new GeneralQueriesHelper().getObjects(resource_collection,
-					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 10000);
+					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 50000);
 		}
 		
 
@@ -88,35 +88,35 @@ public class Fix {
 	
 	
 
-//	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection) {
-//		new DBSuperClass(relation_collection).bulkRemove(relationIDs);
-//		relationIDs = new ArrayList<>();
-//		new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
-//		resourceIDs = new ArrayList<>();
-//	}
-	
-	class Remove implements Runnable{
-		
-		List<DBObject> relationIDs;
-		List<DBObject> resourceIDs;
-		String resource_collection;
-		String relation_collection;
-		/**
-		 * Constructor for Class Fix.Remove 
-		 */
-		public Remove(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection ) {
-			this.relation_collection = relation_collection;
-			this.resource_collection = resource_collection;
-			this.relationIDs = relationIDs;
-			this.resourceIDs = resourceIDs;
-		}
-		
-		public void run() {
-			new DBSuperClass(relation_collection).bulkRemove(relationIDs);
-			relationIDs = new ArrayList<>();
-			new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
-			resourceIDs = new ArrayList<>();
-		}
+	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection) {
+		new DBSuperClass(relation_collection).bulkRemove(relationIDs);
+		relationIDs = new ArrayList<>();
+		new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
+		resourceIDs = new ArrayList<>();
 	}
+	
+//	class Remove implements Runnable{
+//		
+//		List<DBObject> relationIDs;
+//		List<DBObject> resourceIDs;
+//		String resource_collection;
+//		String relation_collection;
+//		/**
+//		 * Constructor for Class Fix.Remove 
+//		 */
+//		public Remove(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection ) {
+//			this.relation_collection = relation_collection;
+//			this.resource_collection = resource_collection;
+//			this.relationIDs = relationIDs;
+//			this.resourceIDs = resourceIDs;
+//		}
+//		
+//		public void run() {
+//			new DBSuperClass(relation_collection).bulkRemove(relationIDs);
+//			relationIDs = new ArrayList<>();
+//			new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
+//			resourceIDs = new ArrayList<>();
+//		}
+//	}
 
 }
