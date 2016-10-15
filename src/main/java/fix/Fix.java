@@ -32,11 +32,11 @@ public class Fix {
 	 */
 	public Fix() {
 
-		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0.toString(),
-				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0.toString());
-		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS.toString(),
-				
-				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS.toString());
+//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0.toString(),
+//				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0.toString());
+//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS.toString(),
+//				
+//				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS.toString());
 //
 		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0.toString(),
 				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0.toString());
@@ -55,7 +55,7 @@ public class Fix {
 		List<DBObject> resourceIDs = new ArrayList<>();
 
 		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
-				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 50000);
+				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000);
 		
 
 		int i = 0;
@@ -71,7 +71,7 @@ public class Fix {
 			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
 
 			objects = new GeneralQueriesHelper().getObjects(resource_collection,
-					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 50000);
+					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000);
 		}
 		
 
