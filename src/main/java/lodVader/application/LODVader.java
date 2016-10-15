@@ -40,9 +40,9 @@ import lodVader.tupleManager.processors.BloomFilterProcessor;
  */
 public class LODVader {
 
-//	public static void main(String[] args) {
-//		new LODVader().Manager();
-//	}
+	public static void main(String[] args) {
+		new LODVader().Manager();
+	}
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
@@ -59,7 +59,7 @@ public class LODVader {
 
 //		LODVaderConfigurator s = new LODVaderConfigurator();
 //		s.configure();
-
+//
 //		 parseFiles();
 //		 streamDistributions();
 //		detectDatasets();
