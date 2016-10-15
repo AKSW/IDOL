@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.DBObject;
 
+import fix.Fix;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.loader.LODVaderConfigurator;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
@@ -40,9 +40,9 @@ import lodVader.tupleManager.processors.BloomFilterProcessor;
  */
 public class LODVader {
 
-	public static void main(String[] args) {
-		new LODVader().Manager();
-	}
+//	public static void main(String[] args) {
+//		new LODVader().Manager();
+//	}
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
@@ -54,12 +54,14 @@ public class LODVader {
 	 * Main method
 	 */
 	public void Manager() {
+		
+		new Fix();
 
-		LODVaderConfigurator s = new LODVaderConfigurator();
-		s.configure();
+//		LODVaderConfigurator s = new LODVaderConfigurator();
+//		s.configure();
 
-		 parseFiles();
-		 streamDistributions();
+//		 parseFiles();
+//		 streamDistributions();
 //		detectDatasets();
 
 	}

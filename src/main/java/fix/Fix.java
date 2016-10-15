@@ -23,7 +23,10 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
  */
 public class Fix {
 
-	public static void main(String[] args) {
+	/**
+	 * Constructor for Class Fix 
+	 */
+	public Fix() {
 
 		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0.toString(),
 				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0.toString());
@@ -39,7 +42,7 @@ public class Fix {
 
 	}
 
-	public static void removeBlankNodes(String resource_collection, String relation_collection) {
+	public void removeBlankNodes(String resource_collection, String relation_collection) {
 
 		List<DBObject> relationIDs = new ArrayList<>();
 		List<DBObject> resourceIDs = new ArrayList<>();
@@ -62,7 +65,7 @@ public class Fix {
 
 	}
 
-	public static void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection) {
+	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection) {
 		new DBSuperClass(relation_collection).bulkRemove(relationIDs);
 		relationIDs = new ArrayList<>();
 		new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
