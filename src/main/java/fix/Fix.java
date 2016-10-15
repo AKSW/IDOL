@@ -45,14 +45,7 @@ public class Fix {
 //		
 		
 		System.out.println("-- - - - - end");
-//		try {
-//			ex.awaitTermination(50, TimeUnit.DAYS);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		ex.shutdown();
-		
+
 
 	}
 
@@ -67,7 +60,7 @@ public class Fix {
 
 		int i = 0;
 		while (objects.size() > 0) {
-			System.out.println(i++);
+			System.out.println(i++ +" Loading...");
 			for (DBObject object : objects) {
 				relationIDs
 						.add((new BasicDBObject("predicateID", new ObjectId(object.get("_id").toString()).toString())));
@@ -89,8 +82,11 @@ public class Fix {
 	
 
 	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection) {
+	System.out.println("removing relations...");
 		new DBSuperClass(relation_collection).bulkRemove(relationIDs);
 		relationIDs = new ArrayList<>();
+		System.out.println("removing relsources...");
+		
 		new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
 		resourceIDs = new ArrayList<>();
 	}
