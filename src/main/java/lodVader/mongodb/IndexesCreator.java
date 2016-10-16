@@ -41,8 +41,6 @@ public class IndexesCreator {
 		}
 
 		for (GeneralResourceRelationDB.COLLECTIONS collection : GeneralResourceRelationDB.COLLECTIONS.values()) {
-			addIndex(collection.toString(), GeneralResourceRelationDB.CUSTOM_ID, 1, true);
-			addIndex(collection.toString(), GeneralResourceRelationDB.DATASET_ID, 1);
 			addIndex(collection.toString(), GeneralResourceRelationDB.DISTRIBUTION_ID, 1);
 			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1);
 		}
