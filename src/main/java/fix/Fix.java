@@ -5,8 +5,6 @@ package fix;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.bson.types.ObjectId;
 
@@ -25,7 +23,7 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
  */
 public class Fix {
 
-	ExecutorService ex = Executors.newFixedThreadPool(3);
+//	ExecutorService ex = Executors.newFixedThreadPool(3);
 	/**
 	 * Constructor for Class Fix 
 	 */
@@ -66,12 +64,8 @@ public class Fix {
 				resourceIDs.add((new BasicDBObject("_id", new ObjectId(object.get("_id").toString()))));
 			}
 
-			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
-//			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
-			relationIDs = new ArrayList<>();
-			resourceIDs = new ArrayList<>();
-
-
+//			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
+			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
 
 			objects = new GeneralQueriesHelper().getObjects(resource_collection,
 					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000);
