@@ -56,6 +56,8 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 
 		// get BF from the source distribution
 		List<BloomFilterI> mainDistributionBFs = distributionsBF.get(sourceDistribution.getID());
+		
+		System.out.println(targetDistributionsIDs + " target distributions found.");
 
 		// compare all bfs
 		for (String targetDistribution : targetDistributionsIDs) {
