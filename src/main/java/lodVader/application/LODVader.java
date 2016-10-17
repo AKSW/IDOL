@@ -133,7 +133,7 @@ public class LODVader {
 
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 		
-		BasicDBList andList = new BasicDBList();
+		DBObject andList = new BasicDBObject();
 		andList.put(DistributionDB.IS_VOCABULARY, false);
 		andList.put(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString());
 
