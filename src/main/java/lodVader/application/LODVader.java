@@ -17,7 +17,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import fix.Fix;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -133,9 +132,11 @@ public class LODVader {
 
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 		
-		DBObject andList = new BasicDBObject();
-		andList.put(DistributionDB.IS_VOCABULARY, false);
-		andList.put(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString());
+		BasicDBList andList = new BasicDBList();
+		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
+		andList.add(new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
+		
+		System.err.println( new BasicDBObject("$and", andList));
 
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject("$and", andList));
 
