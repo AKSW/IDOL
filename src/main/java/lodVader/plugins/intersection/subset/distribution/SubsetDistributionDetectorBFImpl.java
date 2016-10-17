@@ -41,14 +41,14 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 		List<String> removeList = new ArrayList<String>();
 
 		// remove unused BFs from the cache 
-		for (String id : bfCache.keySet()) {
-			if (!distributions.contains(id)) {
-				removeList.add(id);
-			}
-		}
-		for(String remove: removeList){
-			bfCache.remove(remove);
-		}
+//		for (String id : bfCache.keySet()) {
+//			if (!distributions.contains(id)) {
+//				removeList.add(id);
+//			}
+//		}
+//		for(String remove: removeList){
+//			bfCache.remove(remove);
+//		}
 		
 		// make sure that we are not loading the same BF 2 times in a row
 		List<String> distributionsQuery = new ArrayList<String>();
