@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import fix.Fix;
@@ -130,9 +132,12 @@ public class LODVader {
 
 
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
+		
+		BasicDBList andList = new BasicDBList();
+		andList.put(DistributionDB.IS_VOCABULARY, false);
+		andList.put(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString());
 
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionStatus.DONE.toString());
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject("$and", andList));
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
