@@ -33,15 +33,16 @@ public class LinksetDetectionService extends SubsetDetectionService{
 
 	@Override
 	public List<String> loadTargetDatasetsIds() {
-			List<ObjectId> sourceNamespaceIDs = new GeneralResourceRelationServices().getSetOfResourcesID(distribution.getID(),
-					COLLECTIONS.RELATION_OBJECT_NS0);
-			
-			List<String>  sourceResourcesURL = new GeneralResourceServices().getSetOfResourcesURL(sourceNamespaceIDs, lodVader.mongodb.collections.Resources.GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0);
-			
-			List<ObjectId>  targetNamespacesIDs = new GeneralResourceServices().getSetOfResourcesID(sourceResourcesURL, lodVader.mongodb.collections.Resources.GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0);
-			
-			return new GeneralResourceRelationServices().getCommonDistributionsByResourceID(targetNamespacesIDs,
-					COLLECTIONS.RELATION_SUBJECT_NS0);
+		return null;
+//			List<ObjectId> sourceNamespaceIDs = new GeneralResourceRelationServices().getSetOfResourcesID(distribution.getID(),
+//					COLLECTIONS.RELATION_OBJECT_NS0);
+//			
+//			List<String>  sourceResourcesURL = new GeneralResourceServices().getSetOfResourcesURL(sourceNamespaceIDs, lodVader.mongodb.collections.Resources.GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0);
+//			
+//			List<ObjectId>  targetNamespacesIDs = new GeneralResourceServices().getSetOfResourcesID(sourceResourcesURL, lodVader.mongodb.collections.Resources.GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0);
+//			
+//			return new GeneralResourceRelationServices().getCommonDistributionsByResourceID(targetNamespacesIDs,
+//					COLLECTIONS.RELATION_SUBJECT_NS0);
 	}
 	
 }
