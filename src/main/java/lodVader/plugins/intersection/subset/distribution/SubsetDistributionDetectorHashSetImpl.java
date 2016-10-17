@@ -25,19 +25,18 @@ import lodVader.tupleManager.processors.SaveRawDataProcessor;
  * 
  *         Oct 11, 2016
  */
-public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionPlugin{
-	
+public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionPlugin {
 
 	public final static String PLUGIN_NAME = "SUBSET_HASH_SET_DETECTOR";
 
 	/**
-	 * Constructor for Class SubsetDetectorHashSetImpl 
+	 * Constructor for Class SubsetDetectorHashSetImpl
+	 * 
 	 * @param pluginName
 	 */
 	public SubsetDistributionDetectorHashSetImpl() {
 		super(PLUGIN_NAME);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -48,9 +47,8 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 	@Override
 	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution,
 			List<String> targetDistributionsIDs) {
-		
-		HashMap<String, Double> returnMap = new HashMap<String, Double>();
 
+		HashMap<String, Double> returnMap = new HashMap<String, Double>();
 
 		String prefix = "dist_";
 
@@ -64,45 +62,47 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 			SaveRawDataProcessor processor = new SaveRawDataProcessor(sourceDistribution, fileName);
 
 			stream.getPipelineProcessor().registerProcessor(processor);
+
 			try {
 				stream.startParsing(sourceDistribution);
 			} catch (IOException | LODVaderLODGeneralException | LODVaderFormatNotAcceptedException e) {
 				e.printStackTrace();
 			}
+			processor.saveFile();
 
-		} else {
+			sourceSet = loadSetFromDisk(fileName);
+		}
 
-			for (String targetDistributionID : targetDistributionsIDs) {
-				String targetDistributionFileName = prefix + targetDistributionID;
-				HashSet<String> targetSet = loadSetFromDisk(targetDistributionFileName);
+		for (String targetDistributionID : targetDistributionsIDs) {
+			String targetDistributionFileName = prefix + targetDistributionID;
+			HashSet<String> targetSet = loadSetFromDisk(targetDistributionFileName);
 
-				DistributionDB targetDistribution = new DistributionDB();
-				targetDistribution.find(true, DistributionDB.ID, targetDistributionID);
+			DistributionDB targetDistribution = new DistributionDB();
+			targetDistribution.find(true, DistributionDB.ID, targetDistributionID);
 
-				if (targetSet == null) {
-					LODVaderCoreStream stream = new LODVaderCoreStream();
+			if (targetSet == null) {
+				LODVaderCoreStream stream = new LODVaderCoreStream();
 
-					SaveRawDataProcessor processor = new SaveRawDataProcessor(targetDistribution,
-							targetDistributionFileName);
-					
-					stream.getPipelineProcessor().registerProcessor(processor);
-					try {
-						stream.startParsing(targetDistribution);
-					} catch (IOException | LODVaderLODGeneralException | LODVaderFormatNotAcceptedException e) {
-						e.printStackTrace();
-					}
-					targetSet = loadSetFromDisk(targetDistributionFileName);
+				SaveRawDataProcessor processor = new SaveRawDataProcessor(targetDistribution,
+						targetDistributionFileName);
 
+				stream.getPipelineProcessor().registerProcessor(processor);
+				try {
+					stream.startParsing(targetDistribution);
+				} catch (IOException | LODVaderLODGeneralException | LODVaderFormatNotAcceptedException e) {
+					e.printStackTrace();
 				}
-				Double commonTriples = compareTwoSets(sourceSet, targetSet);
-				if (commonTriples > 0.0) {
-					returnMap.put(targetDistributionID, commonTriples);
-				}
+				targetSet = loadSetFromDisk(targetDistributionFileName);
+				processor.saveFile();
 
+			}
+			Double commonTriples = compareTwoSets(sourceSet, targetSet);
+			if (commonTriples > 0.0) {
+				returnMap.put(targetDistributionID, commonTriples);
 			}
 
 		}
-		
+
 		return returnMap;
 
 	}

@@ -25,6 +25,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
+import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
@@ -57,15 +58,15 @@ public class LODVader {
 	 * Main method
 	 */
 	public void Manager() {
-		
-//		new Fix();
+
+		// new Fix();
 
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
-//
-//		 parseFiles();
-//		 streamDistributions();
-		detectDatasets();
+		//
+		 parseFiles();
+		 streamDistributions();
+//		detectDatasets();
 
 	}
 
@@ -77,7 +78,7 @@ public class LODVader {
 
 		logger.info("Parsing files...");
 		// load ckan repositories into lodvader
-//		 CKANRepositories ckanParsers = new CKANRepositories();
+		// CKANRepositories ckanParsers = new CKANRepositories();
 		// ckanParsers.loadAllRepositories();
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
@@ -86,13 +87,13 @@ public class LODVader {
 		// loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
 		loader.load(new LOVParser());
 		loader.parse();
-		// loader.load(new
-		// DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+//		 loader.load(new
+//		 DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
 		// loader.parse();
-		// loader.load(new
-		// CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-		// loader.parse();
-		// loader.load(new LodCloudParser());
+		 loader.load(new
+		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+		 loader.parse();
+//		 loader.load(new LodCloudParser());
 		// loader.parse();
 
 	}
@@ -129,31 +130,35 @@ public class LODVader {
 
 	public void detectDatasets() {
 
-
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
-		
-		BasicDBList andList = new BasicDBList();
-		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
-		andList.add(new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
-		
-		System.err.println( new BasicDBObject("$and", andList));
 
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject("$and", andList), null, DistributionDB.URI);
+		BasicDBList andList = new BasicDBList();
+		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, true));
+		andList.add(new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
+
+		System.err.println(new BasicDBObject("$and", andList));
+
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject("$and", andList), null, DistributionDB.URI);
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			logger.info("Discovering subset for " + distribution.getTitle() + "("+ distribution.getID()+"). "
+			logger.info("Discovering subset for " + distribution.getTitle() + "(" + distribution.getID() + "). "
 					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 
-			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
-//			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorHashSetImpl();
-			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution); 
+			 LODVaderIntersectionPlugin subsetDetector = new
+			 SubsetDistributionDetectorBFImpl();
+//			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorHashSetImpl(); 
+			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution);
 			subsetService.saveSubsets();
-//			LODVaderIntersectionPlugin linksetDetector = new LinksetDetectorBFImpl();
-//			LinksetDetectionService linksetService = new LinksetDetectionService(linksetDetector, distribution); 
-//			linksetService.saveSubsets();
+
+			// LODVaderIntersectionPlugin linksetDetector = new
+			// LinksetDetectorBFImpl();
+			// LinksetDetectionService linksetService = new
+			// LinksetDetectionService(linksetDetector, distribution);
+			// linksetService.saveSubsets();
 
 		}
 

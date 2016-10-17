@@ -3,9 +3,6 @@
  */
 package lodVader.bloomfilters.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -13,9 +10,9 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import lodVader.bloomfilters.BloomFilterI;
-import lodVader.utils.Timer;
 import orestes.bloomfilter.BloomFilter;
 import orestes.bloomfilter.FilterBuilder;
+import orestes.bloomfilter.HashProvider.HashMethod;
 
 /**
  * @author Ciro Baron Neto
@@ -44,9 +41,13 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 			fpp = 0.00000001;
 		if (initialSize < 200000)
 			initialSize = 200000;
+		
+		//murmu
+		// carter
 
 		if (bf == null)
-			bf = new FilterBuilder(initialSize, fpp).buildBloomFilter();
+			bf = new FilterBuilder(initialSize, fpp).hashes(1).hashFunction(HashMethod.Murmur3).
+			buildBloomFilter();
 		this.initialSize = initialSize;
 		this.fpp = fpp;
 		return true;

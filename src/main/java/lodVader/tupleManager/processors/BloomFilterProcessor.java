@@ -81,7 +81,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -145,7 +145,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			String line;
 			NSUtils nsUtils = new NSUtils();
 			String lastLine = "";
-			int co= 0;
+			int co = 0;
 			while ((line = br.readLine()) != null) {
 
 				// ignore repeated triples/resources
@@ -158,10 +158,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 						addToMap(ns, nsUtils.getNSFromString(line));
 						addToMap(ns0, nsUtils.getNS0(line));
 					}
-					
+
 					bfResources.add(line);
-					
-					
+
 					// save NS into Mongodb each 5k ns
 					if (lineCounter % 5000 == 0) {
 						if (type == TYPE_OF_FILE.OBJECT) {
@@ -177,9 +176,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 						}
 						ns0 = new HashMap<>();
 						ns = new HashMap<>();
-					}					
-					
-					
+					}
 
 					// save Bloom filters each 200k
 					if (lineCounter % 200000 == 0) {
@@ -219,13 +216,29 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	}
 
 	private void saveBF(HashSet<String> set, TYPE_OF_FILE type, int bfCounter) {
+
+		if (type.toString().equals(TYPE_OF_FILE.TRIPLES.toString())) {
+			BufferedWriter w;
+			try {
+				w = new BufferedWriter(
+						new FileWriter(new File("/home/ciro/lodvaderdata/tmp/ciro" + distribution.getID())));
+				for (String s : set) {
+					w.write(s + "\n");
+				}
+				w.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		BloomFilterI bloomFilter = BloomFilterFactory.newBloomFilter();
 		bloomFilter.create(200000, 0.0000001);
 
 		for (String str : set) {
 			bloomFilter.add(str);
 		}
-		
+
 		BucketDB bucket = null;
 
 		if (type == TYPE_OF_FILE.OBJECT) {
@@ -276,9 +289,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	public void saveFilters() {
 		closeFiles();
-		
+
 		FileUtils fileUtils = new FileUtils();
-		
+
 		fileUtils.sortFile(objectTmpFilePath);
 		fileUtils.sortFile(subjectTmpFilePath);
 		fileUtils.sortFile(triplesTmpFilePath);

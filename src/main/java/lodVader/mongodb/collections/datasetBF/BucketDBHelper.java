@@ -14,7 +14,6 @@ import com.mongodb.gridfs.GridFSDBFile;
 
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
-import lodVader.bloomfilters.impl.BloomFilterOrestesImpl;
 import lodVader.mongodb.DBSuperClass;
 
 /**
@@ -32,7 +31,7 @@ public class BucketDBHelper {
 
 		// get collection
 		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), collection.toString());
-
+		
 		// create query
 		BasicDBObject distributions = new BasicDBObject(BucketDB.DISTRIBUTION_ID, new BasicDBObject("$in", distributionsIDs));
 
