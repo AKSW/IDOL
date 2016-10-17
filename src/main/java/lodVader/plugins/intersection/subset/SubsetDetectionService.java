@@ -50,7 +50,7 @@ public abstract class SubsetDetectionService {
 	public abstract List<String> loadTargetDatasetsIds();
 
 	public void saveSubsets() {
-		if (datasetsIDs == null)
+		if (datasetsIDs == null) 
 			datasetsIDs = loadTargetDatasetsIds();
 
 		HashMap<String, Double> results = subsetDetector.runDetection(distribution, datasetsIDs);

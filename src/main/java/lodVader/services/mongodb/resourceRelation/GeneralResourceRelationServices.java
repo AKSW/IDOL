@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 
+import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 
 /**
@@ -31,9 +32,30 @@ public class GeneralResourceRelationServices {
 
 		BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distriutionID);
 		GeneralResourceRelationDB.getCollection(collection.toString())
-				.find(query).forEach((object) -> {
-					resourcesIDs.add(new ObjectId(object.get(GeneralResourceRelationDB.PREDICATE_ID).toString()));
-				});
+		.find(query).forEach((object) -> {
+			resourcesIDs.add(new ObjectId(object.get(GeneralResourceRelationDB.PREDICATE_ID).toString()));
+		});
+		
+
+		return resourcesIDs;
+	}
+	
+	/**
+	 * Get a set of resources described by a distribution
+	 * @param distriutionID: the distribution ID
+	 * @param collection: the collection which should be queries 
+	 * @return a list is resources IDs
+	 */
+	public List<String> getSetOfResourcesIDAsString(String distriutionID, GeneralResourceRelationDB.COLLECTIONS collection) {
+
+		List<String> resourcesIDs = new ArrayList<>();
+
+		BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distriutionID);
+		GeneralResourceRelationDB.getCollection(collection.toString())
+		.find(query).forEach((object) -> {
+			resourcesIDs.add(object.get(GeneralResourceRelationDB.PREDICATE_ID).toString());
+		});
+		
 
 		return resourcesIDs;
 	}
@@ -45,7 +67,7 @@ public class GeneralResourceRelationServices {
 	 * @param collection
 	 * @return a list of distributionIDs
 	 */
-	public List<String> getCommonDistributionsByResourceID(List<ObjectId> resourcesID, GeneralResourceRelationDB.COLLECTIONS collection) {
+	public List<String> getCommonDistributionsByResourceID(List<String> resourcesID, GeneralResourceRelationDB.COLLECTIONS collection) {
 
 		List<String> distributionsIDs = new ArrayList<>();
 
@@ -56,7 +78,7 @@ public class GeneralResourceRelationServices {
 				.find(query).forEach((object) -> {
 					distributionsIDs.add(object.get(GeneralResourceRelationDB.DISTRIBUTION_ID).toString());
 				});
-
+		
 		return distributionsIDs;
 	}
 

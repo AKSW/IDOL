@@ -26,8 +26,9 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
-import lodVader.plugins.intersection.subset.linkset.LinksetDetectionService;
-import lodVader.plugins.intersection.subset.linkset.LinksetDetectorBFImpl;
+import lodVader.plugins.intersection.subset.SubsetDetectionService;
+import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
+import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor;
@@ -41,9 +42,9 @@ import lodVader.tupleManager.processors.BloomFilterProcessor;
  */
 public class LODVader {
 
-//	public static void main(String[] args) {
-//		new LODVader().Manager();
-//	}
+	public static void main(String[] args) {
+		new LODVader().Manager();
+	}
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
@@ -56,14 +57,14 @@ public class LODVader {
 	 */
 	public void Manager() {
 		
-		new Fix();
+//		new Fix();
 
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 //
 //		 parseFiles();
-		 streamDistributions();
-//		detectDatasets();
+//		 streamDistributions();
+		detectDatasets();
 
 	}
 
@@ -131,7 +132,7 @@ public class LODVader {
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionStatus.WAITING_TO_STREAM.toString());
+				DistributionStatus.DONE.toString());
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
@@ -140,13 +141,13 @@ public class LODVader {
 			logger.info("Discovering subset for " + distribution.getTitle() + "("+ distribution.getID()+"). "
 					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 
-//			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
+			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
 //			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorHashSetImpl();
-//			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution); 
-//			subsetService.saveSubsets();
-			LODVaderIntersectionPlugin linksetDetector = new LinksetDetectorBFImpl();
-			LinksetDetectionService linksetService = new LinksetDetectionService(linksetDetector, distribution); 
-			linksetService.saveSubsets();
+			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution); 
+			subsetService.saveSubsets();
+//			LODVaderIntersectionPlugin linksetDetector = new LinksetDetectorBFImpl();
+//			LinksetDetectionService linksetService = new LinksetDetectionService(linksetDetector, distribution); 
+//			linksetService.saveSubsets();
 
 		}
 
