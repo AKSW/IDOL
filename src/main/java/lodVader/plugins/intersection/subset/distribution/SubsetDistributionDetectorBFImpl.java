@@ -50,6 +50,7 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 			List<String> targetDistributionsIDs) {
 
 		HashMap<String, Double> returnMap = new HashMap<String, Double>();
+		System.out.println(targetDistributionsIDs.size() + " target distributions found.");
 
 		// load the buckets of the source and the target distriution
 		HashMap<String, List<BloomFilterI>> distributionsBF = getBucketFromDatasets(targetDistributionsIDs);
@@ -57,7 +58,6 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 		// get BF from the source distribution
 		List<BloomFilterI> mainDistributionBFs = distributionsBF.get(sourceDistribution.getID());
 		
-		System.out.println(targetDistributionsIDs.size() + " target distributions found.");
 
 		// compare all bfs
 		for (String targetDistribution : targetDistributionsIDs) {
