@@ -51,10 +51,12 @@ public class NSUtils {
 
 			return url.substring(0, index + 1);
 		} else {
-			int index = StringUtils.ordinalIndexOf(url, "/", 7);
+			int index = StringUtils.ordinalIndexOf(url, "/", 5);
 			return url.substring(0, index + 1);
 		}
 	}
+
+
 
 	public String getNSFromString(String url, int nsLevel) {
 		if (url.length() > 1024)

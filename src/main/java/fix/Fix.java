@@ -13,8 +13,8 @@ import com.mongodb.DBObject;
 
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
-import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
+import lodVader.utils.NSUtils;
 
 /**
  * @author Ciro Baron Neto
@@ -35,24 +35,57 @@ public class Fix {
 //				
 //				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS.toString());
 //
-		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0.toString(),
-				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0.toString());
-		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS.toString(),
-				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS.toString());
+//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0.toString(),
+//				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0.toString());
+//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS.toString(),
+//				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS.toString());
 //		
 		
 		System.out.println("-- - - - - end");
 
 
 	}
+	
+	
+	
+//	public void getNS(String resource_collection, String relation_collection){
+//		
+//		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
+//				new BasicDBObject(), null, "uri");
+//		
+//		
+//		List<String> ids = new ArrayList<>();
+//		NSUtils nsUtils = new NSUtils();
+//		String lastURINS = nsUtils.getNSFromString(objects.iterator().next().get("uri").toString());
+//		
+//		for(DBObject object : objects){
+//			String uri = object.get("uri").toString();
+//			String ns = nsUtils.getNSFromString(uri);
+//			if(ns.startsWith(lastURINS))
+//				ids.add(object.get("_id").toString());
+//			else{
+//				// remove 
+//				lastURINS = ns;
+//			}
+//				
+//		}
+//		
+//		
+//		
+//		
+//		
+//	}
+	
+	
+	
 
 	public void removeBlankNodes(String resource_collection, String relation_collection) {
 
-		List<DBObject> relationIDs = new ArrayList<>();
+		List<DBObject> relationIDs = new ArrayList<>(); 
 		List<DBObject> resourceIDs = new ArrayList<>();
 
 		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
-				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000);
+				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
 		
 
 		int i = 0;
@@ -66,9 +99,9 @@ public class Fix {
 
 //			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
 			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
-
+ 
 			objects = new GeneralQueriesHelper().getObjects(resource_collection,
-					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000);
+					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
 		}
 		
 

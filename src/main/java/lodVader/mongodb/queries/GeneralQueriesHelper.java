@@ -20,11 +20,16 @@ public class GeneralQueriesHelper {
 	 * @return array of DBObject
 	 */
 	public ArrayList<DBObject> getObjects(String collectionName, String field, String value) {
-		return getObjects(collectionName, new BasicDBObject(field, value), null);
+		return getObjects(collectionName, new BasicDBObject(field, value), null, null);
 	}
 
+	public ArrayList<DBObject> getObjects(String collectionName, String field, String value, String sort) {
+		return getObjects(collectionName, new BasicDBObject(field, value), null, sort);
+	}
+
+	
 	public ArrayList<DBObject> getObjects(String collectionName, DBObject query) {
-		return getObjects(collectionName, query, null);
+		return getObjects(collectionName, query, null, null);
 	}
 
 	/**
@@ -35,16 +40,24 @@ public class GeneralQueriesHelper {
 	 *            query
 	 * @return array of DBObject
 	 */
-	public ArrayList<DBObject> getObjects(String collectionName, DBObject query, Integer limit) {
+	public ArrayList<DBObject> getObjects(String collectionName, DBObject query, Integer limit, String sort) {
 
 		ArrayList<DBObject> list = new ArrayList<DBObject>();
 		try {
 			DBCollection collection = DBSuperClass.getCollection(collectionName);
 			DBCursor instances;
-			if (limit == null)
-				instances = collection.find(query);
-			else
-				instances = collection.find(query).limit(limit);
+			if (limit == null) {
+				if (sort == null)
+					instances = collection.find(query);
+				else
+					instances = collection.find(query).sort(new BasicDBObject(sort, 1));
+
+			} else {
+				if (sort == null)
+					instances = collection.find(query).limit(limit);
+				else
+					instances = collection.find(query).limit(limit).sort(new BasicDBObject(sort, 1));
+			}
 
 			for (DBObject instance : instances) {
 				list.add(instance);
