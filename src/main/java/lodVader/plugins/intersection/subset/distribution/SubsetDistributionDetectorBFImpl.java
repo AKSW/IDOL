@@ -18,15 +18,15 @@ import lodVader.services.mongodb.resourceRelation.GeneralResourceRelationService
 /**
  * @author Ciro Baron Neto
  * 
- * Oct 11, 2016
+ *         Oct 11, 2016
  */
-public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin{
+public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin {
 
-	
 	public static String PLUGIN_NAME = "SUBSET_BLOOM_FILTER_DETECTOR";
-	
+
 	/**
-	 * Constructor for Class SubsetDetectorBFImpl 
+	 * Constructor for Class SubsetDetectorBFImpl
+	 * 
 	 * @param pluginName
 	 */
 	public SubsetDistributionDetectorBFImpl() {
@@ -39,14 +39,18 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 
 	}
 
-	/* (non-Javadoc)
-	 * @see lodVader.application.subsetdetection.SubsetDetectionI#detectSubsets()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * lodVader.application.subsetdetection.SubsetDetectionI#detectSubsets()
 	 */
 	@Override
-	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution, List<String> targetDistributionsIDs) {
-		
+	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution,
+			List<String> targetDistributionsIDs) {
+
 		HashMap<String, Double> returnMap = new HashMap<String, Double>();
-		
+
 		// load the buckets of the source and the target distriution
 		HashMap<String, List<BloomFilterI>> distributionsBF = getBucketFromDatasets(targetDistributionsIDs);
 
@@ -55,21 +59,23 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 
 		// compare all bfs
 		for (String targetDistribution : targetDistributionsIDs) {
-			
-			double commonTriples = 0.0;
+			if (!targetDistribution.equals(sourceDistribution.getID())) {
 
-			// iterate over all BF from the main distribution
-			for (BloomFilterI mainBF : mainDistributionBFs) {
+				double commonTriples = 0.0;
 
-				for (BloomFilterI partialBF : distributionsBF.get(targetDistribution)) {
-					commonTriples = commonTriples + mainBF.intersection(partialBF);
+				// iterate over all BF from the main distribution
+				for (BloomFilterI mainBF : mainDistributionBFs) {
+
+					for (BloomFilterI partialBF : distributionsBF.get(targetDistribution)) {
+						commonTriples = commonTriples + mainBF.intersection(partialBF);
+					}
+				}
+				if (commonTriples > 0.0) {
+					returnMap.put(targetDistribution, commonTriples);
 				}
 			}
-			if (commonTriples > 0.0){				
-				returnMap.put(targetDistribution, commonTriples);
-			}	
 		}
-		
+
 		return returnMap;
 	}
 
