@@ -138,7 +138,7 @@ public class LODVader {
 		
 		System.err.println( new BasicDBObject("$and", andList));
 
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject("$and", andList));
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject("$and", andList), null, DistributionDB.URI);
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 

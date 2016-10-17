@@ -3,6 +3,7 @@
  */
 package lodVader.plugins.intersection.subset.distribution;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 
 	public static String PLUGIN_NAME = "SUBSET_BLOOM_FILTER_DETECTOR";
 
+	public static HashMap<String, List<BloomFilterI>> bfCache = new HashMap<>();
+
 	/**
 	 * Constructor for Class SubsetDetectorBFImpl
 	 * 
@@ -35,8 +38,37 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 
 	private HashMap<String, List<BloomFilterI>> getBucketFromDatasets(List<String> distributions) {
 
-		return new BucketDBHelper().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributions);
+		List<String> removeList = new ArrayList<String>();
 
+		// remove unused BFs from the cache 
+		for (String id : bfCache.keySet()) {
+			if (!distributions.contains(id)) {
+				removeList.add(id);
+			}
+		}
+		for(String remove: removeList){
+			bfCache.remove(remove);
+		}
+		
+		// make sure that we are not loading the same BF 2 times in a row
+		List<String> distributionsQuery = new ArrayList<String>();
+		for(String distribution : distributions){
+			if(!bfCache.containsKey(distribution)){
+				distributionsQuery.add(distribution);
+			}
+		}
+		
+		
+		// make query 
+		HashMap<String, List<BloomFilterI>> queryResult = new BucketDBHelper().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionsQuery);
+
+		// update cache list 
+		for(String id : queryResult.keySet()){
+			bfCache.put(id, queryResult.get(id));
+		}
+		
+		return bfCache;
+		
 	}
 
 	/*
@@ -57,7 +89,6 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 
 		// get BF from the source distribution
 		List<BloomFilterI> mainDistributionBFs = distributionsBF.get(sourceDistribution.getID());
-		
 
 		// compare all bfs
 		for (String targetDistribution : targetDistributionsIDs) {

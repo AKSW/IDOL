@@ -31,6 +31,8 @@ public class GeneralQueriesHelper {
 	public ArrayList<DBObject> getObjects(String collectionName, DBObject query) {
 		return getObjects(collectionName, query, null, null);
 	}
+	
+
 
 	/**
 	 * Get an array of MongoDB objects.
