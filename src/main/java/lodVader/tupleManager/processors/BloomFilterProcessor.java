@@ -294,7 +294,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 		fileUtils.sortFile(objectTmpFilePath);
 		fileUtils.sortFile(subjectTmpFilePath);
-		fileUtils.sortFile(triplesTmpFilePath);
+//		fileUtils.sortFile(triplesTmpFilePath);
 		saveResources(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
 		fileUtils.removeFile(objectTmpFilePath);
 		saveResources(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
