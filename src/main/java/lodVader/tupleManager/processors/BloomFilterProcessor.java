@@ -217,20 +217,6 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	private void saveBF(HashSet<String> set, TYPE_OF_FILE type, int bfCounter) {
 
-		if (type.toString().equals(TYPE_OF_FILE.TRIPLES.toString())) {
-			BufferedWriter w;
-			try {
-				w = new BufferedWriter(
-						new FileWriter(new File("/home/ciro/lodvaderdata/tmp/ciro" + distribution.getID())));
-				for (String s : set) {
-					w.write(s + "\n");
-				}
-				w.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 
 		BloomFilterI bloomFilter = BloomFilterFactory.newBloomFilter();
 		bloomFilter.create(200000, 0.0000001);
