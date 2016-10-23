@@ -42,16 +42,16 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 		super(PLUGIN_NAME);
 	}
 
-	public static HashMap<String, List<BloomFilterI>>  loadBucketIntoCache(List<String> distributions, Object thread) {
+	public HashMap<String, List<BloomFilterI>>  loadBucketIntoCache(List<String> distributions) {
 
 		// make all threads hold on for their time
 		Object lock = new Object();
 		synchronized (lock) {
 			if (SubsetDistributionDetectorBFImpl.loading.get()) {
-				SubsetDistributionDetectorBFImpl.threadList.add(thread);
+				SubsetDistributionDetectorBFImpl.threadList.add(this);
 				try {
-					synchronized (thread) {
-						thread.wait();
+					synchronized (this) {
+						this.wait();
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -86,6 +86,7 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 		if(threadList.size()>0){
 			Object consumerLock = threadList.iterator().next();
 			synchronized (consumerLock) {
+				threadList.remove(consumerLock);
 				consumerLock.notify();
 			}
 		}
@@ -146,7 +147,7 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 
 		// load the buckets of the source and the target distriution
 //		HashMap<String, List<BloomFilterI>> distributionsBF = getBucketFromDatasets(targetDistributionsIDs);
-		HashMap<String, List<BloomFilterI>> distributionsBF = loadBucketIntoCache(targetDistributionsIDs, this);
+		HashMap<String, List<BloomFilterI>> distributionsBF = loadBucketIntoCache(targetDistributionsIDs);
 
 		// get BF from the source distribution
 		List<BloomFilterI> mainDistributionBFs = distributionsBF.get(sourceDistribution.getID());
