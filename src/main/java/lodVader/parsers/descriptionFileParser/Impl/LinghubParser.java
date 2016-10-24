@@ -44,9 +44,9 @@ import lodVader.utils.FormatsUtils;
  * 
  *         Sep 27, 2016
  */
-public class LodCloudParser implements DescriptionFileParserInterface {
+public class LinghubParser implements DescriptionFileParserInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(LodCloudParser.class);
+	final static Logger logger = LoggerFactory.getLogger(LinghubParser.class);
 
 	HashMap<String, DistributionDB> distributions = new HashMap<String, DistributionDB>();
 
@@ -57,14 +57,14 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 	/**
 	 * Constructor for Class LodCloudParser
 	 */
-	public LodCloudParser(String dumpAddress) {
+	public LinghubParser(String dumpAddress) {
 		repositoryAddress = dumpAddress;
 	}
 
 	/**
 	 * Constructor for Class LodCloudParser
 	 */
-	public LodCloudParser() {
+	public LinghubParser() {
 	}
 
 	/**
@@ -188,24 +188,23 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 			streamProcessor.openConnection();
 			streamProcessor.checkGZipInputStream();
 
-			if (streamProcessor.getExtension().equals("tar")) {
-				InputStream data = new BufferedInputStream(streamProcessor.inputStream);
-				logger.info("File extension is tar, creating TarArchiveInputStream and checking compressed files...");
-
-				TarArchiveInputStream tar = new TarArchiveInputStream(data);
-				int nf = 0;
-				TarArchiveEntry entry = (TarArchiveEntry) tar.getNextTarEntry();
-				while (entry != null) {
-					if (entry.isFile() && !entry.isDirectory()) {
-						String tmpFileName = LODVaderProperties.TMP_FOLDER + entry.getName() + ".tmp";
-						streamProcessor.simpleDownload(tmpFileName, tar);
-						parseFile(tmpFileName);
-						Files.delete(Paths.get(tmpFileName));
-
+			Model model = ModelFactory.createDefaultModel();
+			model.read(new BufferedInputStream(streamProcessor.inputStream), "N-TRIPLES");
+			LodCloudHelper helper = new LodCloudHelper(model);
+			for (String dataset : helper.getDatasets()) {
+				DatasetDB datasetDB = saveDataset(dataset, helper.getTitle(dataset));
+				for (RDFNode distribution : helper.getDistributions(dataset)) {
+					DistributionDB distributionDB = saveDistribution(helper.getAccessURL(distribution),
+							helper.getTitle(dataset), helper.getFormat(distribution), datasetDB);
+					distributionDB.addDefaultDatasets(datasetDB.getID());
+					datasetDB.addDistributionID(distributionDB.getID());
+					try {
+						distributionDB.update();
+						datasetDB.update();
+					} catch (LODVaderMissingPropertiesException e) {
+						e.printStackTrace();
 					}
-					entry = (TarArchiveEntry) tar.getNextEntry();
 				}
-				streamProcessor.setExtension(FilenameUtils.getExtension(streamProcessor.getFileName()));
 			}
 
 		} catch (IOException | LODVaderLODGeneralException e) {
@@ -224,7 +223,7 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 	 */
 	@Override
 	public String getParserName() {
-		return "LOD_CLOUD_PARSER";
+		return "LINGHUB_PARSER";
 	}
 
 	/*

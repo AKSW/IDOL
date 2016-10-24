@@ -26,12 +26,12 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.DataIDFileParser;
+import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
+import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
-import lodVader.processor.LodVaderProcessor;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor;
@@ -45,9 +45,9 @@ import lodVader.tupleManager.processors.BloomFilterProcessor;
  */
 public class LODVader {
 
-//	 public static void main(String[] args) {
-//	 new LODVader().Manager();
-//	 }
+	// public static void main(String[] args) {
+	// new LODVader().Manager();
+	// }
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
@@ -65,9 +65,9 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-//		 parseFiles();
-//		streamDistributions();
-//		 detectDatasets();
+		parseFiles();
+		// streamDistributions();
+		// detectDatasets();
 
 	}
 
@@ -79,23 +79,22 @@ public class LODVader {
 
 		logger.info("Parsing files...");
 		// load ckan repositories into lodvader
-		 CKANRepositories ckanParsers = new CKANRepositories();
-		 ckanParsers.loadAllRepositories();
+		CKANRepositories ckanParsers = new CKANRepositories();
+		ckanParsers.loadAllRepositories();
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
-		// loader.load(new
-		// CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-		// loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
-//		loader.load(new LOVParser());
+		 loader.load(new
+		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+//		 loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
+//		 loader.load(new LOVParser());
+//		 loader.parse();
+//		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
 //		loader.parse();
 		 loader.load(new
-		 DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 		 loader.parse();
-//		 loader.load(new
-//		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-//		 loader.parse();
-//		 loader.load(new LodCloudParser());
-		// loader.parse();
+		 loader.load(new LODCloudParser());
+		 loader.parse();
 
 	}
 
@@ -132,7 +131,7 @@ public class LODVader {
 	public void detectDatasets() {
 
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
-		
+
 		distributionsBeingProcessed.set(0);
 
 		BasicDBList andList = new BasicDBList();
@@ -147,12 +146,12 @@ public class LODVader {
 		distributionsBeingProcessed.set(distributionObjects.size());
 
 		ExecutorService executor = Executors.newFixedThreadPool(6);
-		
+
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
 			executor.execute(new DetectSubsets(distribution));
 		}
-		
+
 		executor.shutdown();
 		try {
 			executor.awaitTermination(20, TimeUnit.DAYS);
@@ -163,19 +162,18 @@ public class LODVader {
 
 		logger.info("And we are done discovering subsets!");
 	}
-	
-	
-	class DetectSubsets implements Runnable{
-		
+
+	class DetectSubsets implements Runnable {
+
 		DistributionDB distribution;
-		
+
 		/**
-		 * Constructor for Class LODVader.DetectSubsets 
+		 * Constructor for Class LODVader.DetectSubsets
 		 */
 		public DetectSubsets(DistributionDB distribution) {
 			this.distribution = distribution;
 		}
-		
+
 		@Override
 		public void run() {
 			logger.info("Discovering subset for " + distribution.getTitle() + "(" + distribution.getID() + "). "
@@ -183,10 +181,9 @@ public class LODVader {
 
 			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
 			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution);
-			subsetService.saveSubsets();			
+			subsetService.saveSubsets();
 		}
 	}
-	
 
 	/**
 	 * Class used to process a single dataset

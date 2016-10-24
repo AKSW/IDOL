@@ -152,79 +152,79 @@ public class FileUtils {
 	//
 	
 	static BufferedWriter w;
-	public static void main(String[] args) {
-		// new FileUtils().compareTwoFiles("/home/ciro/lodvaderdata/tmp/oi2/1",
-		// "/home/ciro/lodvaderdata/tmp/oi2/2");
+//	public static void main(String[] args) {
+//		// new FileUtils().compareTwoFiles("/home/ciro/lodvaderdata/tmp/oi2/1",
+//		// "/home/ciro/lodvaderdata/tmp/oi2/2");
+//
+//		try {
+//			w= new BufferedWriter(new FileWriter(new File("/home/ciro/lodvaderdata/tmp/exp")));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		FileUtils aa = new FileUtils();
+//		int filterSize = 200000;
+//		int amountOfElements = 200000;
+//
+//		for(int i=10000; i<=200000; i = i + 1000)
+//			aa.runExp(filterSize, i);
+//		
+//		try {
+//			w.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+////		System.out.println(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100) ;
+////		System.out.println( (1 + (int)(Math.random() * 130))/100);
+//	}
 
-		try {
-			w= new BufferedWriter(new FileWriter(new File("/home/ciro/lodvaderdata/tmp/exp")));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		FileUtils aa = new FileUtils();
-		int filterSize = 200000;
-		int amountOfElements = 200000;
-
-		for(int i=10000; i<=200000; i = i + 1000)
-			aa.runExp(filterSize, i);
-		
-		try {
-			w.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-//		System.out.println(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100) ;
-//		System.out.println( (1 + (int)(Math.random() * 130))/100);
-	}
-
-	public void runExp(int filterSize, int amountOfElements) {
-		FileUtils aa = new FileUtils();
-
-		int experiments = 5;
-		
-		for (int i = 0; i < experiments; i++) {
-			BloomFilterI bf1 = BloomFilterFactory.newBloomFilter();
-			bf1.create(filterSize, 0.0000001);
-			BloomFilterI bf2 = BloomFilterFactory.newBloomFilter();
-			bf2.create(filterSize, 0.0000001);
-
-			for (String l : aa.makeDataet(amountOfElements)) {
-//				for (String l : aa.makeDataet(10000)) {
-				bf1.add(l);
-			}
-//			System.out.println(((BloomFilter<String>) bf1.getImplementation()).getEstimatedPopulation());
-
-			for (String l : aa.makeDataet(amountOfElements)) {
-				bf2.add(l);
-			}
-
-//			System.out.println(((BloomFilter<String>) bf1.getImplementation()).getEstimatedPopulation());
-
-			// System.out.println(((BloomFilter<String>)
-			// bf2.getImplementation()).getEstimatedPopulation());
-			//
-			// System.out.println(((BloomFilter<String>)
-			// bf2.getImplementation()).intersect(((BloomFilter<String>)
-			// bf1.getImplementation())));
-			//
-			// System.out.println(((BloomFilter<String>)
-//			 bf2.getImplementation()).getEstimatedPopulation());
-			Double intersectValue = bf2.intersection(bf1);
-//			System.out.println((amountOfElements + i) + " "+((1 - intersectValue / amountOfElements) -(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100)));
-//			System.out.print(" "+((1 - intersectValue / amountOfElements) - (double) (1 + (int)(Math.random() * 150))/10000));
-
-			try {
-				w.write((amountOfElements + i) + " "+((1 - intersectValue / amountOfElements) -(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100)) + "\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-	}
+//	public void runExp(int filterSize, int amountOfElements) {
+//		FileUtils aa = new FileUtils();
+//
+//		int experiments = 5;
+//		
+//		for (int i = 0; i < experiments; i++) {
+//			BloomFilterI bf1 = BloomFilterFactory.newBloomFilter();
+//			bf1.create(filterSize, 0.0000001);
+//			BloomFilterI bf2 = BloomFilterFactory.newBloomFilter();
+//			bf2.create(filterSize, 0.0000001);
+//
+//			for (String l : aa.makeDataet(amountOfElements)) {
+////				for (String l : aa.makeDataet(10000)) {
+//				bf1.add(l);
+//			}
+////			System.out.println(((BloomFilter<String>) bf1.getImplementation()).getEstimatedPopulation());
+//
+//			for (String l : aa.makeDataet(amountOfElements)) {
+//				bf2.add(l);
+//			}
+//
+////			System.out.println(((BloomFilter<String>) bf1.getImplementation()).getEstimatedPopulation());
+//
+//			// System.out.println(((BloomFilter<String>)
+//			// bf2.getImplementation()).getEstimatedPopulation());
+//			//
+//			// System.out.println(((BloomFilter<String>)
+//			// bf2.getImplementation()).intersect(((BloomFilter<String>)
+//			// bf1.getImplementation())));
+//			//
+//			// System.out.println(((BloomFilter<String>)
+////			 bf2.getImplementation()).getEstimatedPopulation());
+//			Double intersectValue = bf2.intersection(bf1);
+////			System.out.println((amountOfElements + i) + " "+((1 - intersectValue / amountOfElements) -(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100)));
+////			System.out.print(" "+((1 - intersectValue / amountOfElements) - (double) (1 + (int)(Math.random() * 150))/10000));
+//
+//			try {
+//				w.write((amountOfElements + i) + " "+((1 - intersectValue / amountOfElements) -(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100)) + "\n");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//
+//	}
 
 	public Set<String> makeDataet(int size) {
 		Set<String> list = new HashSet<String>();
