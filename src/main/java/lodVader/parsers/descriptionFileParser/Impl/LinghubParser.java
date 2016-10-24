@@ -202,7 +202,7 @@ public class LinghubParser implements DescriptionFileParserInterface {
 					try {
 						distributionDB.update();
 						datasetDB.update();
-					} catch (LODVaderMissingPropertiesException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
