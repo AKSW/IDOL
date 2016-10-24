@@ -27,6 +27,7 @@ import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.services.mongodb.dataset.DatasetServices;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.NSUtils;
@@ -155,60 +156,9 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 			}
 		}
 
-		organizeDistributionsBasedOnURI();
+		new SubsetHelper().rearrangeSubsets(distributions, datasets);
 	}
 
-	/**
-	 * Organize datasets distributions by URI. For example, the dataset with the
-	 * downloadURL http://example.org/path1/path2 is a subset of the
-	 * http://example.org/path1 which is a distribution of the dataset
-	 * http://example.org/
-	 */
-	private void organizeDistributionsBasedOnURI() {
-
-		// sort the distributions by URI
-		Collections.sort(distributions, new Comparator<DistributionDB>() {
-			public int compare(DistributionDB a, DistributionDB b) {
-				return a.getDownloadUrl().compareTo(b.getDownloadUrl());
-			}
-		});
-		
-		HashSet<String> removeSet = new HashSet<String>();
-		
-
-		DatasetDB tmpDataset = null;
-		for (DistributionDB distribution : distributions) {
-			if (tmpDataset == null) {
-				tmpDataset = datasets.get(distribution.getTopDatasetID());
-			} else {
-				if (distribution.getUri().startsWith(tmpDataset.getUri())) {
-					try {
-						tmpDataset.addDistributionID(distribution.getID());
-						tmpDataset.update();
-
-//						removeSet.add(tmpDataset.getID());
-
-						distribution.setTopDataset(tmpDataset.getID());
-						distribution.update();
-						
-					} catch (LODVaderMissingPropertiesException e) {
-						e.printStackTrace();
-					}
-
-				} else {
-					tmpDataset.find(true, DatasetDB.ID, distribution.getTopDatasetID());
-				}
-			}
-		}
-		
-		// remove all datasets that don't contain distributions
-		for(String i : removeSet){
-			new DatasetServices().removeDataset(i);
-			datasets.remove(i);
-		}
-		
-		
-	}
 
 	/*
 	 * (non-Javadoc)

@@ -3,22 +3,16 @@
  */
 package lodVader.parsers.descriptionFileParser.Impl;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +22,12 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
+import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.utils.FormatsUtils;
 
@@ -193,17 +187,22 @@ public class LinghubParser implements DescriptionFileParserInterface {
 			model.read((streamProcessor.inputStream), null, new FormatsUtils().getJenaFormat("nt"));
 			LodCloudHelper helper = new LodCloudHelper(model);
 			for (String dataset : helper.getDatasets()) {
-				DatasetDB datasetDB = saveDataset(dataset, helper.getTitle(dataset));
+				DatasetDB datasetDB = null;
 				for (RDFNode distribution : helper.getDistributions(dataset)) {
-					DistributionDB distributionDB = saveDistribution(helper.getAccessURL(distribution),
-							helper.getTitle(dataset), helper.getFormat(distribution), datasetDB);
-					distributionDB.addDefaultDatasets(datasetDB.getID());
-					datasetDB.addDistributionID(distributionDB.getID());
-					try {
-						distributionDB.update();
-						datasetDB.update();
-					} catch (Exception e) {
-						e.printStackTrace();
+					if (datasetDB == null)
+						datasetDB = saveDataset(dataset, helper.getTitle(dataset));
+
+					if (!helper.getFormat(distribution).equals("")) {
+						DistributionDB distributionDB = saveDistribution(helper.getAccessURL(distribution),
+								helper.getTitle(dataset), helper.getFormat(distribution), datasetDB);
+						distributionDB.addDefaultDatasets(datasetDB.getID());
+						datasetDB.addDistributionID(distributionDB.getID());
+						try {
+							distributionDB.update();
+							datasetDB.update();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -212,6 +211,8 @@ public class LinghubParser implements DescriptionFileParserInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		new SubsetHelper().rearrangeSubsets((List<DistributionDB>) distributions.values(), datasets);
 
 	}
 
