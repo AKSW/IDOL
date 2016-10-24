@@ -4,20 +4,15 @@
 package lodVader.parsers.descriptionFileParser.helpers;
 
 import java.net.MalformedURLException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import eu.trentorise.opendata.jackan.ckan.CkanClient;
-import eu.trentorise.opendata.jackan.ckan.CkanDataset;
-import eu.trentorise.opendata.jackan.ckan.CkanResource;
+import eu.trentorise.opendata.jackan.CkanClient;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanResource;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
-import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 
@@ -63,7 +58,7 @@ public class CKANHelper {
 		datasetDB.setIsVocabulary(false);
 		datasetDB.setTitle(dataset.getTitle());
 		datasetDB.setLabel(dataset.getTitle());
-		datasetDB.setUri(dataset.getDownloadUrl());
+		datasetDB.setUri(dataset.getUrl()); 
 		try {
 			datasetDB.update();
 		} catch (LODVaderMissingPropertiesException e) {

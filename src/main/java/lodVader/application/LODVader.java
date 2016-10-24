@@ -18,6 +18,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import lodVader.application.fileparser.CKANRepositories;
+import lodVader.application.fileparser.RE3Repositories;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -79,22 +80,26 @@ public class LODVader {
 
 		logger.info("Parsing files...");
 		// load ckan repositories into lodvader
-		CKANRepositories ckanParsers = new CKANRepositories();
-		ckanParsers.loadAllRepositories();
+//		CKANRepositories ckanParsers = new CKANRepositories();
+//		ckanParsers.loadAllRepositories();
+		RE3Repositories re3= new RE3Repositories();
+		re3.loadAllRepositories();
 
-		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
-		 loader.load(new
-		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+//		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
+//		 loader.load(new
+//		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 //		 loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
 //		 loader.load(new LOVParser());
 //		 loader.parse();
 //		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
 //		loader.parse();
-		 loader.load(new
-		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-		 loader.parse();
-		 loader.load(new LODCloudParser());
-		 loader.parse();
+//		 loader.load(new
+//		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+//		 loader.load(new
+//		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+//		 loader.parse();
+//		 loader.load(new LODCloudParser());
+//		 loader.parse();
 
 	}
 

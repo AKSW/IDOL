@@ -29,11 +29,7 @@ public class RE3Repositories {
 
 	// number of repositories to be analyzed concurrently
 	final int numberOfConcurrentRepositories = 6;
-	// static ArrayList<String> ckanRepositories = new
-	// ArrayList<>(Arrays.asList("http://africaopendata.org/"));
-	// static ArrayList<String> ckanRepositories = new
-	// ArrayList<>(Arrays.asList("http://drdsi.jrc.ec.europa.eu"));
-
+	
 	static ArrayList<String> ckanRepositories = new ArrayList<>(Arrays.asList("http://datahub.io/",
 			"http://catalog.data.gov/", "http://healthdata.gov/", "http://open.canada.ca/data/en/",
 			"http://data.gov.au/", "http://data.bris.ac.uk/data/", "http://data.london.gov.uk/",
