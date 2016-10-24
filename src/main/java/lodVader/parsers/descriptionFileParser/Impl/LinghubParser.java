@@ -46,8 +46,8 @@ public class LinghubParser implements DescriptionFileParserInterface {
 
 	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
-//	String repositoryAddress = "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
-	String repositoryAddress = "http://localhost/dbpedia/linghub.nt.gz";
+	String repositoryAddress = "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
+//	String repositoryAddress = "http://localhost/dbpedia/linghub.nt.gz";
 
 	/**
 	 * Constructor for Class LodCloudParser
