@@ -31,6 +31,7 @@ import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
+import lodVader.processor.LodVaderProcessor;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor;
@@ -50,7 +51,7 @@ public class LODVader {
 
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
-	AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
+	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
 	int numberOfThreads = 6;
 
@@ -131,6 +132,8 @@ public class LODVader {
 	public void detectDatasets() {
 
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
+		
+		distributionsBeingProcessed.set(0);
 
 		BasicDBList andList = new BasicDBList();
 		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
@@ -139,7 +142,7 @@ public class LODVader {
 		System.err.println(new BasicDBObject("$and", andList));
 
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
-				new BasicDBObject("$and", andList), null, DistributionDB.URI);
+				new BasicDBObject("$and", andList), null, DistributionDB.URI, 1);
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
@@ -147,23 +150,7 @@ public class LODVader {
 		
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			logger.info("Discovering subset for " + distribution.getTitle() + "(" + distribution.getID() + "). "
-					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 			executor.execute(new DetectSubsets(distribution));
-			
-
-//			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
-			// LODVaderIntersectionPlugin subsetDetector = new
-			// SubsetDistributionDetectorHashSetImpl();
-//			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution);
-//			subsetService.saveSubsets();
-
-			// LODVaderIntersectionPlugin linksetDetector = new
-			// LinksetDetectorBFImpl();
-			// LinksetDetectionService linksetService = new
-			// LinksetDetectionService(linksetDetector, distribution);
-			// linksetService.saveSubsets();
-
 		}
 		
 		executor.shutdown();
@@ -191,6 +178,9 @@ public class LODVader {
 		
 		@Override
 		public void run() {
+			logger.info("Discovering subset for " + distribution.getTitle() + "(" + distribution.getID() + "). "
+					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
+
 			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
 			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution);
 			subsetService.saveSubsets();			

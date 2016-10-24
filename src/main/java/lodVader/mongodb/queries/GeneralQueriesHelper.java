@@ -20,19 +20,16 @@ public class GeneralQueriesHelper {
 	 * @return array of DBObject
 	 */
 	public ArrayList<DBObject> getObjects(String collectionName, String field, String value) {
-		return getObjects(collectionName, new BasicDBObject(field, value), null, null);
+		return getObjects(collectionName, new BasicDBObject(field, value), null, null, 1);
 	}
 
 	public ArrayList<DBObject> getObjects(String collectionName, String field, String value, String sort) {
-		return getObjects(collectionName, new BasicDBObject(field, value), null, sort);
+		return getObjects(collectionName, new BasicDBObject(field, value), null, sort, 1);
 	}
 
-	
 	public ArrayList<DBObject> getObjects(String collectionName, DBObject query) {
-		return getObjects(collectionName, query, null, null);
+		return getObjects(collectionName, query, null, null, 1);
 	}
-	
-
 
 	/**
 	 * Get an array of MongoDB objects.
@@ -42,9 +39,11 @@ public class GeneralQueriesHelper {
 	 *            query
 	 * @return array of DBObject
 	 */
-	public ArrayList<DBObject> getObjects(String collectionName, DBObject query, Integer limit, String sort) {
+	public ArrayList<DBObject> getObjects(String collectionName, DBObject query, Integer limit, String sort,
+			int sortVal) {
 
 		ArrayList<DBObject> list = new ArrayList<DBObject>();
+		
 		try {
 			DBCollection collection = DBSuperClass.getCollection(collectionName);
 			DBCursor instances;
@@ -52,13 +51,13 @@ public class GeneralQueriesHelper {
 				if (sort == null)
 					instances = collection.find(query);
 				else
-					instances = collection.find(query).sort(new BasicDBObject(sort, 1));
+					instances = collection.find(query).sort(new BasicDBObject(sort, sortVal));
 
 			} else {
 				if (sort == null)
 					instances = collection.find(query).limit(limit);
 				else
-					instances = collection.find(query).limit(limit).sort(new BasicDBObject(sort, 1));
+					instances = collection.find(query).limit(limit).sort(new BasicDBObject(sort, sortVal));
 			}
 
 			for (DBObject instance : instances) {

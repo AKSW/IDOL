@@ -10,6 +10,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
+import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 
 public class IndexesCreator {
 
@@ -28,6 +29,11 @@ public class IndexesCreator {
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.IS_VOCABULARY, 1);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS, 1);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.DEFAULT_DATASETS, 1);
+		
+		
+		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString(), 1);
+		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.TARGET_DISTRIBUTION.toString(), 1);
+		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.VALUE.toString(), 1);
 
 		addIndex(DescriptionFileParserDB.COLLECTION_NAME, DescriptionFileParserDB.REPOSITORY_ADDRESS, 1, true);
 

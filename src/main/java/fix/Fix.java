@@ -79,35 +79,35 @@ public class Fix {
 	
 	
 
-	public void removeBlankNodes(String resource_collection, String relation_collection) {
-
-		List<DBObject> relationIDs = new ArrayList<>(); 
-		List<DBObject> resourceIDs = new ArrayList<>();
-
-		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
-				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
-		
-
-		int i = 0;
-		while (objects.size() > 0) {
-			System.out.println(i++ +" Loading...");
-			for (DBObject object : objects) {
-				relationIDs
-						.add((new BasicDBObject("predicateID", new ObjectId(object.get("_id").toString()).toString())));
-				resourceIDs.add((new BasicDBObject("_id", new ObjectId(object.get("_id").toString()))));
-			}
-
-//			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
-			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
- 
-			objects = new GeneralQueriesHelper().getObjects(resource_collection,
-					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
-		}
-		
-
-		System.out.println("end ");
-
-	}
+//	public void removeBlankNodes(String resource_collection, String relation_collection) {
+//
+//		List<DBObject> relationIDs = new ArrayList<>(); 
+//		List<DBObject> resourceIDs = new ArrayList<>();
+//
+//		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
+//				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
+//		
+//
+//		int i = 0;
+//		while (objects.size() > 0) {
+//			System.out.println(i++ +" Loading...");
+//			for (DBObject object : objects) {
+//				relationIDs
+//						.add((new BasicDBObject("predicateID", new ObjectId(object.get("_id").toString()).toString())));
+//				resourceIDs.add((new BasicDBObject("_id", new ObjectId(object.get("_id").toString()))));
+//			}
+//
+////			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
+//			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
+// 
+//			objects = new GeneralQueriesHelper().getObjects(resource_collection,
+//					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
+//		}
+//		
+//
+//		System.out.println("end ");
+//
+//	}
 	
 	
 
