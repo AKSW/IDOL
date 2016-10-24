@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mongodb.BasicDBObject;
@@ -115,11 +116,8 @@ public class ResultsController {
 		return map;
 	}
 
-	@RequestMapping(value = "/results/triples", method = RequestMethod.GET)
-	public HashMap<Integer, Integer> triples() {
-		
-		int interval = 10000;
-		
+	@RequestMapping(value = "/results/triplesInterval", method = RequestMethod.GET)
+	public HashMap<Integer, Integer> triplesInterval(@RequestParam(value = "interval", required = false, defaultValue = "1000000") Integer interval) {
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
@@ -133,6 +131,24 @@ public class ResultsController {
 		}
 		return map;
 	}
+	
+//	@RequestMapping(value = "/results/triplesPerDataSource", method = RequestMethod.GET)
+//	public HashMap<String, Integer> triplesPerDataSource() {
+//		HashMap<String, Integer> map = new HashMap<String, Integer>();
+//		
+//		for (DBObject d : new GeneralQueriesHelper().getObjects(
+//				DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
+//			DistributionDB distribution = new DistributionDB(d);
+//			int n = ((Number) (distribution.getNumberOfTriples() / interval)).intValue();
+//			if (map.get(n) == null){
+//				map.put(n, 1);
+//			}
+//			else{
+//				map.put(n, map.get(n)+1);
+//			}
+//		}
+//		return map;
+//	}
 
 	@RequestMapping(value = "/results/topPredicates", method = RequestMethod.GET)
 	public HashMap<String, Integer> predicates() {
@@ -155,7 +171,7 @@ public class ResultsController {
 		}
 
 		// load predicates
-		DBObject in = new BasicDBObject();
+		DBObject in = new BasicDBObject(); 
 		in.put("$in", returnMap.keySet());
 
 		List<DBObject> returnList = new GeneralQueriesHelper()

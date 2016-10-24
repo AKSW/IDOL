@@ -97,41 +97,6 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 		return bfCache;
 	}
 
-//	private HashMap<String, List<BloomFilterI>> getBucketFromDatasets(List<String> distributions) {
-//
-//		List<String> removeList = new ArrayList<String>();
-//
-//		// remove unused BFs from the cache
-//		// for (String id : bfCache.keySet()) {
-//		// if (!distributions.contains(id)) {
-//		// removeList.add(id);
-//		// }
-//		// }
-//		// for(String remove: removeList){
-//		// bfCache.remove(remove);
-//		// }
-//
-//		// make sure that we are not loading the same BF 2 times in a row
-//		List<String> distributionsQuery = new ArrayList<String>();
-//		for (String distribution : distributions) {
-//			if (!bfCache.containsKey(distribution)) {
-//				distributionsQuery.add(distribution);
-//			}
-//		}
-//
-//		// make query
-//		HashMap<String, List<BloomFilterI>> queryResult = new BucketDBHelper()
-//				.getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionsQuery);
-//
-//		// update cache list
-//		for (String id : queryResult.keySet()) {
-//			bfCache.put(id, queryResult.get(id));
-//		}
-//
-//		return bfCache;
-//
-//	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -165,7 +130,7 @@ public class SubsetDistributionDetectorBFImpl extends LODVaderIntersectionPlugin
 						commonTriples = commonTriples + mainBF.intersection(partialBF);
 					}
 				}
-				if (commonTriples > 0.0) {
+				if (commonTriples > 100.0) {
 					returnMap.put(targetDistribution, commonTriples);
 				}
 			}

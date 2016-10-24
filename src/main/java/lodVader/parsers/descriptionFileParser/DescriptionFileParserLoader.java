@@ -50,7 +50,7 @@ public class DescriptionFileParserLoader {
 		datasetServices.saveAllDatasets(parser.getDatasets());
 		logger.info("Parser saved " + parser.getDatasets().size() + " datasets!");
 
-		distributionServices.saveAllDistributions(parser.getDistributions());
+		distributionServices.saveAllDistributions(parser.getDistributions(), parser.getRepositoryAddress(), parser.getParserName());
 		logger.info("Parser saved " + parser.getDistributions().size() + " distributions!");
 		
 		parserDB.setLastTimeUsed(String.valueOf(new Date().getTime()));

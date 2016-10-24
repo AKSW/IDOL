@@ -42,7 +42,6 @@ public class CKANParser implements DescriptionFileParserInterface {
 
 	int numberOfConcurrentRequests;
 
-
 	/**
 	 * Constructor for Class CKANHelper
 	 */
@@ -94,7 +93,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 		datasetDB.setLabel(dataset.getTitle());
 		datasetDB.setDescriptionFileParser(getParserName());
 		datasetDB.addProvenance(provenance);
-		
+
 		logger.info("Dataset found: " + dataset.getName());
 		try {
 			datasetDB.update();
@@ -116,7 +115,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 	 * @return the DistributionDB instance
 	 */
 	public DistributionDB saveDistribution(CkanResource resource, DatasetDB datasetDB) {
-		
+
 		DistributionDB distributionDB = new DistributionDB(resource.getUrl());
 		distributionDB.setTitle(resource.getName());
 		distributionDB.setUri(resource.getUrl());
@@ -128,9 +127,11 @@ public class CKANParser implements DescriptionFileParserInterface {
 		}
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(resource.getFormat()));
 		distributionDB.setOriginalFormat(resource.getFormat());
-		distributionDB.setTopDataset(datasetDB.getID()); 
+		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
-		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM); 
+		if (distributionDB.getID() == null)
+			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
+
 		distributions.put(distributionDB.getUri(), distributionDB);
 		try {
 			distributionDB.update();
@@ -241,9 +242,12 @@ public class CKANParser implements DescriptionFileParserInterface {
 	public String getParserName() {
 		return "CKAN_PARSER";
 	}
-	
-	/* (non-Javadoc)
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#getRepositoryAddress()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
+	 * getRepositoryAddress()
 	 */
 	@Override
 	public String getRepositoryAddress() {

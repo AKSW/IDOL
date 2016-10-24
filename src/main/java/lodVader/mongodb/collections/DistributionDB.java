@@ -69,6 +69,10 @@ public class DistributionDB extends DBSuperClass {
 
 	public static final String DEFAULT_DATASETS = "defaultDatasets";
 
+	public static final String REPOSITORY = "repository";
+
+	public static final String DATASOURCE = "datasource";
+
 	public static final String LAST_TIME_STREAMED = "lastTimeStreamed";
 
 	public static final String IS_VOCABULARY = "isVocabulary";
@@ -297,6 +301,34 @@ public class DistributionDB extends DBSuperClass {
 			ids = new ArrayList<String>();
 			ids.add(datasetID);
 			addField(DEFAULT_DATASETS, ids);
+		}
+	}
+	
+	public void addRepository(String repository) {
+		ArrayList<String> ids = (ArrayList<String>) getField(REPOSITORY);
+		if (ids != null) {
+			if (!ids.contains(repository)) {
+				ids.add(repository);
+				addField(REPOSITORY, ids);
+			}
+		} else {
+			ids = new ArrayList<String>();
+			ids.add(repository);
+			addField(REPOSITORY, ids);
+		}
+	}
+	
+	public void addDatasource(String datasource) {
+		ArrayList<String> ids = (ArrayList<String>) getField(DATASOURCE);
+		if (ids != null) {
+			if (!ids.contains(datasource)) {
+				ids.add(datasource);
+				addField(DATASOURCE, ids);
+			}
+		} else {
+			ids = new ArrayList<String>();
+			ids.add(datasource);
+			addField(DATASOURCE, ids);
 		}
 	}
 

@@ -35,11 +35,11 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 	DataIDHelper dataidHelper = new DataIDHelper();
 
 	String repositoryAddress;
-	
+
 	/**
-	 * Constructor for Class DataIDFileParser2 
+	 * Constructor for Class DataIDFileParser2
 	 */
-	public DataIDFileParser(String dcatFile) { 
+	public DataIDFileParser(String dcatFile) {
 		this.repositoryAddress = dcatFile;
 	}
 
@@ -73,12 +73,11 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 	@Override
 	public void parse() {
 
-		DCATHelper dcatHelper = new DCATHelper(repositoryAddress,
-				"ttl");
+		DCATHelper dcatHelper = new DCATHelper(repositoryAddress, "ttl");
 		for (String catalog : dcatHelper.getListOfCatalogs()) {
 
 			for (String dcatDataset : dcatHelper.getDatasetsFromCatalog(catalog)) {
-//				repositoryAddress = dcatDataset;
+				// repositoryAddress = dcatDataset;
 
 				if (!dataidHelper.loadDataIDFile(dcatDataset, "ttl"))
 					logger.error("We couldn't load the DataID file.");
@@ -112,13 +111,14 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 		distributionDB.setTopDatasetTitle(dataset.getTitle());
 		distributionDB.setTitle(dataidHelper.getTitle(distribution));
 		distributionDB.setLabel(dataidHelper.getLabel(distribution));
-		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
+		if (distributionDB.getID() == null)
+			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(dataidHelper.getFormat(distribution)));
 		distributionDB.setOriginalFormat(dataidHelper.getFormat(distribution));
 
 		distributions.add(distributionDB);
 		distributionDB.update(true, DistributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
-		
+
 		return distributionDB;
 	}
 
@@ -129,10 +129,10 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 		}
 
 		DatasetDB datasetDB = saveDataset(dataset, parentDataset.getID());
-		if(!dataset.equals(parentDataset.getID())){
+		if (!dataset.equals(parentDataset.getID())) {
 			parentDataset.addSubsetID(datasetDB.getID());
 		}
-			
+
 		List<String> distributions = dataidHelper.getDistributions(dataset);
 		for (String distribution : distributions) {
 			DistributionDB distributionDB = saveDistribution(distribution, datasetDB);
@@ -151,7 +151,7 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 		mainDataset.setDescriptionFileParser(getParserName());
 		mainDataset.addProvenance(repositoryAddress);
 		mainDataset.update(true, DatasetDB.URI, dataset);
-		
+
 		datasets.add(mainDataset);
 
 		return mainDataset;

@@ -14,9 +14,11 @@ import lodVader.mongodb.collections.DistributionDB;
  */
 public class DistributionServices {
 	
-	public void saveAllDistributions(List<DistributionDB> distributions){
+	public void saveAllDistributions(List<DistributionDB> distributions, String repository, String datasource){
 		distributions.forEach((distribution)->{
 			try {
+				distribution.addDatasource(datasource);
+				distribution.addRepository(repository);
 				distribution.update();
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -128,8 +128,8 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				ArrayList<String> defaultDatasets = new ArrayList<String>();
 				defaultDatasets.add(dataset.getID());
 				distribution.setDefaultDatasets(defaultDatasets);
-
-				distribution.setStatus(DistributionStatus.WAITING_TO_STREAM);
+				if (distribution.getID() == null)
+					distribution.setStatus(DistributionStatus.WAITING_TO_STREAM);
 
 				try {
 					distribution.setFormat(FormatsUtils.getEquivalentFormat("nt"));

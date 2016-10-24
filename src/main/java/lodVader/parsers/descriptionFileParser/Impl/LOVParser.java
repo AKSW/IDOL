@@ -40,19 +40,18 @@ public class LOVParser implements DescriptionFileParserInterface {
 	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
 	String repositoryAddress = "http://lov.okfn.org/dataset/lov/api/v2/vocabulary/list";
-		
 
 	/**
-	 * Save a LOV Vocabulary or ontology instance the main collection 
+	 * Save a LOV Vocabulary or ontology instance the main collection
 	 * 
 	 * @param the
 	 *            CkanDataset
 	 * @return the DatasetDB instance
 	 */
 	public DatasetDB saveDataset(JSONObject object) {
-		
-		String title = ((JSONObject)((JSONArray)object.get("titles")).get(0)).get("value").toString();
-		String url = object.get("uri").toString();		
+
+		String title = ((JSONObject) ((JSONArray) object.get("titles")).get(0)).get("value").toString();
+		String url = object.get("uri").toString();
 
 		DatasetDB datasetDB = new DatasetDB(url);
 		datasetDB.setIsVocabulary(true);
@@ -78,7 +77,7 @@ public class LOVParser implements DescriptionFileParserInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return datasetDB;
 	}
 
@@ -91,8 +90,9 @@ public class LOVParser implements DescriptionFileParserInterface {
 	 */
 	public DistributionDB saveDistribution(String url, String title, DatasetDB datasetDB) {
 
-		String downloadURL = "http://lov.okfn.org/dataset/lov/sparql?query="+URLEncoder.encode("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <"+url+"> { ?s ?p ?o } }");
-		
+		String downloadURL = "http://lov.okfn.org/dataset/lov/sparql?query="
+				+ URLEncoder.encode("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + url + "> { ?s ?p ?o } }");
+
 		DistributionDB distributionDB = new DistributionDB(downloadURL);
 		distributionDB.setTitle(title);
 		distributionDB.setUri(url);
@@ -100,7 +100,8 @@ public class LOVParser implements DescriptionFileParserInterface {
 		distributionDB.setIsVocabulary(true);
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
-		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
+		if (distributionDB.getID() == null)
+			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 		try {
 			distributionDB.update();
 		} catch (LODVaderMissingPropertiesException e) {
@@ -147,12 +148,12 @@ public class LOVParser implements DescriptionFileParserInterface {
 			uri = new URI(repositoryAddress);
 			JSONTokener tokener = new JSONTokener(uri.toURL().openStream());
 			JSONArray root = new JSONArray(tokener);
-			
+
 			Iterator<Object> it = root.iterator();
-			while(it.hasNext()){
+			while (it.hasNext()) {
 				saveDataset((JSONObject) it.next());
 			}
-			
+
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}

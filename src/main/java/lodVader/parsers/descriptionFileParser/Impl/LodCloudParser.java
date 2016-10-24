@@ -57,7 +57,7 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 	/**
 	 * Constructor for Class LodCloudParser
 	 */
-	public LodCloudParser(String dumpAddress) { 
+	public LodCloudParser(String dumpAddress) {
 		repositoryAddress = dumpAddress;
 	}
 
@@ -109,7 +109,8 @@ public class LodCloudParser implements DescriptionFileParserInterface {
 		distributionDB.setIsVocabulary(true);
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
-		distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
+		if (distributionDB.getID() == null)
+			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
 		distributionDB.setOriginalFormat(format);
 		try {
