@@ -46,7 +46,8 @@ public class LinghubParser implements DescriptionFileParserInterface {
 
 	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
-	String repositoryAddress = "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
+//	String repositoryAddress = "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
+	String repositoryAddress = "http://localhost/dbpedia/linghub.nt.gz";
 
 	/**
 	 * Constructor for Class LodCloudParser
@@ -140,34 +141,6 @@ public class LinghubParser implements DescriptionFileParserInterface {
 		return new ArrayList<DatasetDB>(datasets.values());
 	}
 
-	public void parseFile(String file) {
-		Model model = ModelFactory.createDefaultModel();
-		try {
-			model.read((InputStream) new FileInputStream(new File(file)), "RDFXML");
-			LodCloudHelper helper = new LodCloudHelper(model);
-			for (String dataset : helper.getDatasets()) {
-				DatasetDB datasetDB = saveDataset(dataset, helper.getTitle(dataset));
-				for (RDFNode distribution : helper.getDistributions(dataset)) {
-					DistributionDB distributionDB = saveDistribution(helper.getAccessURL(distribution),
-							helper.getTitle(dataset), helper.getFormat(distribution), datasetDB);
-					distributionDB.addDefaultDatasets(datasetDB.getID());
-					datasetDB.addDistributionID(distributionDB.getID());
-					try {
-						distributionDB.update();
-						datasetDB.update();
-					} catch (LODVaderMissingPropertiesException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -189,10 +162,10 @@ public class LinghubParser implements DescriptionFileParserInterface {
 			for (String dataset : helper.getDatasets()) {
 				DatasetDB datasetDB = null;
 				for (RDFNode distribution : helper.getDistributions(dataset)) {
-					if (datasetDB == null)
-						datasetDB = saveDataset(dataset, helper.getTitle(dataset));
-
 					if (!helper.getFormat(distribution).equals("")) {
+						if (datasetDB == null)
+							datasetDB = saveDataset(dataset, helper.getTitle(dataset));
+
 						DistributionDB distributionDB = saveDistribution(helper.getAccessURL(distribution),
 								helper.getTitle(dataset), helper.getFormat(distribution), datasetDB);
 						distributionDB.addDefaultDatasets(datasetDB.getID());
