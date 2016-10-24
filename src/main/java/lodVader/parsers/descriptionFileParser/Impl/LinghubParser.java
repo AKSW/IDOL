@@ -84,7 +84,7 @@ public class LinghubParser implements DescriptionFileParserInterface {
 		datasetDB.addProvenance(repositoryAddress);
 		try {
 			datasetDB.update();
-		} catch (LODVaderMissingPropertiesException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
