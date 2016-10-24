@@ -185,11 +185,12 @@ public class LinghubParser implements DescriptionFileParserInterface {
 		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
 		try {
 			streamProcessor.downloadUrl = new URL(repositoryAddress);
+			streamProcessor.RDFFormat = "";
 			streamProcessor.openConnection();
 			streamProcessor.checkGZipInputStream();
 
 			Model model = ModelFactory.createDefaultModel();
-			model.read(new BufferedInputStream(streamProcessor.inputStream), "N-TRIPLES");
+			model.read((streamProcessor.inputStream), null, new FormatsUtils().getJenaFormat("nt"));
 			LodCloudHelper helper = new LodCloudHelper(model);
 			for (String dataset : helper.getDatasets()) {
 				DatasetDB datasetDB = saveDataset(dataset, helper.getTitle(dataset));

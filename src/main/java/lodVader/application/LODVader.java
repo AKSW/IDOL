@@ -17,7 +17,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import lodVader.application.fileparser.CKANRepositories;
 import lodVader.application.fileparser.RE3Repositories;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
@@ -27,8 +26,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
-import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
+import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
@@ -82,10 +80,10 @@ public class LODVader {
 		// load ckan repositories into lodvader
 //		CKANRepositories ckanParsers = new CKANRepositories();
 //		ckanParsers.loadAllRepositories();
-		RE3Repositories re3= new RE3Repositories();
-		re3.loadAllRepositories();
+//		RE3Repositories re3= new RE3Repositories();
+//		re3.loadAllRepositories();
 
-//		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
+		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
 //		 loader.load(new
 //		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 //		 loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
@@ -98,6 +96,8 @@ public class LODVader {
 //		 loader.load(new
 //		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 //		 loader.parse();
+		 loader.load(new LinghubParser());
+		 loader.parse();
 //		 loader.load(new LODCloudParser());
 //		 loader.parse();
 
