@@ -47,7 +47,7 @@ public class ResultsController {
 		int value = 1;
 		HashMap<Double, Integer> map = new HashMap<Double, Integer>();
 
-		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject())) {
+		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
 
 			// define the thresholds
@@ -118,7 +118,7 @@ public class ResultsController {
 	@RequestMapping(value = "/results/triples", method = RequestMethod.GET)
 	public HashMap<String, Integer> triples() {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
-		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject())) {
+		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
 			map.put(distribution.getID(), distribution.getNumberOfTriples());
 		}
@@ -129,7 +129,7 @@ public class ResultsController {
 	public HashMap<String, Integer> predicates() {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		for (DBObject d : new GeneralQueriesHelper().getObjects(
-				GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES.toString(), new BasicDBObject())) {
+				GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES.toString(), new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			if (map.get(d.get(GeneralResourceRelationDB.PREDICATE_ID).toString()) == null) {
 				map.put(d.get(GeneralResourceRelationDB.PREDICATE_ID).toString(), 1);
 			} else {

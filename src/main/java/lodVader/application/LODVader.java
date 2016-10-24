@@ -67,7 +67,7 @@ public class LODVader {
 		//
 //		 parseFiles();
 //		streamDistributions();
-		 detectDatasets();
+//		 detectDatasets();
 
 	}
 
