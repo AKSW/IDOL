@@ -116,11 +116,20 @@ public class ResultsController {
 	}
 
 	@RequestMapping(value = "/results/triples", method = RequestMethod.GET)
-	public HashMap<String, Integer> triples() {
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
+	public HashMap<Integer, Integer> triples() {
+		
+		int interval = 10000;
+		
+		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
-			map.put(distribution.getID(), distribution.getNumberOfTriples());
+			int n = ((Number) (distribution.getNumberOfTriples() / interval)).intValue();
+			if (map.get(n) == null){
+				map.put(n, 1);
+			}
+			else{
+				map.put(n, map.get(n)+1);
+			}
 		}
 		return map;
 	}
