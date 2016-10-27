@@ -78,7 +78,7 @@ public class DataIDHelper {
 	/**
 	 * Get format from a distribution
 	 * 
-	 * @param URI
+	 * @param CKAN_ID
 	 * @return
 	 */
 	public String getFormat(String distribution) {

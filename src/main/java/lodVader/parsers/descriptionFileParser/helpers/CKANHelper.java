@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanResource;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.parsers.ckanparser.CkanDatasetList;
+import lodVader.parsers.ckanparser.CkanParser;
+import lodVader.parsers.ckanparser.models.CkanDataset;
+import lodVader.parsers.ckanparser.models.CkanResource;
 
 /**
  * @author Ciro Baron Neto
@@ -22,7 +23,7 @@ import lodVader.mongodb.collections.DistributionDB;
  *         Sep 27, 2016
  */
 public class CKANHelper {
-	CkanClient client;
+	CkanParser client;
 
 	List<DistributionDB> distributions = new ArrayList<>();
 
@@ -32,11 +33,12 @@ public class CKANHelper {
 	 * Constructor for Class CKANHelper
 	 */
 	public CKANHelper(String URI) {
-		client = new CkanClient(URI);
+		client = new CkanParser(URI);
 	}
 
-	public List<String> getDatasetList() {
-		return client.getDatasetList();
+	public CkanDatasetList getDatasetList() {
+		return new CkanDatasetList(client);
+//		return client.getDatasetList();
 	}
 
 	public void saveInstances(List<String> ds) {
@@ -54,11 +56,11 @@ public class CKANHelper {
 	}
 
 	public DatasetDB saveDataset(CkanDataset dataset) {
-		DatasetDB datasetDB = new DatasetDB(dataset.getName());
+		DatasetDB datasetDB = new DatasetDB(dataset.getId());
 		datasetDB.setIsVocabulary(false);
 		datasetDB.setTitle(dataset.getTitle());
 		datasetDB.setLabel(dataset.getTitle());
-		datasetDB.setUri(dataset.getUrl()); 
+		datasetDB.setUri(dataset.getId()); 
 		try {
 			datasetDB.update();
 		} catch (LODVaderMissingPropertiesException e) {
@@ -73,7 +75,7 @@ public class CKANHelper {
 
 		DistributionDB distributionDB = new DistributionDB();
 		try {
-			distributionDB.setTitle(resource.getName());
+			distributionDB.setTitle(resource.getId());
 			distributionDB.setDownloadUrl(resource.getUrl());
 			distributionDB.setFormat(resource.getFormat());
 			distributionDB.update();
@@ -100,7 +102,7 @@ public class CKANHelper {
 
 		@Override
 		public void run() {
-			CkanDataset d = client.getDataset(dataset);
+			CkanDataset d = client.fetchDataset(dataset);
 			DatasetDB datasetDB = saveDataset(d);
 
 			for (CkanResource r : d.getResources()) {

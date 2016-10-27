@@ -12,23 +12,31 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.CKANParser;
+import lodVader.exceptions.LODVaderMissingPropertiesException;
+import lodVader.mongodb.collections.ckanparser.CkanCatalogDB;
+import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
+import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
+import lodVader.mongodb.collections.ckanparser.adapters.CkanCatalogDBAdapter;
+import lodVader.mongodb.collections.ckanparser.adapters.CkanDatasetDBAdapter;
+import lodVader.parsers.ckanparser.CkanDatasetList;
+import lodVader.parsers.ckanparser.CkanParser;
+import lodVader.parsers.ckanparser.models.CkanDataset;
+import lodVader.parsers.ckanparser.models.CkanResource;
 
 /**
  * @author Ciro Baron Neto
  * 
  *         Oct 1, 2016
  */
-public class CKANRepositories {
+public class CKANRepositoriesLoader {
 
-	final static Logger logger = LoggerFactory.getLogger(CKANRepositories.class);
+	final static Logger logger = LoggerFactory.getLogger(CKANRepositoriesLoader.class);
 
 	// number of concurrent request to be made for each repository
-	final int numberOfConcurrentRequests = 5;
+	final int numberOfConcurrentRequests = 1;
 
 	// number of repositories to be analyzed concurrently
-	final int numberOfConcurrentRepositories = 6;
+	final int numberOfConcurrentRepositories = 3;
 	// static ArrayList<String> ckanRepositories = new
 	// ArrayList<>(Arrays.asList("http://africaopendata.org/"));
 	// static ArrayList<String> ckanRepositories = new
@@ -55,7 +63,8 @@ public class CKANRepositories {
 	// "http://udct-data.aigid.jp",
 	// "http://data.yokohamaopendata.jp"
 
-	public static ArrayList<String> ckanRepositories = new ArrayList<>(Arrays.asList("https://africaopendata.org/",
+	public static ArrayList<String> ckanRepositories = new ArrayList<>(Arrays.asList(
+			"https://africaopendata.org/",
 			"http://dados.al.gov.br", "https://open.alberta.ca", "http://data.amsterdam.nl",
 			"http://annuario.comune.fi.it", "http://opendata.aragon.es/", "http://apicatalogo.santander.es/",
 			"https://data.barrowbc.gov.uk", "https://catalogue.data.gov.bc.ca", "http://bermuda.io/",
@@ -110,7 +119,7 @@ public class CKANRepositories {
 			e.printStackTrace();
 		}
 
-		System.out.println("Loaded all CKAN repositories.");
+		System.out.println("All CKAN repositories loaded.");
 
 	}
 
@@ -123,15 +132,13 @@ public class CKANRepositories {
 	 */
 	class HttpRepositoryRequestThread implements Runnable {
 
-		String repository;
+		String ckanCatalog;
 
-		CKANParser ckanParser;
 
 		// CkanClient client;
 
-		public HttpRepositoryRequestThread(String repository) {
-			this.repository = repository;
-			ckanParser = new CKANParser(repository, numberOfConcurrentRequests);
+		public HttpRepositoryRequestThread(String ckanCatalog) {
+			this.ckanCatalog = ckanCatalog;
 		}
 
 		/*
@@ -141,9 +148,29 @@ public class CKANRepositories {
 		 */
 		@Override
 		public void run() {
-			DescriptionFileParserLoader parser = new DescriptionFileParserLoader();
-			if (!parser.load(ckanParser))
-				parser.parse();
+			CkanParser parser = new CkanParser(ckanCatalog);
+			
+			CkanCatalogDB catalogDB = new CkanCatalogDBAdapter(parser.getCkanCatalog());
+	
+			try {
+				catalogDB.update();
+			} catch (LODVaderMissingPropertiesException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			CkanDatasetList list = parser.getDatasetList();
+			while(list.hasNext()){
+				CkanDataset dataset = list.next();
+				CkanDatasetDB datasetDB = new CkanDatasetDBAdapter(dataset, ckanCatalog);
+				
+				try {
+					datasetDB.update();
+				} catch (LODVaderMissingPropertiesException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
 		}
 	}
 

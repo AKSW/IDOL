@@ -17,6 +17,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.application.fileparser.CKANRepositoriesLoader;
 import lodVader.application.fileparser.RE3Repositories;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
@@ -96,10 +97,16 @@ public class LODVader {
 //		 loader.load(new
 //		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 //		 loader.parse();
-		 loader.load(new LinghubParser());
-		 loader.parse();
+//		 loader.load(new LinghubParser());
+//		 loader.parse();
 //		 loader.load(new LODCloudParser());
 //		 loader.parse();
+		
+		
+		
+		CKANRepositoriesLoader ckanLoader = new CKANRepositoriesLoader();
+		ckanLoader.loadAllRepositories();
+		
 
 	}
 

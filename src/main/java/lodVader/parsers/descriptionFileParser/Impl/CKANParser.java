@@ -13,13 +13,13 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanResource;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
+import lodVader.parsers.ckanparser.CkanParser;
+import lodVader.parsers.ckanparser.models.CkanDataset;
+import lodVader.parsers.ckanparser.models.CkanResource;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.utils.FormatsUtils;
 
@@ -87,14 +87,14 @@ public class CKANParser implements DescriptionFileParserInterface {
 	 */
 	public DatasetDB saveDataset(CkanDataset dataset, String provenance) {
 
-		DatasetDB datasetDB = new DatasetDB(dataset.getName());
+		DatasetDB datasetDB = new DatasetDB(dataset.getId());
 		datasetDB.setIsVocabulary(false);
 		datasetDB.setTitle(dataset.getTitle());
 		datasetDB.setLabel(dataset.getTitle());
 		datasetDB.setDescriptionFileParser(getParserName());
 		datasetDB.addProvenance(provenance);
 
-		logger.info("Dataset found: " + dataset.getName());
+		logger.info("Dataset found: " + dataset.getId());
 		try {
 			datasetDB.update();
 		} catch (LODVaderMissingPropertiesException e) {
@@ -117,7 +117,7 @@ public class CKANParser implements DescriptionFileParserInterface {
 	public DistributionDB saveDistribution(CkanResource resource, DatasetDB datasetDB) {
 
 		DistributionDB distributionDB = new DistributionDB(resource.getUrl());
-		distributionDB.setTitle(resource.getName());
+		distributionDB.setTitle(resource.getId());
 		distributionDB.setUri(resource.getUrl());
 
 		try {
@@ -166,8 +166,8 @@ public class CKANParser implements DescriptionFileParserInterface {
 
 		@Override
 		public void run() {
-			CkanClient client = new CkanClient(repository);
-			CkanDataset d = client.getDataset(dataset);
+			CkanParser client = new CkanParser(repository);
+			CkanDataset d = client.fetchDataset(dataset);
 			FormatsUtils formatUtils = new FormatsUtils();
 			DatasetDB datasetDB = null;
 
@@ -223,9 +223,9 @@ public class CKANParser implements DescriptionFileParserInterface {
 	@Override
 	public void parse() {
 
-		CkanClient client;
-		client = new CkanClient(repositoryAddress);
-		List<String> datasets = client.getDatasetList();
+		CkanParser client;
+		client = new CkanParser(repositoryAddress);
+		List<String> datasets = client.fetchDatasetIds();
 		logger.info("Loading datasets from repository: " + repositoryAddress);
 		saveInstances(datasets, repositoryAddress);
 

@@ -9,6 +9,9 @@ import lodVader.mongodb.collections.DescriptionFileParserDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
+import lodVader.mongodb.collections.ckanparser.CkanCatalogDB;
+import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
+import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 
@@ -28,7 +31,12 @@ public class IndexesCreator {
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL, 1, true);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.IS_VOCABULARY, 1);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS, 1);
-		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.DEFAULT_DATASETS, 1);
+		
+
+		addIndex(CkanCatalogDB.COLLECTION_NAME, CkanCatalogDB.CATALOG_URL, 1, true);
+		addIndex(CkanDatasetDB.COLLECTION_NAME, CkanDatasetDB.CKAN_ID, 1, true);
+		addIndex(CkanResourceDB.COLLECTION_NAME, CkanDatasetDB.CKAN_ID, 1,true);
+		
 		
 		
 		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString(), 1);
