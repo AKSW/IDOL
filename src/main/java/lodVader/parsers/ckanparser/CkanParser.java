@@ -76,7 +76,7 @@ public class CkanParser implements CkanParserInterface {
 	/**
 	 * @return the operations
 	 */
-	private CkanParserRequestOperations getOperations() {
+	public CkanParserRequestOperations getOperations() {
 		if (operations == null) {
 			try {
 				if (operations == null) {
