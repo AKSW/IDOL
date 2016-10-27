@@ -36,7 +36,7 @@ public class CKANRepositoriesLoader {
 	final int numberOfConcurrentRequests = 2;
 
 	// number of repositories to be analyzed concurrently
-	final int numberOfConcurrentRepositories = 2;
+	final int numberOfConcurrentRepositories = 10;
 	// static ArrayList<String> ckanRepositories = new
 	// ArrayList<>(Arrays.asList("http://africaopendata.org/"));
 	// static ArrayList<String> ckanRepositories = new
@@ -149,7 +149,7 @@ public class CKANRepositoriesLoader {
 		@Override
 		public void run() {
 			CkanParser parser = new CkanParser(ckanCatalog);
-			parser.getOperations();
+			CkanDatasetList list = parser.getDatasetList();
 			
 			CkanCatalogDB catalogDB = new CkanCatalogDBAdapter(parser.getCkanCatalog());
 	
@@ -160,7 +160,6 @@ public class CKANRepositoriesLoader {
 				e.printStackTrace();
 			}
 			
-			CkanDatasetList list = parser.getDatasetList();
 			while(list.hasNext()){
 				CkanDataset dataset = list.next();
 				CkanDatasetDB datasetDB = new CkanDatasetDBAdapter(dataset, ckanCatalog);

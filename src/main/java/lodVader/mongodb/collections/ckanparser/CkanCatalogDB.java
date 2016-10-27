@@ -14,9 +14,6 @@ public class CkanCatalogDB extends DBSuperClass {
 	public static final String VERSION = "version";
 
 
-	public String provinance;
-
-
 	public CkanCatalogDB(DBObject object) {
 		super(COLLECTION_NAME);
 		setKeys();
@@ -50,9 +47,6 @@ public class CkanCatalogDB extends DBSuperClass {
 		addField(CATALOG_URL, catalogUrl);
 	}
 	
-	/**
-	 * @return the provenance
-	 */
 	public String getCatalogUrl() {
 		return getField(CATALOG_URL).toString();
 	}
