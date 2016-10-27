@@ -33,10 +33,10 @@ public class CKANRepositoriesLoader {
 	final static Logger logger = LoggerFactory.getLogger(CKANRepositoriesLoader.class);
 
 	// number of concurrent request to be made for each repository
-	final int numberOfConcurrentRequests = 1;
+	final int numberOfConcurrentRequests = 2;
 
 	// number of repositories to be analyzed concurrently
-	final int numberOfConcurrentRepositories = 3;
+	final int numberOfConcurrentRepositories = 20;
 	// static ArrayList<String> ckanRepositories = new
 	// ArrayList<>(Arrays.asList("http://africaopendata.org/"));
 	// static ArrayList<String> ckanRepositories = new
