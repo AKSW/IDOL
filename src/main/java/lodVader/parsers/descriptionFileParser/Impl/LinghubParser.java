@@ -3,11 +3,7 @@
  */
 package lodVader.parsers.descriptionFileParser.Impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,21 +42,17 @@ public class LinghubParser implements DescriptionFileParserInterface {
 
 	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
-	String repositoryAddress = "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
+//	String repositoryAddress = "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
 	// String repositoryAddress = "http://localhost/dbpedia/linghub.nt.gz";
+	String repositoryAddress;
 
 	/**
 	 * Constructor for Class LodCloudParser
 	 */
-	public LinghubParser(String dumpAddress) {
-		repositoryAddress = dumpAddress;
+	public LinghubParser(String repositoryAddress) {
+		this.repositoryAddress = repositoryAddress;
 	}
 
-	/**
-	 * Constructor for Class LodCloudParser
-	 */
-	public LinghubParser() {
-	}
 
 	/**
 	 * Save a LOV Vocabulary or ontology instance the main collection
@@ -75,7 +67,6 @@ public class LinghubParser implements DescriptionFileParserInterface {
 		datasetDB.setIsVocabulary(true);
 		datasetDB.setTitle(title);
 		datasetDB.setLabel(title);
-		datasetDB.setDescriptionFileParser(getParserName());
 		datasetDB.addProvenance(repositoryAddress);
 		try {
 			datasetDB.update();
@@ -101,13 +92,14 @@ public class LinghubParser implements DescriptionFileParserInterface {
 		DistributionDB distributionDB = new DistributionDB(url);
 		distributionDB.setTitle(title);
 		distributionDB.setUri(url);
+		distributionDB.addDatasource(repositoryAddress);
+
 		distributionDB.setIsVocabulary(true);
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
 		if (distributionDB.getID() == null)
 			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
-		distributionDB.setOriginalFormat(format);
 		try {
 			distributionDB.update();
 		} catch (LODVaderMissingPropertiesException e) {

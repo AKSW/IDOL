@@ -17,8 +17,8 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import lodVader.application.fileparser.CKANRepositoriesLoader;
-import lodVader.application.fileparser.RE3Repositories;
+import lodVader.application.fileparser.CKANRepositoriesBatchProcessor;
+import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -103,9 +103,21 @@ public class LODVader {
 //		 loader.parse();
 		
 		
+		/**
+		 * Parsing Linghub
+		 */
+		 loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
+		 loader.parse();
 		
-		CKANRepositoriesLoader ckanLoader = new CKANRepositoriesLoader();
-		ckanLoader.loadAllRepositories();
+		
+		
+		/**
+		 * Parsing CKAN repositories 
+		 */
+//		CKANRepositoriesBatchProcessor ckanLoader = new CKANRepositoriesBatchProcessor();
+//		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
+////		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList);
+//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
 		
 
 	}

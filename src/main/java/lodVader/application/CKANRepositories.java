@@ -1,69 +1,43 @@
 /**
  * 
  */
-package lodVader.application.fileparser;
+package lodVader.application;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.mongodb.collections.ckanparser.CkanCatalogDB;
-import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
-import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
-import lodVader.mongodb.collections.ckanparser.adapters.CkanCatalogDBAdapter;
-import lodVader.mongodb.collections.ckanparser.adapters.CkanDatasetDBAdapter;
-import lodVader.parsers.ckanparser.CkanDatasetList;
-import lodVader.parsers.ckanparser.CkanParser;
-import lodVader.parsers.ckanparser.models.CkanDataset;
-import lodVader.parsers.ckanparser.models.CkanResource;
 
 /**
  * @author Ciro Baron Neto
  * 
- *         Oct 1, 2016
+ * Oct 28, 2016
  */
-public class CKANRepositoriesLoader {
-
-	final static Logger logger = LoggerFactory.getLogger(CKANRepositoriesLoader.class);
-
-	// number of concurrent request to be made for each repository
-	final int numberOfConcurrentRequests = 2;
-
-	// number of repositories to be analyzed concurrently
-	final int numberOfConcurrentRepositories = 10;
-	// static ArrayList<String> ckanRepositories = new
-	// ArrayList<>(Arrays.asList("http://africaopendata.org/"));
-	// static ArrayList<String> ckanRepositories = new
-	// ArrayList<>(Arrays.asList("http://drdsi.jrc.ec.europa.eu"));
+public class CKANRepositories {
+	
+	
+	
 	// "http://go.arenysdemunt.cat/ca/dataset",
-	// "http://daten.berlin.de",
-	// "http://cities.opendatahub.gr",
-	// "http://dados.ima.sp.gov.br",
-	// "http://ckan.sabae.jrrk.org",
-	// "http://dataforjapan.org",
-	// "http://data.suwon.go.kr",
-	// "http://www.data.go.jp",
-	// "http://datacatalogs.org/",
-	// "http://datagm.org.uk",
-	// "http://www.dati.gov.it",
-	// "https://gong.io",
-	// "http://data.linz.gv.at/",
-	// "http://geothermaldata.org",
-	// "http://www.offene-daten.me",
-	// "http://www.opendatahub.it/",
-	// "https://dati.lazio.it/catalog/it",
-	// "http://publicdata.eu",
-	// "http://data.cityofsantacruz.com/",
-	// "http://udct-data.aigid.jp",
-	// "http://data.yokohamaopendata.jp"
-
-	public static ArrayList<String> ckanRepositories = new ArrayList<>(Arrays.asList(
+		// "http://daten.berlin.de",
+		// "http://cities.opendatahub.gr",
+		// "http://dados.ima.sp.gov.br",
+		// "http://ckan.sabae.jrrk.org",
+		// "http://dataforjapan.org",
+		// "http://data.suwon.go.kr",
+		// "http://www.data.go.jp",
+		// "http://datacatalogs.org/",
+		// "http://datagm.org.uk",
+		// "http://www.dati.gov.it",
+		// "https://gong.io",
+		// "http://data.linz.gv.at/",
+		// "http://geothermaldata.org",
+		// "http://www.offene-daten.me",
+		// "http://www.opendatahub.it/",
+		// "https://dati.lazio.it/catalog/it",
+		// "http://publicdata.eu",
+		// "http://data.cityofsantacruz.com/",
+		// "http://udct-data.aigid.jp",
+		// "http://data.yokohamaopendata.jp"
+	
+	public static ArrayList<String> ckanRepositoryList = new ArrayList<>(Arrays.asList(
 			"https://africaopendata.org/",
 			"http://dados.al.gov.br", "https://open.alberta.ca", "http://data.amsterdam.nl",
 			"http://annuario.comune.fi.it", "http://opendata.aragon.es/", "http://apicatalogo.santander.es/",
@@ -104,74 +78,17 @@ public class CKANRepositoriesLoader {
 			"http://data.sa.gov.au/data", "https://opendata.swiss/", "http://taijiang.tw", "http://data.tainan.gov.tw",
 			"http://dadosabertos.senado.gov.br/", "https://datahub.io/", "https://iatiregistry.org",
 			"http://data.london.gov.uk", "http://data-gov-ua.org", "http://oppnadata.se"));
-
-	public void loadAllRepositories() {
-
-		ExecutorService executor = Executors.newFixedThreadPool(numberOfConcurrentRepositories);
-		ckanRepositories.forEach((repo) -> {
-			executor.execute(new HttpRepositoryRequestThread(repo));
-		});
-
-		executor.shutdown();
-		try {
-			executor.awaitTermination(300, TimeUnit.DAYS);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("All CKAN repositories loaded.");
-
-	}
-
-	/**
-	 * Load many CKAN repositories concurrently
-	 * 
-	 * @author Ciro Baron Neto
-	 * 
-	 *         Oct 1, 2016
-	 */
-	class HttpRepositoryRequestThread implements Runnable {
-
-		String ckanCatalog;
-
-
-		// CkanClient client;
-
-		public HttpRepositoryRequestThread(String ckanCatalog) {
-			this.ckanCatalog = ckanCatalog;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Runnable#run()
-		 */
-		@Override
-		public void run() {
-			CkanParser parser = new CkanParser(ckanCatalog);
-			CkanDatasetList list = parser.getDatasetList();
-			
-			CkanCatalogDB catalogDB = new CkanCatalogDBAdapter(parser.getCkanCatalog());
 	
-			try {
-				catalogDB.update();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			while(list.hasNext()){
-				CkanDataset dataset = list.next();
-				CkanDatasetDB datasetDB = new CkanDatasetDBAdapter(dataset, ckanCatalog);
-				
-				try {
-					datasetDB.update();
-				} catch (LODVaderMissingPropertiesException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}				
-			}
-		}
-	}
+	
+	
+	static ArrayList<String> RE3Repositories = new ArrayList<>(Arrays.asList("http://datahub.io/",
+			"http://catalog.data.gov/", "http://healthdata.gov/", "http://open.canada.ca/data/en/",
+			"http://data.gov.au/", "http://data.bris.ac.uk/data/", "http://data.london.gov.uk/",
+			"http://b2find.eudat.eu/", "https://www.geoplatform.gov/", "https://datastore.landcareresearch.co.nz/",
+			"http://data.nhm.ac.uk", "https://wci.earth2observe.eu/data/", "https://open-data.europa.eu/en/data",
+			"https://www.facs.org/quality-programs/cancer/ncdb", "https://repod.pon.edu.pl/", "http://mlvis.com/",
+			"http://en.openei.org/datasets/", "http://openresearchdata.ch/", "http://search.geothermaldata.org/",
+			"http://iatiregistry.org/"));
+	
 
 }

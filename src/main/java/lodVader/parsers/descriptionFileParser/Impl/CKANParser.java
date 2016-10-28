@@ -91,7 +91,6 @@ public class CKANParser implements DescriptionFileParserInterface {
 		datasetDB.setIsVocabulary(false);
 		datasetDB.setTitle(dataset.getTitle());
 		datasetDB.setLabel(dataset.getTitle());
-		datasetDB.setDescriptionFileParser(getParserName());
 		datasetDB.addProvenance(provenance);
 
 		logger.info("Dataset found: " + dataset.getId());
@@ -126,7 +125,6 @@ public class CKANParser implements DescriptionFileParserInterface {
 			e.printStackTrace();
 		}
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(resource.getFormat()));
-		distributionDB.setOriginalFormat(resource.getFormat());
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
 		if (distributionDB.getID() == null)

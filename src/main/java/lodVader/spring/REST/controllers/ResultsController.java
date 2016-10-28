@@ -132,6 +132,8 @@ public class ResultsController {
 		return map;
 	}
 	
+	
+	
 //	@RequestMapping(value = "/results/triplesPerDataSource", method = RequestMethod.GET)
 //	public HashMap<String, Integer> triplesPerDataSource() {
 //		HashMap<String, Integer> map = new HashMap<String, Integer>();

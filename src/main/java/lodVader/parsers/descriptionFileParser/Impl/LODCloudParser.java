@@ -34,6 +34,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
+import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.utils.FormatsUtils;
 
@@ -80,7 +81,6 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 		datasetDB.setIsVocabulary(true);
 		datasetDB.setTitle(title);
 		datasetDB.setLabel(title);
-		datasetDB.setDescriptionFileParser(getParserName());
 		datasetDB.addProvenance(repositoryAddress);
 		try {
 			datasetDB.update();
@@ -106,13 +106,13 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 		DistributionDB distributionDB = new DistributionDB(url);
 		distributionDB.setTitle(title);
 		distributionDB.setUri(url);
+		distributionDB.addDatasource(repositoryAddress);
 		distributionDB.setIsVocabulary(true);
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
 		if (distributionDB.getID() == null)
 			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
-		distributionDB.setOriginalFormat(format);
 		try {
 			distributionDB.update();
 		} catch (LODVaderMissingPropertiesException e) {
@@ -212,6 +212,8 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		new SubsetHelper().rearrangeSubsets(new ArrayList<DistributionDB>(distributions.values()), datasets);
 
 	}
 

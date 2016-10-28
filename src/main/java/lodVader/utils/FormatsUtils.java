@@ -25,13 +25,13 @@ public class FormatsUtils {
 			return DEFAULT_TURTLE;
 		else if (NTRIPLES_FORMATS.contains(str))
 			return DEFAULT_NTRIPLES;
-		else if (RDFXML_FORMATS.contains(str) || str.contains("rdf"))
+		else if (RDFXML_FORMATS.contains(str) || str.contains("rdf") || str.contains("RDF"))
 			return DEFAULT_RDFXML;
-		else if (NQUADS_FORMATS.contains(str))
+		else if (NQUADS_FORMATS.contains(str)|| str.contains("nq"))
 			return DEFAULT_NQUADS;
-		else if (SPARQL_FORMATS.contains(str))
+		else if (SPARQL_FORMATS.contains(str)|| str.contains("sparql"))
 			return DEFAULT_SPARQL;
-		else if (N3_FORMATS.contains(str))
+		else if (N3_FORMATS.contains(str)|| str.contains("nt"))
 			return DEFAULT_N3;
 		else if (JSONLD_FORMATS.contains(str))
 			return DEFAULT_JSONLD;
@@ -72,6 +72,7 @@ public class FormatsUtils {
 	private static final ArrayList<String> TQL_FORMATS = new ArrayList<String>() {
 		{
 			add("tql");
+			add("TQL");
 		}
 	};
 
@@ -81,6 +82,10 @@ public class FormatsUtils {
 			add("application/x-nquads");
 			add("nq");
 			add("NQ");
+			add("nquads");
+			add("nquad");
+			add("n quads");
+			add("n-quads");
 			add("gz:nq");
 		}
 	};
@@ -89,6 +94,7 @@ public class FormatsUtils {
 			add("ttl");
 			add("TTL");
 			add("turtle");
+			add("TURTLE");
 			add("meta/void");
 			add("meta/rdf-schema");
 			add("text/turtle");
@@ -108,6 +114,7 @@ public class FormatsUtils {
 			add("example/ntriples");
 			add("example/n3");
 			add("ntriples");
+			add("NTRIPLES");
 			add("n-triples");
 			add("text/ntriples");
 			add("rdf/nt");

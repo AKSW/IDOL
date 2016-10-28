@@ -24,8 +24,6 @@ public class DatasetDB extends DBSuperClass {
 	public static final String OBJECT_FILENAME = "objectFileName";
 
 	public static final String SUBJECT_FILTER_FILENAME = "subjectFileName";
-
-	public static final String DESCRIPTION_FILE_PARSER = "descriptionFileParser";
 	
 	public static final String URI = "uri";
 
@@ -65,7 +63,6 @@ public class DatasetDB extends DBSuperClass {
 
 	public void setKeys() {
 		addMandatoryField(URI);
-		addMandatoryField(DESCRIPTION_FILE_PARSER);
 		addMandatoryField(PROVENANCE);
 		
 //		addMandatoryField(SUBSET_IDS);
@@ -151,13 +148,6 @@ public class DatasetDB extends DBSuperClass {
 		return new DatasetQueries().getSubsetsAsMongoDBObject(this);
 	}
 
-	public void setDescriptionFileParser(String descriptionFileURL){
-		addField(DESCRIPTION_FILE_PARSER, descriptionFileURL);
-	}
-
-	public String getDescriptionFileParser(){
-		return getField(DESCRIPTION_FILE_PARSER).toString();
-	}
 	
 	public ArrayList<Integer> getParentDatasetID() {
 		try{

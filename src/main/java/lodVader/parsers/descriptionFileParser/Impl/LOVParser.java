@@ -57,7 +57,6 @@ public class LOVParser implements DescriptionFileParserInterface {
 		datasetDB.setIsVocabulary(true);
 		datasetDB.setTitle(title);
 		datasetDB.setLabel(title);
-		datasetDB.setDescriptionFileParser(getParserName());
 		datasetDB.addProvenance(repositoryAddress);
 		logger.info("LOV Ontology/Vocabulary found: " + title);
 		try {
@@ -98,6 +97,8 @@ public class LOVParser implements DescriptionFileParserInterface {
 		distributionDB.setUri(url);
 		distributionDB.setFormat("ttl");
 		distributionDB.setIsVocabulary(true);
+		distributionDB.addDatasource(repositoryAddress);
+
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
 		if (distributionDB.getID() == null)

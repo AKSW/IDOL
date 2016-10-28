@@ -63,8 +63,6 @@ public class DistributionDB extends DBSuperClass {
 
 	public static final String FORMAT = "format";
 
-	public static final String ORIGINAL_FORMAT = "originalFormat";
-
 	public static final String RESOURCE_URI = "resourceUri";
 
 	public static final String DEFAULT_DATASETS = "defaultDatasets";
@@ -192,14 +190,6 @@ public class DistributionDB extends DBSuperClass {
 
 	public void setFormat(String format) {
 		addField(FORMAT, format);
-	}
-
-	public String getOriginalFormat() {
-		return getField(ORIGINAL_FORMAT).toString();
-	}
-
-	public void setOriginalFormat(String format) {
-		addField(ORIGINAL_FORMAT, format);
 	}
 
 	public String getLastMsg() {

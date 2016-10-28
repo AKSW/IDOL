@@ -18,29 +18,27 @@ public class CkanResourceDB extends DBSuperClass {
 	public static final String TITLE = "title";
 
 	public static final String FORMAT = "format";
-	
-	public static final String DOWNLOAD_URL = "downloadURL";
-	
-	
-	public String provinance;
 
+	public static final String DOWNLOAD_URL = "downloadURL";
+
+	public String provinance;
 
 	public CkanResourceDB(DBObject object) {
 		super(COLLECTION_NAME);
 		setKeys();
 		mongoDBObject = object;
 	}
-	
+
 	/**
-	 * Constructor for Class DatasetDB 
+	 * Constructor for Class DatasetDB
 	 */
 	public CkanResourceDB() {
 		super(COLLECTION_NAME);
 		setKeys();
 	}
-	
+
 	/**
-	 * Constructor for Class DatasetDB 
+	 * Constructor for Class DatasetDB
 	 */
 	public CkanResourceDB(String id) {
 		super(COLLECTION_NAME);
@@ -48,20 +46,16 @@ public class CkanResourceDB extends DBSuperClass {
 		setCkanID(id);
 		find(true, CKAN_ID, id);
 	}
-	
 
 	public void setKeys() {
-//		addMandatoryField(DOWNLOAD_URL);
+		// addMandatoryField(DOWNLOAD_URL);
 		addMandatoryField(CKAN_CATALOG);
 		addMandatoryField(CKAN_DATASET);
-//		addMandatoryField(FORMAT);
-//		addMandatoryField(TITLE);
+		// addMandatoryField(FORMAT);
+		// addMandatoryField(TITLE);
 		addMandatoryField(CKAN_ID);
 	}
-	
 
-	
-	
 	/**
 	 * @return the provenance
 	 */
@@ -69,7 +63,6 @@ public class CkanResourceDB extends DBSuperClass {
 		return getField(CKAN_CATALOG).toString();
 	}
 
-	
 	public String getTitle() {
 		try {
 			return getField(TITLE).toString();
@@ -81,36 +74,36 @@ public class CkanResourceDB extends DBSuperClass {
 	public void setTitle(String title) {
 		addField(TITLE, title);
 	}
-	
+
 	public void setCkanDataset(String datasetId) {
 		addField(CKAN_DATASET, datasetId);
 	}
-	
-	public String getCkanDataset(){
+
+	public String getCkanDataset() {
 		return getField(CKAN_DATASET).toString();
 	}
-	
-	
+
 	public void setDownloadURL(String downloadURL) {
 		addField(DOWNLOAD_URL, downloadURL);
 	}
-	
-	public String getDownloadURL(){
+
+	public String getDownloadURL() {
 		return getField(DOWNLOAD_URL).toString();
 	}
-	
-	public void setCatalog(String catalog){
+
+	public void setCatalog(String catalog) {
 		addField(CKAN_CATALOG, catalog);
 	}
-	
 
-	
 	public void setFormat(String format) {
 		addField(FORMAT, format);
 	}
-	
-	public String getFormat(){
-		return getField(FORMAT).toString();
+
+	public String getFormat() {
+		if (getField(FORMAT) != null)
+			return getField(FORMAT).toString();
+		else
+			return null;
 	}
 
 	public String getCkanID() {
@@ -120,6 +113,5 @@ public class CkanResourceDB extends DBSuperClass {
 	public void setCkanID(String id) {
 		addField(CKAN_ID, id);
 	}
-	
 
 }

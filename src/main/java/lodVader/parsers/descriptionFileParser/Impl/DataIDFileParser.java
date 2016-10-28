@@ -17,6 +17,7 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.DCATHelper;
 import lodVader.parsers.descriptionFileParser.helpers.DataIDHelper;
+import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.utils.FormatsUtils;
 
 /**
@@ -100,6 +101,7 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 
 		}
 
+
 	}
 
 	public DistributionDB saveDistribution(String distribution, DatasetDB dataset) {
@@ -109,12 +111,13 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 		distributionDB.setDefaultDatasets(new ArrayList<String>(Arrays.asList(dataset.getID())));
 		distributionDB.setTopDataset(dataset.getID());
 		distributionDB.setTopDatasetTitle(dataset.getTitle());
+		distributionDB.addDatasource(repositoryAddress);
+
 		distributionDB.setTitle(dataidHelper.getTitle(distribution));
 		distributionDB.setLabel(dataidHelper.getLabel(distribution));
 		if (distributionDB.getID() == null)
 			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(dataidHelper.getFormat(distribution)));
-		distributionDB.setOriginalFormat(dataidHelper.getFormat(distribution));
 
 		distributions.add(distributionDB);
 		distributionDB.update(true, DistributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
@@ -148,7 +151,6 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 		mainDataset.setTitle(dataidHelper.getTitle(dataset));
 		mainDataset.setLabel(dataidHelper.getLabel(dataset));
 		mainDataset.setIsVocabulary(false);
-		mainDataset.setDescriptionFileParser(getParserName());
 		mainDataset.addProvenance(repositoryAddress);
 		mainDataset.update(true, DatasetDB.URI, dataset);
 

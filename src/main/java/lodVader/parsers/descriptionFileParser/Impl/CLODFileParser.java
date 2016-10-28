@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,13 +19,11 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
-import lodVader.services.mongodb.dataset.DatasetServices;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.NSUtils;
 
@@ -109,7 +104,6 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				}
 				else{
 					dataset.setIsVocabulary(false);
-					dataset.setDescriptionFileParser(getParserName());
 					dataset.addProvenance(repositoryAddress);
 					dataset.setTitle(stmt.getObject().toString());
 					dataset.update();					
@@ -121,6 +115,7 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				distribution.setUri(url);
 				distribution.setDownloadUrl(downloadURL);
 				distribution.setTitle(url);
+				distribution.addDatasource(repositoryAddress);
 				distribution.setTopDatasetTitle(url);
 				distribution.setTopDataset(dataset.getID());
 				distribution.setIsVocabulary(false);
@@ -134,7 +129,6 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 
 				try {
 					distribution.setFormat(FormatsUtils.getEquivalentFormat("nt"));
-					distribution.setOriginalFormat(FormatsUtils.getEquivalentFormat("nt"));
 				} catch (NoSuchElementException e) {
 					distribution.setFormat("");
 				}
