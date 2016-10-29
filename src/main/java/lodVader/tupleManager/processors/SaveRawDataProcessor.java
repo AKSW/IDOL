@@ -15,8 +15,12 @@ import org.openrdf.rio.Rio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.graph.Triple;
+
+import lodVader.API.diagram.Node;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.utils.FileUtils;
 
 /**
  * @author Ciro Baron Neto
@@ -37,7 +41,8 @@ public class SaveRawDataProcessor implements BasicProcessorInterface {
 	 */
 	public SaveRawDataProcessor(DistributionDB distribution, String fileName) {
 		this.distribution = distribution;
-		triplesTmpFilePath = LODVaderProperties.TMP_FOLDER +fileName;
+		triplesTmpFilePath = LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + fileName;
+		FileUtils.createFolder(LODVaderProperties.BASE_PATH + "/raw_files/");
 		openFiles();
 	}
 
@@ -69,9 +74,6 @@ public class SaveRawDataProcessor implements BasicProcessorInterface {
 
 		String triple = st.getSubject().toString() + " " + st.getPredicate() + " " + st.getObject();
 
-//		System.out.println(triple);
-		
-		
 		try {
 			triplesWriter.write(triple + "\n");
 		} catch (IOException e) {

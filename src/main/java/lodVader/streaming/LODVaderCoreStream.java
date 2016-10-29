@@ -54,6 +54,8 @@ public class LODVaderCoreStream {
 	public double httpContentLength;
 	public String httpLastModified = "0";
 
+	DistributionDB distribution;
+	
 	protected static final int BUFFER_SIZE = 1024 * 256;
 	public URL downloadUrl = null;
 
@@ -77,9 +79,9 @@ public class LODVaderCoreStream {
 	String accessURL = null;
 
 	private PipelineProcessor pipelineProcessor;
-	
+
 	/**
-	 * Constructor for Class LODVaderCoreStream 
+	 * Constructor for Class LODVaderCoreStream
 	 */
 	public LODVaderCoreStream() {
 		PipelineProcessor pipelineProcessor = new PipelineProcessor();
@@ -93,12 +95,12 @@ public class LODVaderCoreStream {
 		return pipelineProcessor;
 	}
 
-	public PipelineProcessor getPipelineProcessor(){
+	public PipelineProcessor getPipelineProcessor() {
 		return this.pipelineProcessor;
 	}
-//	public void registerPipelineProcessor(PipelineProcessor tupleManager) {
-//		this.tupleManager = tupleManager;
-//	}
+	// public void registerPipelineProcessor(PipelineProcessor tupleManager) {
+	// this.tupleManager = tupleManager;
+	// }
 
 	protected void getMetadataFromHTTPHeaders(HttpURLConnection httpConn) {
 
@@ -121,6 +123,7 @@ public class LODVaderCoreStream {
 			throws IOException, LODVaderLODGeneralException, LODVaderFormatNotAcceptedException {
 		this.downloadUrl = new URL(distributionMongoDBObj.getDownloadUrl());
 		this.RDFFormat = distributionMongoDBObj.getFormat();
+		this.distribution = distributionMongoDBObj;
 		openStream();
 		setParser();
 	}
@@ -274,21 +277,20 @@ public class LODVaderCoreStream {
 
 		// check format and extension
 		if (RDFFormat == null || RDFFormat.equals("")) {
-			DistributionDB dist = new DistributionDB();
-			dist.find(true, DistributionDB.DOWNLOAD_URL, downloadUrl.toString());
-			if (dist.getFormat() == null || dist.getFormat() == "" || dist.getFormat().equals(""))
+//			DistributionDB dist = new DistributionDB();
+//			dist.find(true, DistributionDB.DOWNLOAD_URL, downloadUrl.toString());
+			if (distribution.getFormat() == null || distribution.getFormat() == "" || distribution.getFormat().equals(""))
 				RDFFormat = getExtension();
 			else
-				RDFFormat = dist.getFormat();
+				RDFFormat = distribution.getFormat();
 		}
 	}
-	
-	
-    public static String read(InputStream input) throws IOException {
-        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
-            return buffer.lines().collect(Collectors.joining("\n"));
-        }
-    }
+
+	public static String read(InputStream input) throws IOException {
+		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+			return buffer.lines().collect(Collectors.joining("\n"));
+		}
+	}
 
 	public void openConnection() throws IOException, LODVaderLODGeneralException {
 
@@ -307,6 +309,14 @@ public class LODVaderCoreStream {
 
 		// check HTTP response code
 		if (responseCode != HttpURLConnection.HTTP_OK) {
+			if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
+					|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+				downloadUrl = new URL(httpConn.getHeaderField("Location"));
+				openConnection();
+			}
+		}
+
+		else if (responseCode != HttpURLConnection.HTTP_OK) {
 			httpConn.disconnect();
 			throw new LODVaderLODGeneralException("No file to download. Server replied HTTP code: " + responseCode);
 		}

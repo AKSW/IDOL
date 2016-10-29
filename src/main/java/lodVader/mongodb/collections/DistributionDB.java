@@ -74,7 +74,9 @@ public class DistributionDB extends DBSuperClass {
 	public static final String LAST_TIME_STREAMED = "lastTimeStreamed";
 
 	public static final String IS_VOCABULARY = "isVocabulary";
-
+	
+	public static final String BLANK_NODES = "blankNodes";
+	
 	public static final String TITLE = "title";
 
 	public static final String LABEL = "label";
@@ -130,6 +132,14 @@ public class DistributionDB extends DBSuperClass {
 
 	public String getUri() {
 		return getField(URI).toString();
+	}
+
+	public void setNumberOfBlankNodes(Integer blankNodes) {
+		addField(BLANK_NODES, blankNodes);
+	}
+	
+	public Integer getBlankNodes() {
+		return ((Number) getField(BLANK_NODES)).intValue();
 	}
 
 	public void setUri(String uri) {

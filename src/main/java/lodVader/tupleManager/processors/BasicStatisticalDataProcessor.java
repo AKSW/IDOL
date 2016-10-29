@@ -16,6 +16,9 @@ import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
@@ -54,7 +57,11 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 
 	// number of literals
 	Integer numberOfLiterals = 0;
+	
+	// total number of blank nodes
+	Integer numberOfBlankNodes= 0;
 
+	
 	// files
 	public String allPredicatesFileName;
 	public BufferedWriter allPredicatesWriter;
@@ -135,7 +142,11 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 			}
 
 		} else
-			numberOfLiterals++;
+			numberOfBlankNodes++;
+		
+		if (!st.getObject().toString().startsWith("http") && !st.getObject().toString().startsWith("_:")) {	
+			numberOfLiterals ++;
+		}
 
 		if (st.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
 			// addToMap(rdfSubClassOf, st.getObject().toString());
@@ -230,6 +241,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 				
 		distribution.setNumberOfLiterals(numberOfLiterals);
 		distribution.setNumberOfTriples(numberOfTriples);
+		distribution.setNumberOfBlankNodes(numberOfBlankNodes);
 
 		try {
 			distribution.update();
@@ -239,5 +251,5 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		}
 
 	}
-
+	
 }

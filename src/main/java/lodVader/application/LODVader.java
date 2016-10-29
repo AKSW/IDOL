@@ -17,12 +17,11 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import lodVader.application.fileparser.CKANRepositoryLoader;
-import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderConfigurator;
+import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
@@ -33,7 +32,7 @@ import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetec
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
-import lodVader.tupleManager.processors.BloomFilterProcessor;
+import lodVader.tupleManager.processors.SaveRawDataProcessor;
 
 /**
  * @author Ciro Baron Neto
@@ -64,8 +63,8 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-		parseFiles();
-		// streamDistributions();
+//		parseFiles();
+		 streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -127,9 +126,9 @@ public class LODVader {
 //		 CKANRepositoriesBatchProcessor ckanLoader = new
 //		 CKANRepositoriesBatchProcessor();
 //		 ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
-		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-		new CkanToLODVaderConverter().convert("RE3_REPOSITORIES");
+//		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+//		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
+//		new CkanToLODVaderConverter().convert("RE3_REPOSITORIES");
 		
 
 	}
@@ -138,9 +137,17 @@ public class LODVader {
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
+		
+		
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
 				DistributionStatus.WAITING_TO_STREAM.toString());
 
+//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.ID,
+//				"5813953c38c77735ff1fecb5");
+
+		
+		
+		
 		distributionsBeingProcessed.set(distributionObjects.size());
 
 		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with "
@@ -148,9 +155,6 @@ public class LODVader {
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			// DistributionDB distribution = new DistributionDB();
-			// distribution.find(true, DistributionDB.ID,
-			// "57f786ddb5c0f614b88dbae9");
 			executor.execute(new ProcessDataset(distribution));
 		}
 
@@ -247,11 +251,13 @@ public class LODVader {
 
 			// create some processors
 			BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
-			BloomFilterProcessor bfProcessor = new BloomFilterProcessor(distribution);
+			SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution,distribution.getID());
+//			BloomFilterProcessor bfProcessor = new BloomFilterProcessor(distribution);
 
 			// register them into the pipeline
 			coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
-			coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
+			coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
+//			coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
 
 			// start processing
 			try {
@@ -262,7 +268,8 @@ public class LODVader {
 				// after finishing processing, finalize the processors (save
 				// data, etc etc).
 				basicStatisticalProcessor.saveStatisticalData();
-				bfProcessor.saveFilters();
+				rawDataProcessor.closeFiles();
+//				bfProcessor.saveFilters();
 				distribution.setStatus(DistributionStatus.DONE);
 			} catch (IOException | LODVaderLODGeneralException | LODVaderFormatNotAcceptedException
 					| LODVaderMissingPropertiesException e) {

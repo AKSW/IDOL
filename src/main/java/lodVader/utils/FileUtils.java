@@ -2,8 +2,6 @@ package lodVader.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -17,8 +15,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.bloomfilters.BloomFilterI;
-import lodVader.bloomfilters.impl.BloomFilterFactory;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.loader.LODVaderProperties;
 
@@ -54,6 +50,12 @@ public class FileUtils {
 			f.mkdirs();
 
 		f = new File(LODVaderProperties.DUMP_PATH);
+		if (!f.exists())
+			f.mkdirs();
+	}
+	
+	public static  void createFolder(String folder){
+		File f = new File(folder);
 		if (!f.exists())
 			f.mkdirs();
 	}
