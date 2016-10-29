@@ -51,7 +51,7 @@ public class ResultsController {
 			if(datasetDB.getDistributionsAsMongoDBObjects().size()>1){
 				if(map.get(datasetDB.getProvenance()) == null)
 				{
-					map.put(datasetDB.getProvenance(), datasetDB.getDistributionsAsMongoDBObjects().size());
+					map.put(datasetDB.getProvenance(), datasetDB.getDistributionsIDs().size());
 				}
 				else{
 					map.put(datasetDB.getProvenance(), map.get(datasetDB.getProvenance()) + datasetDB.getDistributionsAsMongoDBObjects().size());
