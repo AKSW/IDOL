@@ -73,7 +73,11 @@ public class CkanToLODVaderConverter {
 
 				}
 		});
+		logger.info("Ckan datasets converted. ");
+		logger.info("Rearranging subsets...");
+
 		new SubsetHelper().rearrangeSubsets(distributions, datasets);
+		logger.info("Subsets rearranged.");
 
 	}
 
