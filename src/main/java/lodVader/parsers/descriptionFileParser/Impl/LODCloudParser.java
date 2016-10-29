@@ -184,7 +184,9 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 
 		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
 		try {
+			logger.info("Reading repository: "+repositoryAddress);
 			streamProcessor.downloadUrl = new URL(repositoryAddress);
+			streamProcessor.RDFFormat = "";
 			streamProcessor.openConnection();
 			streamProcessor.checkGZipInputStream();
 

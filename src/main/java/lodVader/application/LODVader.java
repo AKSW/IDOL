@@ -68,7 +68,7 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-//		parseFiles();
+		parseFiles();
 		// streamDistributions();
 		// detectDatasets();
 
@@ -107,8 +107,8 @@ public class LODVader {
 		/**
 		 * Parsing lod-cloud (lod-cloud.net)
 		 */
-//		loader.load(new LODCloudParser());
-//		loader.parse();
+		loader.load(new LODCloudParser());
+		loader.parse();
 
 		/**
 		 * Parsing Linghub (linghub.lider-project.eu)
