@@ -30,9 +30,9 @@ import lodVader.utils.FormatsUtils;
  * 
  *         Sep 27, 2016
  */
-public class CKANParser implements DescriptionFileParserInterface {
+public class CKANParserIMPL implements DescriptionFileParserInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(CKANParser.class);
+	final static Logger logger = LoggerFactory.getLogger(CKANParserIMPL.class);
 
 	HashMap<String, DistributionDB> distributions = new HashMap<String, DistributionDB>();
 
@@ -45,12 +45,12 @@ public class CKANParser implements DescriptionFileParserInterface {
 	/**
 	 * Constructor for Class CKANHelper
 	 */
-	public CKANParser(String repositoryAddress, int numberOfConcurrentRequests) {
+	public CKANParserIMPL(String repositoryAddress, int numberOfConcurrentRequests) {
 		this.repositoryAddress = repositoryAddress;
 		this.numberOfConcurrentRequests = numberOfConcurrentRequests;
 	}
 
-	private CKANParser() {
+	private CKANParserIMPL() {
 	}
 
 	/**

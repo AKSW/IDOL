@@ -49,6 +49,8 @@ public class ResultsController {
 			DatasetDB datasetDB = new DatasetDB(d);
 			if (datasetDB.getDistributionsIDs() != null)
 				if (datasetDB.getDistributionsIDs().size() > 1) {
+//					if(datasetDB.getProvenance().equals("http://data.dws.informatik.uni-mannheim.de/lodcloud/2014/ISWC-RDB/datacatalog_metadata.tar.gz"))
+						System.out.println(datasetDB.getProvenance() + datasetDB.getDistributionsIDs().size());
 					if (map.get(datasetDB.getProvenance()) == null) {
 						map.put(datasetDB.getProvenance(), datasetDB.getDistributionsIDs().size());
 					} else {

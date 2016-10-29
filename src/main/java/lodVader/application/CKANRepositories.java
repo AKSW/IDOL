@@ -84,14 +84,18 @@ public class CKANRepositories {
 	
 	
 	
-	static ArrayList<String> RE3Repositories = new ArrayList<>(Arrays.asList("http://datahub.io/",
-			"http://catalog.data.gov/", "http://healthdata.gov/", "http://open.canada.ca/data/en/",
+	//"http://healthdata.gov/"
+	//"https://www.geoplatform.gov/"
+//			"https://www.facs.org/quality-programs/cancer/ncdb", 
+//			"http://mlvis.com/",
+	static ArrayList<String> RE3Repositories = new ArrayList<>(Arrays.asList("https://datahub.io/",
+			"http://catalog.data.gov/",  "http://open.canada.ca/data/en",
 			"http://data.gov.au/", "http://data.bris.ac.uk/data/", "http://data.london.gov.uk/",
-			"http://b2find.eudat.eu/", "https://www.geoplatform.gov/", "https://datastore.landcareresearch.co.nz/",
+			"http://b2find.eudat.eu/", "https://datastore.landcareresearch.co.nz/",
 			"http://data.nhm.ac.uk", "https://wci.earth2observe.eu/data/", "https://open-data.europa.eu/en/data",
-			"https://www.facs.org/quality-programs/cancer/ncdb", "https://repod.pon.edu.pl/", "http://mlvis.com/",
+			"https://repod.pon.edu.pl/", 
 			"http://en.openei.org/datasets/", "http://openresearchdata.ch/", "http://search.geothermaldata.org/",
-			"http://iatiregistry.org/"));
+			"https://iatiregistry.org/"));
 	
 
 }

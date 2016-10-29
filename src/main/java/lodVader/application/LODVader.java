@@ -17,6 +17,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.application.fileparser.CKANRepositoryLoader;
 import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
@@ -26,11 +27,6 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
-import lodVader.parsers.descriptionFileParser.Impl.DataIDFileParser;
-import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
-import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
-import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
@@ -87,7 +83,7 @@ public class LODVader {
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
 
 		/**
-		 * Parsing DBPedia DataID file
+		 * Parsing DBpedia DataID file
 		 */
 //		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
 //		loader.parse();
@@ -107,8 +103,8 @@ public class LODVader {
 		/**
 		 * Parsing lod-cloud (lod-cloud.net)
 		 */
-		loader.load(new LODCloudParser());
-		loader.parse();
+//		loader.load(new LODCloudParser());
+//		loader.parse();
 
 		/**
 		 * Parsing Linghub (linghub.lider-project.eu)
@@ -128,10 +124,13 @@ public class LODVader {
 		/**
 		 * Parsing RE3 CKAN instances
 		 */
-		// CKANRepositoriesBatchProcessor ckanLoader = new
-		// CKANRepositoriesBatchProcessor();
-		// ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
+//		 CKANRepositoriesBatchProcessor ckanLoader = new
+//		 CKANRepositoriesBatchProcessor();
+//		 ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
+		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
+		new CkanToLODVaderConverter().convert("RE3_REPOSITORIES");
+		
 
 	}
 
