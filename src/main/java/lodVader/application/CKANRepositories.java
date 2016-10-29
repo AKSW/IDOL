@@ -39,9 +39,6 @@ public class CKANRepositories {
 		// "http://udct-data.aigid.jp",
 		// "http://data.yokohamaopendata.jp"
 	
-	public static void main(String[] args) {
-		System.out.println(RE3Repositories.size());
-	}
 	
 	public static ArrayList<String> ckanRepositoryList = new ArrayList<>(Arrays.asList(
 			"https://africaopendata.org/",

@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mongodb.BasicDBObject;
 
+import lodVader.application.LODVader;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.adapters.DatasetDBAdapter;
@@ -26,11 +30,14 @@ import lodVader.utils.FormatsUtils;
  */
 public class CkanToLODVaderConverter {
 
+	final static Logger logger = LoggerFactory.getLogger(CkanToLODVaderConverter.class);
+
 	public void convert(String dataSourceName) {
 
 		List<DistributionDB> distributions = new ArrayList<>();
 		HashMap<String, DatasetDB> datasets = new HashMap<>();
 
+		logger.info("Converting resources from " + CkanResourceDB.COLLECTION_NAME);
 		new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME, new BasicDBObject()).forEach((obj) -> {
 			CkanResourceDB ckanResourceDB = new CkanResourceDB(obj);
 			if (ckanResourceDB.getFormat() != null)
@@ -43,27 +50,27 @@ public class CkanToLODVaderConverter {
 
 					DatasetDB datasetDB = new DatasetDBAdapter(ckanDatasetDB, dataSourceName);
 					datasetDB.find(true, DatasetDB.URI, datasetDB.getUri());
-					
+
 					try {
 						datasetDB.update();
 						distributionDB.update();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					
+
 					distributionDB.setTopDataset(datasetDB.getID());
 					datasetDB.addDistributionID(distributionDB.getID());
-					
+
 					try {
 						datasetDB.update();
 						distributionDB.update();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					
-//					distributions.add(distributionDB);
-//					datasets.put(datasetDB.getID(), datasetDB);
-					
+
+					// distributions.add(distributionDB);
+					// datasets.put(datasetDB.getID(), datasetDB);
+
 				}
 		});
 		new SubsetHelper().rearrangeSubsets(distributions, datasets);

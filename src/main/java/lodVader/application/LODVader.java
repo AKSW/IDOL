@@ -63,7 +63,7 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-//		parseFiles();
+		parseFiles();
 		// streamDistributions();
 		// detectDatasets();
 
