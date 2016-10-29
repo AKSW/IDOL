@@ -43,22 +43,21 @@ public class ResultsController {
 		HashMap<String, Integer> map = new HashMap<>();
 
 		logger.info("Counting description file subsets...");
-		
-		for (DBObject d : new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
-				new BasicDBObject())) {
-			
+
+		for (DBObject d : new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME, new BasicDBObject())) {
+
 			DatasetDB datasetDB = new DatasetDB(d);
-			if(datasetDB.getDistributionsIDs().size()>1){
-				if(map.get(datasetDB.getProvenance()) == null)
-				{
-					map.put(datasetDB.getProvenance(), datasetDB.getDistributionsIDs().size());
+			if (datasetDB.getDistributionsIDs() != null)
+				if (datasetDB.getDistributionsIDs().size() > 1) {
+					if (map.get(datasetDB.getProvenance()) == null) {
+						map.put(datasetDB.getProvenance(), datasetDB.getDistributionsIDs().size());
+					} else {
+						map.put(datasetDB.getProvenance(),
+								map.get(datasetDB.getProvenance()) + datasetDB.getDistributionsIDs().size());
+
+					}
 				}
-				else{
-					map.put(datasetDB.getProvenance(), map.get(datasetDB.getProvenance()) + datasetDB.getDistributionsIDs().size());
-							
-				}
-			}
-			
+
 		}
 		return map;
 
