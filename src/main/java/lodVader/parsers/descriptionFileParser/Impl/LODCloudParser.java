@@ -59,7 +59,7 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 	 * Constructor for Class LodCloudParser
 	 */
 	public LODCloudParser(String dumpAddress) {
-		repositoryAddress = dumpAddress;
+		this.repositoryAddress = dumpAddress;
 	}
 
 	/**

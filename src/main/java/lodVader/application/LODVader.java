@@ -26,6 +26,11 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
+import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
+import lodVader.parsers.descriptionFileParser.Impl.DataIDFileParser;
+import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
+import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
+import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
@@ -67,6 +72,8 @@ public class LODVader {
 		// streamDistributions();
 		// detectDatasets();
 
+		logger.info("LODVader is done with the initial tasks. The API is running.");
+
 	}
 
 	/**
@@ -76,47 +83,55 @@ public class LODVader {
 	public void parseFiles() {
 
 		logger.info("Parsing files...");
-		// load ckan repositories into lodvader
-//		CKANRepositories ckanParsers = new CKANRepositories();
-//		ckanParsers.loadAllRepositories();
-//		RE3Repositories re3= new RE3Repositories();
-//		re3.loadAllRepositories();
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
-//		 loader.load(new
-//		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-//		 loader.load(new CLODFileParser("http://localhost/urls", "ttl"));
-//		 loader.load(new LOVParser());
-//		 loader.parse();
+
+		/**
+		 * Parsing DBPedia DataID file
+		 */
 //		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
 //		loader.parse();
-//		 loader.load(new
-//		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-//		 loader.load(new
-//		 CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-//		 loader.parse();
-//		 loader.load(new LinghubParser());
-//		 loader.parse();
-//		 loader.load(new LODCloudParser());
-//		 loader.parse();
-		
-		
+
 		/**
-		 * Parsing Linghub
+		 * Parsing LODLaundromat
 		 */
-//		 loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
-//		 loader.parse();
-		
-		
-		
+//		loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+//		loader.parse();
+
 		/**
-		 * Parsing CKAN repositories 
+		 * Parsing Linked Open Vocabularies (lov.okfn.org)
 		 */
-//		CKANRepositoriesBatchProcessor ckanLoader = new CKANRepositoriesBatchProcessor();
-//		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-//		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList);
-		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
-		
+//		loader.load(new LOVParser());
+//		loader.parse();
+
+		/**
+		 * Parsing lod-cloud (lod-cloud.net)
+		 */
+//		loader.load(new LODCloudParser());
+//		loader.parse();
+
+		/**
+		 * Parsing Linghub (linghub.lider-project.eu)
+		 */
+//		loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
+//		loader.parse();
+
+		/**
+		 * Parsing CKAN repositories (ckan.org/instances/#)
+		 */
+		// CKANRepositoriesBatchProcessor ckanLoader = new
+		// CKANRepositoriesBatchProcessor();
+		// ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
+		// ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList);
+//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
+
+		/**
+		 * Parsing RE3 CKAN instances
+		 */
+		// CKANRepositoriesBatchProcessor ckanLoader = new
+		// CKANRepositoriesBatchProcessor();
+		// ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
+//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
 
 	}
 

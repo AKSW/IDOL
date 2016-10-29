@@ -42,6 +42,8 @@ public class ResultsController {
 
 		HashMap<String, Integer> map = new HashMap<>();
 
+		logger.info("Counting description file subsets...");
+		
 		for (DBObject d : new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
 				new BasicDBObject())) {
 			
