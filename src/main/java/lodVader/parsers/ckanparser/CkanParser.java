@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.application.fileparser.CKANRepositoriesLoader;
 import lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper;
 import lodVader.parsers.ckanparser.models.CkanCatalog;
 import lodVader.parsers.ckanparser.models.CkanDataset;

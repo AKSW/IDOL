@@ -115,7 +115,6 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 				distribution.setUri(url);
 				distribution.setDownloadUrl(downloadURL);
 				distribution.setTitle(url);
-				distribution.addDatasource(repositoryAddress);
 				distribution.setTopDatasetTitle(url);
 				distribution.setTopDataset(dataset.getID());
 				distribution.setIsVocabulary(false);

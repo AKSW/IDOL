@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
@@ -36,19 +37,39 @@ public class ResultsController {
 
 	final static Logger logger = LoggerFactory.getLogger(ResultsController.class);
 
-	/**
-	 * Return a distribution
-	 * 
-	 * @param id
-	 * @return the distribution
-	 */
+	@RequestMapping(value = "/results/descriptionFile/subsets", method = RequestMethod.GET)
+	public HashMap<String, Integer> descriptionFileSubsets() {
+
+		HashMap<String, Integer> map = new HashMap<>();
+
+		for (DBObject d : new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
+				new BasicDBObject())) {
+			
+			DatasetDB datasetDB = new DatasetDB(d);
+			if(datasetDB.getDistributionsAsMongoDBObjects().size()>1){
+				if(map.get(datasetDB.getProvenance()) == null)
+				{
+					map.put(datasetDB.getProvenance(), datasetDB.getDistributionsAsMongoDBObjects().size());
+				}
+				else{
+					map.put(datasetDB.getProvenance(), map.get(datasetDB.getProvenance()) + datasetDB.getDistributionsAsMongoDBObjects().size());
+							
+				}
+			}
+			
+		}
+		return map;
+
+	}
+
 	@RequestMapping(value = "/results/subsets", method = RequestMethod.GET)
 	public HashMap<Double, Integer> dataset() {
 
 		int value = 1;
 		HashMap<Double, Integer> map = new HashMap<Double, Integer>();
 
-		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
+		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
 
 			// define the thresholds
@@ -117,46 +138,49 @@ public class ResultsController {
 	}
 
 	@RequestMapping(value = "/results/triplesInterval", method = RequestMethod.GET)
-	public HashMap<Integer, Integer> triplesInterval(@RequestParam(value = "interval", required = false, defaultValue = "1000000") Integer interval) {
+	public HashMap<Integer, Integer> triplesInterval(
+			@RequestParam(value = "interval", required = false, defaultValue = "1000000") Integer interval) {
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
-		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
+		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
 			int n = ((Number) (distribution.getNumberOfTriples() / interval)).intValue();
-			if (map.get(n) == null){
+			if (map.get(n) == null) {
 				map.put(n, 1);
-			}
-			else{
-				map.put(n, map.get(n)+1);
+			} else {
+				map.put(n, map.get(n) + 1);
 			}
 		}
 		return map;
 	}
-	
-	
-	
-//	@RequestMapping(value = "/results/triplesPerDataSource", method = RequestMethod.GET)
-//	public HashMap<String, Integer> triplesPerDataSource() {
-//		HashMap<String, Integer> map = new HashMap<String, Integer>();
-//		
-//		for (DBObject d : new GeneralQueriesHelper().getObjects(
-//				DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
-//			DistributionDB distribution = new DistributionDB(d);
-//			int n = ((Number) (distribution.getNumberOfTriples() / interval)).intValue();
-//			if (map.get(n) == null){
-//				map.put(n, 1);
-//			}
-//			else{
-//				map.put(n, map.get(n)+1);
-//			}
-//		}
-//		return map;
-//	}
+
+	// @RequestMapping(value = "/results/triplesPerDataSource", method =
+	// RequestMethod.GET)
+	// public HashMap<String, Integer> triplesPerDataSource() {
+	// HashMap<String, Integer> map = new HashMap<String, Integer>();
+	//
+	// for (DBObject d : new GeneralQueriesHelper().getObjects(
+	// DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS,
+	// DistributionDB.DistributionStatus.DONE.toString()))) {
+	// DistributionDB distribution = new DistributionDB(d);
+	// int n = ((Number) (distribution.getNumberOfTriples() /
+	// interval)).intValue();
+	// if (map.get(n) == null){
+	// map.put(n, 1);
+	// }
+	// else{
+	// map.put(n, map.get(n)+1);
+	// }
+	// }
+	// return map;
+	// }
 
 	@RequestMapping(value = "/results/topPredicates", method = RequestMethod.GET)
 	public HashMap<String, Integer> predicates() {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		for (DBObject d : new GeneralQueriesHelper().getObjects(
-				GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES.toString(), new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
+				GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES.toString(),
+				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			if (map.get(d.get(GeneralResourceRelationDB.PREDICATE_ID).toString()) == null) {
 				map.put(d.get(GeneralResourceRelationDB.PREDICATE_ID).toString(), 1);
 			} else {
@@ -173,18 +197,20 @@ public class ResultsController {
 		}
 
 		// load predicates
-		DBObject in = new BasicDBObject(); 
+		DBObject in = new BasicDBObject();
 		in.put("$in", returnMap.keySet());
 
-		List<DBObject> returnList = new GeneralQueriesHelper()
-				.getObjects(GeneralResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES.toString(),  new BasicDBObject(GeneralResourceDB.ID, in));
+		List<DBObject> returnList = new GeneralQueriesHelper().getObjects(
+				GeneralResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES.toString(),
+				new BasicDBObject(GeneralResourceDB.ID, in));
 
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
-		
+
 		for (DBObject o : returnList) {
-			result.put(o.get(GeneralResourceDB.URI).toString(), map.get(new ObjectId(o.get(GeneralResourceDB.ID).toString()).toString()));
+			result.put(o.get(GeneralResourceDB.URI).toString(),
+					map.get(new ObjectId(o.get(GeneralResourceDB.ID).toString()).toString()));
 		}
-		
+
 		return result;
 	}
 

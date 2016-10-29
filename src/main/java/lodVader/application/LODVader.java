@@ -17,7 +17,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import lodVader.application.fileparser.CKANRepositoriesBatchProcessor;
 import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
@@ -27,7 +26,6 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
@@ -65,7 +63,7 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-		parseFiles();
+//		parseFiles();
 		// streamDistributions();
 		// detectDatasets();
 
@@ -106,8 +104,8 @@ public class LODVader {
 		/**
 		 * Parsing Linghub
 		 */
-		 loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
-		 loader.parse();
+//		 loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
+//		 loader.parse();
 		
 		
 		
@@ -116,8 +114,8 @@ public class LODVader {
 		 */
 //		CKANRepositoriesBatchProcessor ckanLoader = new CKANRepositoriesBatchProcessor();
 //		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-////		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList);
-//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
+//		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList);
+		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
 		
 
 	}

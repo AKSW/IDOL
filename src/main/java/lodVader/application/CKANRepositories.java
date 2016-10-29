@@ -14,6 +14,8 @@ import java.util.Arrays;
 public class CKANRepositories {
 	
 	
+	//https://data.noaa.gov//
+	
 	
 	// "http://go.arenysdemunt.cat/ca/dataset",
 		// "http://daten.berlin.de",
@@ -36,6 +38,10 @@ public class CKANRepositories {
 		// "http://data.cityofsantacruz.com/",
 		// "http://udct-data.aigid.jp",
 		// "http://data.yokohamaopendata.jp"
+	
+	public static void main(String[] args) {
+		System.out.println(RE3Repositories.size());
+	}
 	
 	public static ArrayList<String> ckanRepositoryList = new ArrayList<>(Arrays.asList(
 			"https://africaopendata.org/",

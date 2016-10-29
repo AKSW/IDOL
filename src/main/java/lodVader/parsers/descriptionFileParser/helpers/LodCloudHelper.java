@@ -91,6 +91,27 @@ public class LodCloudHelper {
 	}
 	
 	/**
+	 * Get format of a distribution
+	 * 
+	 * @param URI
+	 * @return
+	 */
+	public String getFormat2(RDFNode distribution) {
+		StmtIterator stmtFormat = model.listStatements((distribution).asResource(), RDFResourcesTags.format_1,
+				(RDFNode) null);
+		if (stmtFormat.hasNext()) {
+//			System.out.println(model
+//					.listStatements(stmtFormat.next().getObject().asResource(), RDFResourcesTags.rdfValue, (RDFNode) null)
+//					.next().getObject().toString());
+//			return "";
+			return model
+					.listStatements(stmtFormat.next().getObject().asResource(), RDFResourcesTags.rdfValue, (RDFNode) null)
+					.next().getObject().toString();
+		}
+		return "";
+	}
+	
+	/**
 	 * Get accessURL from a distribution
 	 * 
 	 * @param URI

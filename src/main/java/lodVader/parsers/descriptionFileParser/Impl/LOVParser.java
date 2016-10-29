@@ -97,7 +97,6 @@ public class LOVParser implements DescriptionFileParserInterface {
 		distributionDB.setUri(url);
 		distributionDB.setFormat("ttl");
 		distributionDB.setIsVocabulary(true);
-		distributionDB.addDatasource(repositoryAddress);
 
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());

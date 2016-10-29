@@ -92,8 +92,6 @@ public class LinghubParser implements DescriptionFileParserInterface {
 		DistributionDB distributionDB = new DistributionDB(url);
 		distributionDB.setTitle(title);
 		distributionDB.setUri(url);
-		distributionDB.addDatasource(repositoryAddress);
-
 		distributionDB.setIsVocabulary(true);
 		distributionDB.setTopDataset(datasetDB.getID());
 		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
@@ -154,7 +152,8 @@ public class LinghubParser implements DescriptionFileParserInterface {
 			for (String dataset : helper.getDatasets()) {
 				DatasetDB datasetDB = null;
 				for (RDFNode distribution : helper.getDistributions(dataset)) {
-					if (!helper.getFormat(distribution).equals("")) {
+//					helper.getFormat2(distribution);
+					if (!helper.getFormat2(distribution).equals("")) {
 						if (datasetDB == null)
 							datasetDB = saveDataset(dataset, helper.getTitle(dataset));
 

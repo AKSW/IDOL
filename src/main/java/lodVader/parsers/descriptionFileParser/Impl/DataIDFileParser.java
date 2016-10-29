@@ -111,7 +111,6 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 		distributionDB.setDefaultDatasets(new ArrayList<String>(Arrays.asList(dataset.getID())));
 		distributionDB.setTopDataset(dataset.getID());
 		distributionDB.setTopDatasetTitle(dataset.getTitle());
-		distributionDB.addDatasource(repositoryAddress);
 
 		distributionDB.setTitle(dataidHelper.getTitle(distribution));
 		distributionDB.setLabel(dataidHelper.getLabel(distribution));
