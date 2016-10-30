@@ -38,13 +38,14 @@ public class CkanToLODVaderConverter {
 		HashMap<String, DatasetDB> datasets = new HashMap<>();
 
 		logger.info("Converting resources from " + CkanResourceDB.COLLECTION_NAME);
-		new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME, new BasicDBObject()).forEach((obj) -> {
+		new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME, new BasicDBObject(CkanResourceDB.DATASOURCE, dataSourceName)).forEach((obj) -> {
 			CkanResourceDB ckanResourceDB = new CkanResourceDB(obj);
 			if (ckanResourceDB.getFormat() != null)
 				if (!FormatsUtils.getEquivalentFormat(ckanResourceDB.getFormat()).equals("")) {
 					DistributionDB distributionDB = new DistributionDBAdapter(ckanResourceDB, dataSourceName);
 					distributionDB.find(true, distributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
-
+					distributionDB.addDatasource(dataSourceName);
+					
 					CkanDatasetDB ckanDatasetDB = new CkanDatasetDB();
 					ckanDatasetDB.find(true, CkanDatasetDB.CKAN_ID, ckanResourceDB.getCkanDataset());
 
