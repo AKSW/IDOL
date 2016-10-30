@@ -20,7 +20,7 @@ public class CkanDatasetDBAdapter extends CkanDatasetDB {
 	/**
 	 * Constructor for Class CatalogAdapter
 	 */
-	public CkanDatasetDBAdapter(CkanDataset dataset, String ckanCatalogID) {
+	public CkanDatasetDBAdapter(CkanDataset dataset, String ckanCatalogID, String datasource) {
 		setCatalog(ckanCatalogID);
 		setCkanID(dataset.getId());
 		setTitle(dataset.getTitle());
@@ -35,6 +35,7 @@ public class CkanDatasetDBAdapter extends CkanDatasetDB {
 			CkanResourceDB resourceDB = new CkanResourceDB();
 			resourceDB.setCatalog(ckanCatalogID);
 			resourceDB.setCkanDataset(getCkanID());
+			resourceDB.addDataSource(datasource);
 			resourceDB.setCkanID(resource.getId());
 			resourceDB.setDownloadURL(resource.getUrl());
 			resourceDB.setFormat(resource.getFormat());

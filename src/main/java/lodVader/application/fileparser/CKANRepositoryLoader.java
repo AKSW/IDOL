@@ -36,11 +36,11 @@ public class CKANRepositoryLoader {
 	final int numberOfConcurrentRepositories = 10;
 	
 
-	public void loadAllRepositories(List<String> ckanRepositories) {
+	public void loadAllRepositories(List<String> ckanRepositories, String datasource) {
 
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfConcurrentRepositories);
 		ckanRepositories.forEach((repo) -> {
-			executor.execute(new HttpRepositoryRequestThread(repo));
+			executor.execute(new HttpRepositoryRequestThread(repo,datasource));
 		});
 
 		executor.shutdown();
@@ -64,12 +64,14 @@ public class CKANRepositoryLoader {
 	class HttpRepositoryRequestThread implements Runnable {
 
 		String ckanCatalog;
+		String datasource;
 
 
 		// CkanClient client;
 
-		public HttpRepositoryRequestThread(String ckanCatalog) {
+		public HttpRepositoryRequestThread(String ckanCatalog, String datasource) {
 			this.ckanCatalog = ckanCatalog;
+			this.datasource= datasource;
 		}
 
 		/*
@@ -93,7 +95,7 @@ public class CKANRepositoryLoader {
 			
 			while(list.hasNext()){
 				CkanDataset dataset = list.next();
-				CkanDatasetDB datasetDB = new CkanDatasetDBAdapter(dataset, ckanCatalog);
+				CkanDatasetDB datasetDB = new CkanDatasetDBAdapter(dataset, ckanCatalog, datasource);
 				
 				try {
 					datasetDB.update();

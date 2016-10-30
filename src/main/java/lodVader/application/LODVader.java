@@ -17,11 +17,12 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.application.fileparser.CKANRepositoryLoader;
+import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderConfigurator;
-import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
@@ -126,9 +127,10 @@ public class LODVader {
 //		 CKANRepositoriesBatchProcessor ckanLoader = new
 //		 CKANRepositoriesBatchProcessor();
 //		 ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-//		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
-//		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-//		new CkanToLODVaderConverter().convert("RE3_REPOSITORIES");
+		String datasource = "RE3_REPOSITORIES";
+		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
+		new CkanToLODVaderConverter().convert(datasource);
 		
 
 	}

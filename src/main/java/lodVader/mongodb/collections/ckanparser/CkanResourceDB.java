@@ -1,5 +1,7 @@
 package lodVader.mongodb.collections.ckanparser;
 
+import java.util.ArrayList;
+
 import com.mongodb.DBObject;
 
 import lodVader.mongodb.DBSuperClass;
@@ -20,6 +22,8 @@ public class CkanResourceDB extends DBSuperClass {
 	public static final String FORMAT = "format";
 
 	public static final String DOWNLOAD_URL = "downloadURL";
+
+	public static final String DATASOURCE = "datasource";
 
 	public String provinance;
 
@@ -71,6 +75,25 @@ public class CkanResourceDB extends DBSuperClass {
 		}
 	}
 
+	public void addDataSource(String datasource) {
+		ArrayList<String> ids = (ArrayList<String>) getField(DATASOURCE);
+		if (ids != null) {
+			if (!ids.contains(datasource)) {
+				ids.add(datasource);
+				addField(DATASOURCE, ids);
+			}
+		} else {
+			ids = new ArrayList<String>();
+			ids.add(datasource);
+			addField(DATASOURCE, ids);
+		}
+	}
+	
+	public ArrayList<String> getDataSources() {
+		return (ArrayList<String>) getField(DATASOURCE);
+	}
+	
+	
 	public void setTitle(String title) {
 		addField(TITLE, title);
 	}
