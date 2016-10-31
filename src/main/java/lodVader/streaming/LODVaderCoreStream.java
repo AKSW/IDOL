@@ -54,8 +54,8 @@ public class LODVaderCoreStream {
 	public String httpContentType = null;
 	public double httpContentLength;
 	public String httpLastModified = "0";
-	
-	private int redirection  = 0;
+
+	private int redirection = 0;
 
 	DistributionDB distribution;
 
@@ -242,22 +242,26 @@ public class LODVaderCoreStream {
 						logger.info("File name: " + entry.getName());
 
 						rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
-						File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
 
-						try {
-							RDFParser rdfParser = getSuitableParser(rdfFormat);
+						if (!rdfFormat.equals("")) {
 
-							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), zip);
+							File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
+
 							try {
-								rdfParser.parse(new FileInputStream(f), "");
-							} catch (Exception e) {
-								e.printStackTrace();
+								RDFParser rdfParser = getSuitableParser(rdfFormat);
+
+								simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), zip);
+								try {
+									rdfParser.parse(new FileInputStream(f), "");
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							} catch (LODVaderFormatNotAcceptedException e1) {
+								inputStream.close();
+								e1.printStackTrace();
 							}
-						} catch (LODVaderFormatNotAcceptedException e1) {
-							inputStream.close();
-							e1.printStackTrace();
+							f.delete();
 						}
-						f.delete();
 
 					}
 
@@ -285,23 +289,25 @@ public class LODVaderCoreStream {
 						File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
 
 						rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
-						COMPRESSION_FORMATS newCompressionFormat = new FormatsUtils()
-								.getCompressionFormat(entry.getName());
+						if (!rdfFormat.equals("")) {
+							COMPRESSION_FORMATS newCompressionFormat = new FormatsUtils()
+									.getCompressionFormat(entry.getName());
 
-						// check if file is not compressed
+							// check if file is not compressed
 
-						if (!newCompressionFormat.equals(COMPRESSION_FORMATS.NO_COMPRESSION)) {
-							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(),
-									loadCompressors(new BufferedInputStream(tar), newCompressionFormat));
-						} else {
-							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), tar);
-						}
+							if (!newCompressionFormat.equals(COMPRESSION_FORMATS.NO_COMPRESSION)) {
+								simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(),
+										loadCompressors(new BufferedInputStream(tar), newCompressionFormat));
+							} else {
+								simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), tar);
+							}
 
-						try {
-							RDFParser rdfParser = getSuitableParser(rdfFormat);
-							rdfParser.parse(new FileInputStream(f), "");
-						} catch (LODVaderFormatNotAcceptedException e) {
-							e.printStackTrace();
+							try {
+								RDFParser rdfParser = getSuitableParser(rdfFormat);
+								rdfParser.parse(new FileInputStream(f), "");
+							} catch (LODVaderFormatNotAcceptedException e) {
+								e.printStackTrace();
+							}
 						}
 
 					}
@@ -389,8 +395,8 @@ public class LODVaderCoreStream {
 			logger.info("We received the following HTTP response code: " + responseCode);
 			logger.info("Redirecting connection to URL: " + downloadUrl);
 			redirection++;
-			if(redirection == 10)
-				throw new IOException("Too many redirections!"); 
+			if (redirection == 10)
+				throw new IOException("Too many redirections!");
 			openConnection(downloadUrl, rdfFormat);
 		}
 
