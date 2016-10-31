@@ -141,7 +141,14 @@ public class LODVaderCoreStream {
 	}
 
 	public void startParsing(String downloadUrl, String rdfFormat) {
-		COMPRESSION_FORMATS compressionFormat = new FormatsUtils().getCompressionFormat(downloadUrl);
+		COMPRESSION_FORMATS compressionFormat;
+		if(downloadUrl.contains("lodlaundromat"))
+			
+			compressionFormat = COMPRESSION_FORMATS.GZ;
+		else
+			
+			compressionFormat = new FormatsUtils().getCompressionFormat(downloadUrl);
+		
 		try {
 			InputStream inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 			inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
@@ -262,8 +269,7 @@ public class LODVaderCoreStream {
 								e1.printStackTrace();
 							}
 							f.delete();
-						}
-						else{
+						} else {
 							logger.info("File extension not supported: " + entry.getName());
 						}
 
