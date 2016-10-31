@@ -1,6 +1,7 @@
 package lodVader.mongodb.collections;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.DBObject;
@@ -127,6 +128,12 @@ public class DatasetDB extends DBSuperClass {
 			ids = new ArrayList<String>();
 			ids.add(id);
 			addField(DISTRIBUTIONS_IDS, ids);
+		}
+	}
+	
+	public void setDistributionIDs(Collection<String> distributionIDs){
+		for(String id : distributionIDs){
+			addDistributionID(id);
 		}
 	}
 

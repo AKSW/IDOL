@@ -19,6 +19,10 @@ public class FormatsUtils {
 	public static final String DEFAULT_JSONLD = "jsonld";
 
 	public static final String DEFAULT_SPARQL = "sparql";
+	
+	
+	public static enum COMPRESSION_FORMATS {ZIP, TAR, GZ, TAR_GZ, TGZ, BZ2, NO_COMPRESSION} ;
+
 
 	public static String getEquivalentFormat(String str) {
 		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
@@ -31,7 +35,7 @@ public class FormatsUtils {
 			return DEFAULT_NQUADS;
 		else if (SPARQL_FORMATS.contains(str)|| str.contains("sparql"))
 			return DEFAULT_SPARQL;
-		else if (N3_FORMATS.contains(str)|| str.contains("nt"))
+		else if (N3_FORMATS.contains(str)|| str.contains("n3"))
 			return DEFAULT_N3;
 		else if (JSONLD_FORMATS.contains(str))
 			return DEFAULT_JSONLD;
@@ -141,6 +145,35 @@ public class FormatsUtils {
 		}
 	};
 
+
+	/**
+	 * Return the file compression format based on the URL
+	 * @param url
+	 * @return the compression format
+	 */
+	public COMPRESSION_FORMATS getCompressionFormat(String url){
+		if(url.endsWith(".zip")){
+			return COMPRESSION_FORMATS.ZIP;
+		}
+		else if(url.endsWith(".tar")){
+			return COMPRESSION_FORMATS.TAR;
+		}
+		else if(url.endsWith(".tar.gz")){
+			return  COMPRESSION_FORMATS.TAR_GZ;			
+		}
+		else if(url.endsWith(".bz2")){
+			return COMPRESSION_FORMATS.BZ2;			
+		}
+		else if(url.endsWith(".gz")){
+			return COMPRESSION_FORMATS.GZ;			
+		}
+		else if(url.endsWith(".tgz")){
+			return COMPRESSION_FORMATS.TGZ;						
+		}
+		else return COMPRESSION_FORMATS.NO_COMPRESSION;
+	}
+	
+	
 	/**
 	 * Get serialization format for Jena processing
 	 * 

@@ -53,7 +53,7 @@ public class LODVader {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
-	int numberOfThreads = 6;
+	int numberOfThreads = 1;
 
 	/**
 	 * Main method
@@ -145,6 +145,8 @@ public class LODVader {
 		
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
 				DistributionStatus.WAITING_TO_STREAM.toString());	
+//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL,
+//				"https://ckannet-storage.commondatastorage.googleapis.com/2015-02-27T15:10:37.856Z/apertium-eo-en-rdf.zip");	
 		
 		
 		distributionsBeingProcessed.set(distributionObjects.size());

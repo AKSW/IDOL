@@ -6,14 +6,18 @@ package fix;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import lodVader.mongodb.DBSuperClass;
+import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
+import lodVader.services.mongodb.distribution.DistributionServices;
 import lodVader.utils.NSUtils;
 
 /**
@@ -28,24 +32,26 @@ public class Fix {
 	 * Constructor for Class Fix 
 	 */
 	public Fix() {
-
-//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0.toString(),
-//				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0.toString());
-//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS.toString(),
-//				
-//				GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS.toString());
-//
-//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0.toString(),
-//				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0.toString());
-//		removeBlankNodes(GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS.toString(),
-//				GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS.toString());
-//		
 		
-		System.out.println("-- - - - - end");
+		List<DBObject> distributions = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
+		
+		for(DBObject dist : distributions){
+			DistributionDB distribution = new DistributionDB(dist);
+			if(distribution.getDownloadUrl().contains(".xls") || 
+					distribution.getDownloadUrl().contains(".doc")	){
+				System.out.println(distribution.getDownloadUrl());
+//				new DistributionServices().removeDistribution(distribution, true);
+			}
+		}
+		
+		
 
 
 	}
 	
+//	public static void main(String[] args) {
+//		new Fix();
+//	}
 	
 	
 //	public void getNS(String resource_collection, String relation_collection){
