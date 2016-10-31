@@ -21,10 +21,10 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
 public class StreamingStatusRESTModel {
 
 	// the total number of triples
-	public Integer totalTriples = 0;
+	public Double totalTriples = 0.0;
 
 	// the total number of blank nodes
-	public Integer totalBlankNodes = 0;
+	public Double totalBlankNodes = 0.0;
 
 	// total number of distributions already processed (status=DONE)
 	public Integer totalDistributionsProcessed = 0;
