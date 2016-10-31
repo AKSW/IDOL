@@ -60,8 +60,8 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-		parseFiles();
-//		 streamDistributions();
+//		parseFiles();
+		 streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -105,8 +105,8 @@ public class LODVader {
 		/**
 		 * Parsing Linghub (linghub.lider-project.eu)
 		 */
-		loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
-		loader.parse();
+//		loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
+//		loader.parse();
 
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
