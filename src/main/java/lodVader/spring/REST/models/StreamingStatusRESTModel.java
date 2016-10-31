@@ -151,7 +151,7 @@ public class StreamingStatusRESTModel {
 	 */
 	class DatasourceStatus {
 		
-		public String datasource; 
+		private String datasource; 
 
 		public Integer blankNodes = 0;
 
@@ -165,13 +165,13 @@ public class StreamingStatusRESTModel {
 			return distributionsProcessed + distributionsWaiting;
 		}
 		
-		public Integer getNumberOfDatasets(){
-			String provenance = new GeneralQueriesHelper().getObjects(DescriptionFileParserDB.COLLECTION_NAME,
-					DescriptionFileParserDB.PARSER_NAME, datasource).iterator().next().get(DescriptionFileParserDB.REPOSITORY_ADDRESS).toString();
-			return new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
-					DatasetDB.PROVENANCE, provenance).size();
-			
-		}
+//		public Integer getNumberOfDatasets(){
+//			String provenance = new GeneralQueriesHelper().getObjects(DescriptionFileParserDB.COLLECTION_NAME,
+//					DescriptionFileParserDB.PARSER_NAME, datasource).iterator().next().get(DescriptionFileParserDB.REPOSITORY_ADDRESS).toString();
+//			return new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
+//					DatasetDB.PROVENANCE, provenance).size();
+//			
+//		}
 		
 		/**
 		 * @param datasource 
