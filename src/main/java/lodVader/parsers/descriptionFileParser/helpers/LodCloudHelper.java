@@ -104,9 +104,9 @@ public class LodCloudHelper {
 //					.listStatements(stmtFormat.next().getObject().asResource(), RDFResourcesTags.rdfValue, (RDFNode) null)
 //					.next().getObject().toString());
 //			return "";
-			return model
+			return FormatsUtils.getEquivalentFormat(model
 					.listStatements(stmtFormat.next().getObject().asResource(), RDFResourcesTags.rdfValue, (RDFNode) null)
-					.next().getObject().toString();
+					.next().getObject().toString());
 		}
 		return "";
 	}

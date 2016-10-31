@@ -46,7 +46,8 @@ public class LinghubParser implements DescriptionFileParserInterface {
 
 	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
-//	String repositoryAddress = "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
+	// String repositoryAddress =
+	// "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
 	// String repositoryAddress = "http://localhost/dbpedia/linghub.nt.gz";
 	String repositoryAddress;
 
@@ -56,7 +57,6 @@ public class LinghubParser implements DescriptionFileParserInterface {
 	public LinghubParser(String repositoryAddress) {
 		this.repositoryAddress = repositoryAddress;
 	}
-
 
 	/**
 	 * Save a LOV Vocabulary or ontology instance the main collection
@@ -145,30 +145,27 @@ public class LinghubParser implements DescriptionFileParserInterface {
 
 		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
 		try {
-			streamProcessor.simpleDownload(
-					LODVaderProperties.TMP_FOLDER+"/LingHubFile", 
+			streamProcessor.simpleDownload(LODVaderProperties.TMP_FOLDER + "/LingHubFile",
 					new URL(repositoryAddress).openStream());
-			File f = new File(LODVaderProperties.TMP_FOLDER+"/LingHubFile");
-			
-//			streamProcessor.downloadUrl = new URL(repositoryAddress);
-//			streamProcessor.RDFFormat = "";
-//			streamProcessor.openConnection();
-//			streamProcessor.checkGZipInputStream();
+			File f = new File(LODVaderProperties.TMP_FOLDER + "/LingHubFile");
 
 			Model model = ModelFactory.createDefaultModel();
-			model.read(streamProcessor.checkGZipInputStream(new FileInputStream(f), COMPRESSION_FORMATS.GZ), null, new FormatsUtils().getJenaFormat("nt"));
+			model.read(streamProcessor.checkGZipInputStream(new FileInputStream(f), COMPRESSION_FORMATS.GZ), null,
+					new FormatsUtils().getJenaFormat("nt"));
 			f.delete();
 			LodCloudHelper helper = new LodCloudHelper(model);
 			for (String dataset : helper.getDatasets()) {
 				DatasetDB datasetDB = null;
 				for (RDFNode distribution : helper.getDistributions(dataset)) {
-//					helper.getFormat2(distribution);
 					if (!helper.getFormat2(distribution).equals("")) {
+						System.out.println(helper.getFormat2(distribution));
+						
+						
 						if (datasetDB == null)
 							datasetDB = saveDataset(dataset, helper.getTitle(dataset));
 
 						DistributionDB distributionDB = saveDistribution(helper.getAccessURL(distribution),
-								helper.getTitle(dataset), helper.getFormat(distribution), datasetDB);
+								helper.getTitle(dataset), helper.getFormat2(distribution), datasetDB);
 						distributionDB.addDefaultDatasets(datasetDB.getID());
 						datasetDB.addDistributionID(distributionDB.getID());
 						try {
@@ -181,7 +178,7 @@ public class LinghubParser implements DescriptionFileParserInterface {
 				}
 			}
 
-		} catch (IOException  e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

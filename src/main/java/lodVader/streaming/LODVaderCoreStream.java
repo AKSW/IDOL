@@ -54,6 +54,8 @@ public class LODVaderCoreStream {
 	public String httpContentType = null;
 	public double httpContentLength;
 	public String httpLastModified = "0";
+	
+	private int redirection  = 0;
 
 	DistributionDB distribution;
 
@@ -386,6 +388,9 @@ public class LODVaderCoreStream {
 			downloadUrl = httpConn.getHeaderField("Location");
 			logger.info("We received the following HTTP response code: " + responseCode);
 			logger.info("Redirecting connection to URL: " + downloadUrl);
+			redirection++;
+			if(redirection == 10)
+				throw new IOException("Too many redirections!"); 
 			openConnection(downloadUrl, rdfFormat);
 		}
 

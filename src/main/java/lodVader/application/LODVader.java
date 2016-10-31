@@ -106,7 +106,8 @@ public class LODVader {
 		 * Parsing Linghub (linghub.lider-project.eu)
 		 */
 //		loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
-//		loader.parse();
+		loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
+		loader.parse();
 
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
@@ -137,9 +138,6 @@ public class LODVader {
 		
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
 				DistributionStatus.WAITING_TO_STREAM.toString());	
-//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL,
-//				"https://ckannet-storage.commondatastorage.googleapis.com/2015-02-27T15:10:37.856Z/apertium-eo-en-rdf.zip");	
-		
 		
 		distributionsBeingProcessed.set(distributionObjects.size());
 
@@ -148,6 +146,7 @@ public class LODVader {
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
+			
 			executor.execute(new ProcessDataset(distribution));
 		}
 
