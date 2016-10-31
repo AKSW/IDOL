@@ -3,6 +3,7 @@
  */
 package lodVader.spring.REST.models;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,11 +21,27 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
  */
 public class StreamingStatusRESTModel {
 
+	private DecimalFormat formatter = new DecimalFormat("###,###,###,###,###,###");
+
 	// the total number of triples
-	public Double totalTriples = 0.0;
+	private Double totalTriples = 0.0;
+	
+	/**
+	 * @return the totalBlankNodes
+	 */
+	public String getTotalTriples() {
+		return formatter.format(totalTriples);
+	}
 
 	// the total number of blank nodes
 	public Double totalBlankNodes = 0.0;
+	
+	/**
+	 * @return the totalBlankNodes
+	 */
+	public String getTotalBlankNodes() {
+		return formatter.format(totalBlankNodes);
+	}
 
 	// total number of distributions already processed (status=DONE)
 	public Integer totalDistributionsProcessed = 0;
