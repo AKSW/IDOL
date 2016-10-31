@@ -3,6 +3,7 @@
  */
 package lodVader.application;
 
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,7 +49,7 @@ public class LODVader {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
-	int numberOfThreads = 1;
+	int numberOfThreads = 2;
 
 	/**
 	 * Main method
@@ -146,6 +147,12 @@ public class LODVader {
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
+//			try {
+//				distribution.setDownloadUrl("http://www.lexvo.org/linkeddata/void.rdf");
+//			} catch (MalformedURLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
 			executor.execute(new ProcessDataset(distribution));
 		}

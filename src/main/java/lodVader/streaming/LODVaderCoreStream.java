@@ -244,6 +244,7 @@ public class LODVaderCoreStream {
 						rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
 
 						if (!rdfFormat.equals("")) {
+							System.out.println(rdfFormat);
 
 							File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
 

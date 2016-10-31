@@ -25,6 +25,9 @@ public class FormatsUtils {
 
 
 	public static String getEquivalentFormat(String str) {
+		if(str.length() > 20)
+		str = str.substring(str.length() - 10);
+		
 		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
 			return DEFAULT_TURTLE;
 		else if (NTRIPLES_FORMATS.contains(str))
