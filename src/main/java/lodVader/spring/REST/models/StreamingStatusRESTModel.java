@@ -10,6 +10,8 @@ import java.util.HashMap;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.mongodb.collections.DatasetDB;
+import lodVader.mongodb.collections.DescriptionFileParserDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 
@@ -116,6 +118,7 @@ public class StreamingStatusRESTModel {
 			datasourceStatus.distributionsWaiting = 1;
 			datasourceStatus.distributionsProcessed = 0;
 		}
+		datasourceStatus.setDatasource(datasource);
 	}
 
 	/**
@@ -147,6 +150,8 @@ public class StreamingStatusRESTModel {
 	 *         Oct 30, 2016
 	 */
 	class DatasourceStatus {
+		
+		public String datasource; 
 
 		public Integer blankNodes = 0;
 
@@ -156,6 +161,26 @@ public class StreamingStatusRESTModel {
 
 		public Integer distributionsWaiting = 0;
 
+		public Integer getDistributions(){
+			return distributionsProcessed + distributionsWaiting;
+		}
+		
+		public Integer getNumberOfDatasets(){
+			String provenance = new GeneralQueriesHelper().getObjects(DescriptionFileParserDB.COLLECTION_NAME,
+					DescriptionFileParserDB.PARSER_NAME, datasource).iterator().next().get(DescriptionFileParserDB.REPOSITORY_ADDRESS).toString();
+			return new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
+					DatasetDB.PROVENANCE, provenance).size();
+			
+		}
+		
+		/**
+		 * @param datasource 
+		 * Set the datasource value.
+		 */
+		public void setDatasource(String datasource) {
+			this.datasource = datasource;
+		}
+		
 	}
 
 }
