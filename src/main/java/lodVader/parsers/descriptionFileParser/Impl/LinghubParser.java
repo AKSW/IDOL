@@ -3,6 +3,8 @@
  */
 package lodVader.parsers.descriptionFileParser.Impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
+import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
@@ -26,6 +29,7 @@ import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.utils.FormatsUtils;
+import lodVader.utils.FormatsUtils.COMPRESSION_FORMATS;
 
 /**
  * LOV parser. Using LOV api v2 (http://lov.okfn.org/dataset/lov/api/v2/)
@@ -141,13 +145,19 @@ public class LinghubParser implements DescriptionFileParserInterface {
 
 		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
 		try {
-			streamProcessor.downloadUrl = new URL(repositoryAddress);
-			streamProcessor.RDFFormat = "";
-			streamProcessor.openConnection();
-			streamProcessor.checkGZipInputStream();
+			streamProcessor.simpleDownload(
+					LODVaderProperties.TMP_FOLDER+"/LingHubFile", 
+					new URL(repositoryAddress).openStream());
+			File f = new File(LODVaderProperties.TMP_FOLDER+"/LingHubFile");
+			
+//			streamProcessor.downloadUrl = new URL(repositoryAddress);
+//			streamProcessor.RDFFormat = "";
+//			streamProcessor.openConnection();
+//			streamProcessor.checkGZipInputStream();
 
 			Model model = ModelFactory.createDefaultModel();
-			model.read((streamProcessor.inputStream), null, new FormatsUtils().getJenaFormat("nt"));
+			model.read(streamProcessor.checkGZipInputStream(new FileInputStream(f), COMPRESSION_FORMATS.GZ), null, new FormatsUtils().getJenaFormat("nt"));
+			f.delete();
 			LodCloudHelper helper = new LodCloudHelper(model);
 			for (String dataset : helper.getDatasets()) {
 				DatasetDB datasetDB = null;
@@ -171,7 +181,7 @@ public class LinghubParser implements DescriptionFileParserInterface {
 				}
 			}
 
-		} catch (IOException | LODVaderLODGeneralException e) {
+		} catch (IOException  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

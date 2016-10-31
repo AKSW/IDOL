@@ -134,7 +134,7 @@ public class LODVaderCoreStream {
 	// }
 
 	public void startParsing(DistributionDB distributionMongoDBObj) {
-		this.distribution =distributionMongoDBObj;
+		this.distribution = distributionMongoDBObj;
 		startParsing(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
 	}
 
@@ -276,25 +276,25 @@ public class LODVaderCoreStream {
 				TarArchiveEntry entry = (TarArchiveEntry) tar.getNextEntry();
 				while (entry != null) {
 					if (entry.isFile() && !entry.isDirectory()) {
-						
+
 						logger.info(++nf + " tar file uncompressed.");
 						logger.info("File name: " + entry.getName());
-						
+
 						File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
 
 						rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
-						COMPRESSION_FORMATS newCompressionFormat = new FormatsUtils().getCompressionFormat(entry.getName());
-						
+						COMPRESSION_FORMATS newCompressionFormat = new FormatsUtils()
+								.getCompressionFormat(entry.getName());
+
 						// check if file is not compressed
 
-						if(!newCompressionFormat.equals(COMPRESSION_FORMATS.NO_COMPRESSION)){
-							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), 
+						if (!newCompressionFormat.equals(COMPRESSION_FORMATS.NO_COMPRESSION)) {
+							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(),
 									loadCompressors(new BufferedInputStream(tar), newCompressionFormat));
+						} else {
+							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), tar);
 						}
-						else{
-							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), tar);					
-						}
-						
+
 						try {
 							RDFParser rdfParser = getSuitableParser(rdfFormat);
 							rdfParser.parse(new FileInputStream(f), "");
@@ -369,9 +369,10 @@ public class LODVaderCoreStream {
 		HttpURLConnection httpConn = (HttpURLConnection) new URL(downloadUrl).openConnection();
 
 		// if file format is unknown, try to fetch TTL data
-		if (rdfFormat.equals("ttl") || rdfFormat.equals("")) {
-			httpConn.setRequestProperty("Accept", "text/turtle");
-		}
+		if (rdfFormat != null)
+			if (rdfFormat.equals("ttl") || rdfFormat.equals("")) {
+				httpConn.setRequestProperty("Accept", "text/turtle");
+			}
 
 		httpConn.setReadTimeout(5000);
 		httpConn.setConnectTimeout(5000);

@@ -37,6 +37,7 @@ import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.utils.FormatsUtils;
+import lodVader.utils.FormatsUtils.COMPRESSION_FORMATS;
 
 /**
  * LOV parser. Using LOV api v2 (http://lov.okfn.org/dataset/lov/api/v2/)
@@ -185,13 +186,21 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
 		try {
 			logger.info("Reading repository: "+repositoryAddress);
-			streamProcessor.downloadUrl = new URL(repositoryAddress);
-			streamProcessor.RDFFormat = "";
-			streamProcessor.openConnection();
-			streamProcessor.checkGZipInputStream();
+//			streamProcessor.downloadUrl = new URL(repositoryAddress);
+//			streamProcessor.RDFFormat = "";
+//			streamProcessor.openConnection();
+//			streamProcessor.checkGZipInputStream();
+			
+			streamProcessor.simpleDownload(
+					LODVaderProperties.TMP_FOLDER+"/LingHubFile", 
+					new URL(repositoryAddress).openStream());
+			File f = new File(LODVaderProperties.TMP_FOLDER+"/LingHubFile");
 
-			if (streamProcessor.getExtension().equals("tar")) {
-				InputStream data = new BufferedInputStream(streamProcessor.inputStream);
+//			if (streamProcessor.getExtension().equals("tar")) {
+				InputStream data = 
+						
+						streamProcessor.checkGZipInputStream(
+								new BufferedInputStream(streamProcessor.openConnection(repositoryAddress, null).getInputStream()),COMPRESSION_FORMATS.GZ);
 				logger.info("File extension is tar, creating TarArchiveInputStream and checking compressed files...");
 
 				TarArchiveInputStream tar = new TarArchiveInputStream(data);
@@ -207,8 +216,8 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 					}
 					entry = (TarArchiveEntry) tar.getNextEntry();
 				}
-				streamProcessor.setExtension(FilenameUtils.getExtension(streamProcessor.getFileName()));
-			}
+//				streamProcessor.setExtension(FilenameUtils.getExtension(streamProcessor.getFileName()));
+//			}
 
 		} catch (IOException | LODVaderLODGeneralException e) {
 			// TODO Auto-generated catch block

@@ -15,7 +15,6 @@ import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.plugins.LODVaderPlugin;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.SaveRawDataProcessor;
@@ -63,11 +62,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 
 			stream.getPipelineProcessor().registerProcessor(processor);
 
-			try {
-				stream.startParsing(sourceDistribution);
-			} catch (IOException | LODVaderLODGeneralException | LODVaderFormatNotAcceptedException e) {
-				e.printStackTrace();
-			}
+			stream.startParsing(sourceDistribution);
 			processor.saveFile();
 
 			sourceSet = loadSetFromDisk(fileName);
@@ -87,11 +82,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 						targetDistributionFileName);
 
 				stream.getPipelineProcessor().registerProcessor(processor);
-				try {
-					stream.startParsing(targetDistribution);
-				} catch (IOException | LODVaderLODGeneralException | LODVaderFormatNotAcceptedException e) {
-					e.printStackTrace();
-				}
+				stream.startParsing(targetDistribution);
 				targetSet = loadSetFromDisk(targetDistributionFileName);
 				processor.saveFile();
 
