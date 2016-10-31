@@ -262,6 +262,9 @@ public class LODVaderCoreStream {
 							}
 							f.delete();
 						}
+						else{
+							logger.info("File not supported: " + entry.getName());
+						}
 
 					}
 
