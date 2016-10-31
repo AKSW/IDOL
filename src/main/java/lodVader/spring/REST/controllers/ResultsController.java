@@ -25,6 +25,7 @@ import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
+import lodVader.spring.REST.models.StreamingStatusRESTModel;
 
 /**
  * @author Ciro Baron Neto
@@ -155,6 +156,19 @@ public class ResultsController {
 			}
 		}
 		return map;
+	}
+	
+	
+	/**
+	 * Returns a JSON object with the status of each datasource
+	 * @return
+	 */
+	@RequestMapping(value = "/results/streamingStatus", method = RequestMethod.GET)
+	public StreamingStatusRESTModel streamingStatus() {
+		StreamingStatusRESTModel model = new StreamingStatusRESTModel();
+		model.checkStatus();
+		return model;
+		
 	}
 
 	// @RequestMapping(value = "/results/triplesPerDataSource", method =

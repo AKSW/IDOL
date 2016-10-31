@@ -74,9 +74,9 @@ public class DistributionDB extends DBSuperClass {
 	public static final String LAST_TIME_STREAMED = "lastTimeStreamed";
 
 	public static final String IS_VOCABULARY = "isVocabulary";
-	
+
 	public static final String BLANK_NODES = "blankNodes";
-	
+
 	public static final String TITLE = "title";
 
 	public static final String LABEL = "label";
@@ -84,10 +84,10 @@ public class DistributionDB extends DBSuperClass {
 	public static final String NUMBER_OF_TRIPLES = "numberOfTriples";
 
 	public static final String NUMBER_OF_LITERALS = "numberOfLiterals";
-	
+
 	public enum DistributionStatus {
-		
-		STREAMING, 
+
+		STREAMING,
 
 		STREAMED,
 
@@ -137,9 +137,12 @@ public class DistributionDB extends DBSuperClass {
 	public void setNumberOfBlankNodes(Integer blankNodes) {
 		addField(BLANK_NODES, blankNodes);
 	}
-	
+
 	public Integer getBlankNodes() {
-		return ((Number) getField(BLANK_NODES)).intValue();
+		if (getField(BLANK_NODES) == null)
+			return 0;
+		else
+			return ((Number) getField(BLANK_NODES)).intValue();
 	}
 
 	public void setUri(String uri) {
@@ -155,7 +158,10 @@ public class DistributionDB extends DBSuperClass {
 	}
 
 	public int getNumberOfTriples() {
-		return ((Number) getField(NUMBER_OF_TRIPLES)).intValue();
+		if ((Number) getField(NUMBER_OF_TRIPLES) == null)
+			return 0;
+		else
+			return ((Number) getField(NUMBER_OF_TRIPLES)).intValue();
 	}
 
 	public int getNumberOfLiterals() {
@@ -303,7 +309,7 @@ public class DistributionDB extends DBSuperClass {
 			addField(DEFAULT_DATASETS, ids);
 		}
 	}
-	
+
 	public void addRepository(String repository) {
 		ArrayList<String> ids = (ArrayList<String>) getField(REPOSITORY);
 		if (ids != null) {
@@ -317,7 +323,7 @@ public class DistributionDB extends DBSuperClass {
 			addField(REPOSITORY, ids);
 		}
 	}
-	
+
 	public void addDatasource(String datasource) {
 		ArrayList<String> ids = (ArrayList<String>) getField(DATASOURCE);
 		if (ids != null) {
@@ -330,6 +336,10 @@ public class DistributionDB extends DBSuperClass {
 			ids.add(datasource);
 			addField(DATASOURCE, ids);
 		}
+	}
+
+	public ArrayList<String> getDatasources() {
+		return (ArrayList<String>) getField(DATASOURCE);
 	}
 
 	public ArrayList<Integer> getDefaultDatasets() {

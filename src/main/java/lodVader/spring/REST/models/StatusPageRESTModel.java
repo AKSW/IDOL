@@ -17,7 +17,7 @@ import lodVader.mongodb.queries.DistributionQueries;
  * 
  * Oct 8, 2016
  */
-public class StatusPageModel {
+public class StatusPageRESTModel {
 
 //	ArrayList<DistributionDB> distributions;
 //	

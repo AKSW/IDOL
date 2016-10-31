@@ -4,6 +4,7 @@
 package lodVader.application;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,8 +65,8 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-		parseFiles();
-//		 streamDistributions();
+//		parseFiles();
+		 streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -141,13 +142,9 @@ public class LODVader {
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 		
 		
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionStatus.WAITING_TO_STREAM.toString());
-
-//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.ID,
-//				"5813953c38c77735ff1fecb5");
-
 		
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+				DistributionStatus.WAITING_TO_STREAM.toString());	
 		
 		
 		distributionsBeingProcessed.set(distributionObjects.size());
@@ -273,8 +270,7 @@ public class LODVader {
 				rawDataProcessor.closeFiles();
 //				bfProcessor.saveFilters();
 				distribution.setStatus(DistributionStatus.DONE);
-			} catch (IOException | LODVaderLODGeneralException | LODVaderFormatNotAcceptedException
-					| LODVaderMissingPropertiesException e) {
+			} catch (Exception e) {
 				distribution.setLastMsg(e.getMessage());
 				distribution.setStatus(DistributionStatus.ERROR);
 				e.printStackTrace();
