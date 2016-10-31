@@ -263,7 +263,7 @@ public class LODVaderCoreStream {
 							f.delete();
 						}
 						else{
-							logger.info("File not supported: " + entry.getName());
+							logger.info("File extension not supported: " + entry.getName());
 						}
 
 					}
@@ -286,7 +286,7 @@ public class LODVaderCoreStream {
 				while (entry != null) {
 					if (entry.isFile() && !entry.isDirectory()) {
 
-						logger.info(++nf + " tar file uncompressed.");
+						logger.info(++nf + " tar file(s) uncompressed.");
 						logger.info("File name: " + entry.getName());
 
 						File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
