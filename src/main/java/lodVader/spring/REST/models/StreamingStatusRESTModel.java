@@ -101,6 +101,7 @@ public class StreamingStatusRESTModel {
 		DatasourceStatus datasourceStatus = new DatasourceStatus();
 		datasources.put(datasource, datasourceStatus);
 		datasourceStatus.blankNodes = distributionDB.getBlankNodes();
+		datasourceStatus.blankNodes = distributionDB.getNumberOfTriples();
 		if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.DONE)) {
 			datasourceStatus.distributionsProcessed = 1;
 			datasourceStatus.distributionsWaiting = 0;
@@ -118,7 +119,9 @@ public class StreamingStatusRESTModel {
 	 */
 	private void addToDataseurceStatus(DistributionDB distributionDB, String datasource,
 			DatasourceStatus datasourceStatus) {
-		datasourceStatus.blankNodes = distributionDB.getBlankNodes();
+		datasourceStatus.blankNodes =  datasourceStatus.blankNodes + distributionDB.getBlankNodes();
+		datasourceStatus.triples =  datasourceStatus.triples + distributionDB.getNumberOfTriples();
+		
 		if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.DONE)){
 			datasourceStatus.distributionsProcessed++;
 			totalDistributionsProcessed ++;
@@ -138,6 +141,8 @@ public class StreamingStatusRESTModel {
 	class DatasourceStatus {
 
 		public Integer blankNodes = 0;
+
+		public Integer triples = 0;
 
 		public Integer distributionsProcessed = 0;
 
