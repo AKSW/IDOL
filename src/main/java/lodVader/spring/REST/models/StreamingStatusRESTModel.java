@@ -37,7 +37,7 @@ public class StreamingStatusRESTModel {
 	}
 
 	// the total number of blank nodes
-	public Double totalBlankNodes = 0.0;
+	private Double totalBlankNodes = 0.0;
 
 	/**
 	 * @return the totalBlankNodes
@@ -49,8 +49,22 @@ public class StreamingStatusRESTModel {
 	// total number of distributions already processed (status=DONE)
 	public Integer totalDistributionsProcessed = 0;
 
+	/**
+	 * @return the totalDistributionsProcessed
+	 */
+	public String getTotalDistributionsProcessed() {
+		return formatter.format(totalDistributionsProcessed);
+	}
+
 	// total number of distribution to be processed (status=WAITING_TO_STREAM)
 	public Integer totalDistributionsWaiting = 0;
+
+	/**
+	 * @return the totalDistributionsWaiting
+	 */
+	public String getTotalDistributionsWaiting() {
+		return formatter.format(totalDistributionsWaiting);
+	}
 
 	/**
 	 * Constructor for Class StreamingStatusRESTModel
@@ -109,8 +123,8 @@ public class StreamingStatusRESTModel {
 	private void initializeDatasourceStatus(DistributionDB distributionDB, String datasource) {
 		DatasourceStatus datasourceStatus = new DatasourceStatus();
 		datasources.put(datasource, datasourceStatus);
-		datasourceStatus.blankNodes = distributionDB.getBlankNodes();
-		datasourceStatus.blankNodes = distributionDB.getNumberOfTriples();
+		datasourceStatus.blankNodes = Double.valueOf(distributionDB.getBlankNodes());
+		datasourceStatus.blankNodes = Double.valueOf(distributionDB.getNumberOfTriples());
 		if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.DONE)) {
 			datasourceStatus.distributionsProcessed = 1;
 			datasourceStatus.distributionsWaiting = 0;
@@ -150,37 +164,68 @@ public class StreamingStatusRESTModel {
 	 *         Oct 30, 2016
 	 */
 	class DatasourceStatus {
-		
-		private String datasource; 
 
-		public Integer blankNodes = 0;
+		private String datasource;
 
-		public Integer triples = 0;
+		private Double blankNodes = 0.0;
+
+		private Double triples = 0.0;
 
 		public Integer distributionsProcessed = 0;
 
 		public Integer distributionsWaiting = 0;
 
-		public Integer getDistributions(){
+		/**
+		 * @return the triples
+		 */
+		public String getTriples() {
+			return formatter.format(triples);
+		}
+
+		/**
+		 * @return the blankNodes
+		 */
+		public String getBlankNodes() {
+			return formatter.format(blankNodes);
+		}
+
+		/**
+		 * @return the distributionsProcessed
+		 */
+		public String getDistributionsProcessed() {
+			return formatter.format(distributionsProcessed);
+		}
+
+		/**
+		 * @return the distributionsWaiting
+		 */
+		public String getDistributionsWaiting() {
+			return formatter.format(distributionsWaiting);
+		}
+
+		public Integer getDistributions() {
 			return distributionsProcessed + distributionsWaiting;
 		}
-		
-//		public Integer getNumberOfDatasets(){
-//			String provenance = new GeneralQueriesHelper().getObjects(DescriptionFileParserDB.COLLECTION_NAME,
-//					DescriptionFileParserDB.PARSER_NAME, datasource).iterator().next().get(DescriptionFileParserDB.REPOSITORY_ADDRESS).toString();
-//			return new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
-//					DatasetDB.PROVENANCE, provenance).size();
-//			
-//		}
-		
+
+		// public Integer getNumberOfDatasets(){
+		// String provenance = new
+		// GeneralQueriesHelper().getObjects(DescriptionFileParserDB.COLLECTION_NAME,
+		// DescriptionFileParserDB.PARSER_NAME,
+		// datasource).iterator().next().get(DescriptionFileParserDB.REPOSITORY_ADDRESS).toString();
+		// return new
+		// GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME,
+		// DatasetDB.PROVENANCE, provenance).size();
+		//
+		// }
+
 		/**
-		 * @param datasource 
-		 * Set the datasource value.
+		 * @param datasource
+		 *            Set the datasource value.
 		 */
 		public void setDatasource(String datasource) {
 			this.datasource = datasource;
 		}
-		
+
 	}
 
 }
