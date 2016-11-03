@@ -20,6 +20,7 @@ import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
 import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
+import lodVader.utils.FormatsUtils;
 
 /**
  * @author Ciro Baron Neto
@@ -36,44 +37,43 @@ public class CkanToLODVaderConverter {
 		HashMap<String, DatasetDB> datasets = new HashMap<>();
 
 		logger.info("Converting resources from " + CkanResourceDB.COLLECTION_NAME);
-		new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME, new BasicDBObject(CkanResourceDB.DATASOURCE, dataSourceName)).forEach((obj) -> {
-			CkanResourceDB ckanResourceDB = new CkanResourceDB(obj);
-			if (ckanResourceDB.getFormat() != null)
-				if (true) {
-//					if (!FormatsUtils.getEquivalentFormat(ckanResourceDB.getFormat()).equals("")) {
+		new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME,
+				new BasicDBObject(CkanResourceDB.DATASOURCE, dataSourceName)).forEach((obj) -> {
+					CkanResourceDB ckanResourceDB = new CkanResourceDB(obj);
+					if (ckanResourceDB.getFormat() != null)
+						if (!FormatsUtils.getEquivalentFormat(ckanResourceDB.getFormat()).equals("")) {
 							DistributionDB distributionDB = new DistributionDBAdapter(ckanResourceDB, dataSourceName);
-					distributionDB.find(true, distributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
-					distributionDB.addDatasource(dataSourceName);
-					
-					
-					CkanDatasetDB ckanDatasetDB = new CkanDatasetDB();
-					ckanDatasetDB.find(true, CkanDatasetDB.CKAN_ID, ckanResourceDB.getCkanDataset());
+							distributionDB.find(true, distributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
+							distributionDB.addDatasource(dataSourceName);
 
-					DatasetDB datasetDB = new DatasetDBAdapter(ckanDatasetDB, dataSourceName);
-					datasetDB.find(true, DatasetDB.URI, datasetDB.getUri());
+							CkanDatasetDB ckanDatasetDB = new CkanDatasetDB();
+							ckanDatasetDB.find(true, CkanDatasetDB.CKAN_ID, ckanResourceDB.getCkanDataset());
 
-					try {
-						datasetDB.update();
-						distributionDB.update();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+							DatasetDB datasetDB = new DatasetDBAdapter(ckanDatasetDB, dataSourceName);
+							datasetDB.find(true, DatasetDB.URI, datasetDB.getUri());
 
-					distributionDB.setTopDataset(datasetDB.getID());
-					datasetDB.addDistributionID(distributionDB.getID());
+							try {
+								datasetDB.update();
+								distributionDB.update();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 
-					try {
-						datasetDB.update();
-						distributionDB.update();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+							distributionDB.setTopDataset(datasetDB.getID());
+							datasetDB.addDistributionID(distributionDB.getID());
 
-					// distributions.add(distributionDB);
-					// datasets.put(datasetDB.getID(), datasetDB);
+							try {
+								datasetDB.update();
+								distributionDB.update();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 
-				}
-		});
+							// distributions.add(distributionDB);
+							// datasets.put(datasetDB.getID(), datasetDB);
+
+						}
+				});
 		logger.info("Ckan datasets converted. ");
 		logger.info("Rearranging subsets...");
 

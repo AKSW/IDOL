@@ -5,12 +5,10 @@ package lodVader.mongodb.collections.ckanparser.adapters;
 
 import java.util.ArrayList;
 
-import com.hp.hpl.jena.xmloutput.impl.Basic;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.mongodb.collections.ckanparser.CkanCatalogDB;
 import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
 import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
