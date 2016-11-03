@@ -3,6 +3,12 @@
  */
 package lodVader.spring.REST.models;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +16,6 @@ import java.util.HashMap;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import lodVader.mongodb.collections.DatasetDB;
-import lodVader.mongodb.collections.DescriptionFileParserDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 
@@ -135,6 +139,9 @@ public class StreamingStatusRESTModel {
 		datasourceStatus.setDatasource(datasource);
 	}
 
+	
+	
+	
 	/**
 	 * Update the datasourceStatus status within the map
 	 * 

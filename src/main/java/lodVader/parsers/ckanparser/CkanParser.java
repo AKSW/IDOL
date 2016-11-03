@@ -4,14 +4,18 @@
 package lodVader.parsers.ckanparser;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lodVader.executors.LodVaderExecutor;
 import lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper;
 import lodVader.parsers.ckanparser.models.CkanCatalog;
 import lodVader.parsers.ckanparser.models.CkanDataset;
@@ -31,7 +35,6 @@ public class CkanParser implements CkanParserInterface {
 
 	final static Logger logger = LoggerFactory.getLogger(CkanParser.class);
 
-	
 	// For each CKAN version the request operations are different.
 	CkanParserRequestOperations operations;
 
@@ -50,7 +53,7 @@ public class CkanParser implements CkanParserInterface {
 	public CkanParser(String ckanCatalogAddress) {
 		this.ckanCatalog.setCatalogAddress(ckanCatalogAddress);
 	}
-	
+
 	/**
 	 * @return the ckanCatalog
 	 */
@@ -66,6 +69,69 @@ public class CkanParser implements CkanParserInterface {
 					.getJSONArray("result").forEach((id) -> {
 						datasetIds.add(id.toString());
 					});
+		} catch (JSONException e) {
+			e.printStackTrace();
+			logger.error("It seems that the CKAN catalog: " + ckanCatalog.getCatalogAddress()
+					+ " does not have the 'result' key. ");
+			logger.error("Let' s try something else... Maybe get the 'results' array within the 'result' object.  ");
+
+			try {
+
+				List<Future<List<String>>> datasetsFuture = new ArrayList<>();
+				
+				// defining an executor (lambda)
+				LodVaderExecutor executor = ((url) -> {
+					List<String> datasets = new ArrayList<>();
+					try {
+						HTTPConnectionHelper connectionHelperThread = new HTTPConnectionHelper();
+						connectionHelperThread
+								.getJSONResponse(url)
+								.getJSONObject("result").getJSONArray("results").forEach((pack) -> {
+									byte ptext[] = pack.toString().getBytes(Charset.forName("ISO-8859-1"));
+									String value = new String(ptext, Charset.forName("UTF-8"));
+									datasets.add(new JSONObject(value).get("id").toString());
+								});
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					return datasets;
+				});
+				
+
+				logger.info("Get the counter of how many packages we have.");
+				int size = connectionHelper
+						.getJSONResponse(getOperations().makeDatasetListRequest(ckanCatalog.getCatalogAddress()))
+						.getJSONObject("result").getInt("count");
+				logger.info("We have found: " + size + " packages.");
+				
+				int counter = 0;
+
+				while (counter < size) {
+					logger.info("Making request with pagination: " + getOperations()
+							.makeDatasetListRequestPagination(ckanCatalog.getCatalogAddress(), 1000, counter));
+					datasetsFuture.add(executor.execute(getOperations()
+							.makeDatasetListRequestPagination(ckanCatalog.getCatalogAddress(), 1000, counter)));
+					counter = counter + 1000;
+				}
+
+				
+				executor.shutdown();
+				for(Future<List<String>> future : datasetsFuture ){
+					try {
+						datasetIds.addAll(future.get());
+					} catch (InterruptedException | ExecutionException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+				logger.info("We have fond " + datasetIds.size() + " datasets.");
+
+			} catch (JSONException | IOException e1) {
+				e1.printStackTrace();
+				logger.error("Failed. We have to skip the catalog: " + ckanCatalog.getCatalogAddress());
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -114,8 +180,8 @@ public class CkanParser implements CkanParserInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		logger.info("Loaded dataset: "+ ckanDataset.getId());
+
+		logger.info("Loaded dataset: " + ckanDataset.getId());
 		return ckanDataset;
 	}
 

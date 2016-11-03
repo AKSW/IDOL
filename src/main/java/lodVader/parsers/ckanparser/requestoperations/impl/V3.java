@@ -7,6 +7,7 @@ import lodVader.parsers.ckanparser.requestoperations.CkanParserRequestOperations
 
 /**
  * Implementation of CKAN V3 requests
+ * 
  * @author Ciro Baron Neto
  * 
  *         Oct 26, 2016
@@ -25,7 +26,6 @@ public class V3 implements CkanParserRequestOperations {
 		return ckanCatalog + "/api/3/action/package_list";
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,6 +36,18 @@ public class V3 implements CkanParserRequestOperations {
 	@Override
 	public String makeDatasetRequest(String ckanCatalog, String datasetID) {
 		return ckanCatalog + "/api/3/action/package_show?id=" + datasetID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * lodVader.parsers.ckanparser.requestoperations.CkanParserRequestOperations
+	 * #makeDatasetListRequestPagination(java.lang.String, int, int)
+	 */
+	@Override
+	public String makeDatasetListRequestPagination(String ckanCatalog, int rows, int start) {
+		return ckanCatalog + "/api/3/action/package_search?rows=" + rows + "&start=" + start;
 	}
 
 }

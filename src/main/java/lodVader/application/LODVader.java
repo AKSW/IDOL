@@ -3,7 +3,6 @@
  */
 package lodVader.application;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,13 +16,14 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.application.fileparser.CKANRepositoryLoader;
+import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderConfigurator;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
@@ -61,8 +61,8 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 		//
-//		parseFiles();
-		 streamDistributions();
+		parseFiles();
+//		 streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -107,25 +107,26 @@ public class LODVader {
 		 * Parsing Linghub (linghub.lider-project.eu)
 		 */
 //		loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
-		loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
-		loader.parse();
+//		loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
+//		loader.parse();
 
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
 		 */
-		// CKANRepositoriesBatchProcessor ckanLoader = new
-		// CKANRepositoriesBatchProcessor();
-		// ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-		// ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList);
+//		String datasource = "CKAN_REPOSITORIES";
+//		CKANRepositoryLoader ckanLoader = 
+//				 new CKANRepositoryLoader();
+//		 ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
+//		 ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
 //		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
 
 		/**
 		 * Parsing RE3 CKAN instances
 		 */
-//		String datasource = "RE3_REPOSITORIES";
-//		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
-//		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
-//		new CkanToLODVaderConverter().convert(datasource);
+		String datasource = "RE3_REPOSITORIES";
+		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
+		new CkanToLODVaderConverter().convert(datasource);
 		
 
 	}

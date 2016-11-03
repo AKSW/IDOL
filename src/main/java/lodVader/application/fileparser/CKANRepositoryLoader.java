@@ -30,7 +30,7 @@ public class CKANRepositoryLoader {
 	final static Logger logger = LoggerFactory.getLogger(CKANRepositoryLoader.class);
 
 	// number of concurrent request to be made for each repository
-	final int numberOfConcurrentRequests = 3;
+	final int numberOfConcurrentRequests = 1;
 
 	// number of repositories to be analyzed concurrently
 	final int numberOfConcurrentRepositories = 10;

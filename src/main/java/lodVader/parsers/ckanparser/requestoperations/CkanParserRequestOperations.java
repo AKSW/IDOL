@@ -24,5 +24,14 @@ public interface CkanParserRequestOperations {
 	 * @return
 	 */
 	public String makeDatasetRequest(String ckanCatalog, String datasetID);
+	
+	/**
+	 * Make a dataset list request with pagination
+	 * @param ckanCatalog
+	 * @param rows
+	 * @param start
+	 * @return
+	 */
+	public String makeDatasetListRequestPagination(String ckanCatalog, int rows, int start);
 
 }

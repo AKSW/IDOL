@@ -53,8 +53,8 @@ public class HTTPConnectionHelper {
 	 */
 	public void openConnection(String link, boolean untrustCertificate) throws MalformedURLException, IOException {
 		// System.setProperty("javax.net.debug", "all");
-//		 System.setProperty("https.protocols", "SSLv3");
-//		 System.setProperty("https.protocols", "TLSv1");
+		// System.setProperty("https.protocols", "SSLv3");
+		// System.setProperty("https.protocols", "TLSv1");
 
 		connection = (HttpURLConnection) new URL(link).openConnection();
 		setRequestProperties();
@@ -130,7 +130,8 @@ public class HTTPConnectionHelper {
 		BufferedReader rd = new BufferedReader(
 				new InputStreamReader(getHttpConnection().getInputStream(), Charset.forName("UTF-8")));
 		String jsonText = readAll(rd);
-		JSONObject json = new JSONObject(jsonText);
+		JSONObject json = null;
+			json = new JSONObject(jsonText);
 		return json;
 	}
 
