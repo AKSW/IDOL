@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +82,16 @@ public class CkanParser implements CkanParserInterface {
 				
 				// defining an executor (lambda)
 				LodVaderExecutor executor = ((url) -> {
+					
+					// wait some random time in order to not be denied by the server
+					try {
+						Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 5000 + 1));
+					} catch (InterruptedException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+					logger.info("request done " + url);
+					
 					List<String> datasets = new ArrayList<>();
 					try {
 						HTTPConnectionHelper connectionHelperThread = new HTTPConnectionHelper();
@@ -106,12 +117,13 @@ public class CkanParser implements CkanParserInterface {
 				
 				int counter = 0;
 
+				int step = 200; 
 				while (counter < size) {
 					logger.info("Making request with pagination: " + getOperations()
-							.makeDatasetListRequestPagination(ckanCatalog.getCatalogAddress(), 1000, counter));
+							.makeDatasetListRequestPagination(ckanCatalog.getCatalogAddress(), step, counter));
 					datasetsFuture.add(executor.execute(getOperations()
-							.makeDatasetListRequestPagination(ckanCatalog.getCatalogAddress(), 1000, counter)));
-					counter = counter + 1000;
+							.makeDatasetListRequestPagination(ckanCatalog.getCatalogAddress(), step, counter)));
+					counter = counter + step;
 				}
 
 				

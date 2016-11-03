@@ -62,7 +62,7 @@ public class LODVader {
 		s.configure();
 		//
 		parseFiles();
-//		 streamDistributions();
+		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -82,52 +82,57 @@ public class LODVader {
 		/**
 		 * Parsing DBpedia DataID file
 		 */
-//		loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
-//		loader.parse();
+		// loader.load(new
+		// DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+		// loader.parse();
 
 		/**
 		 * Parsing LODLaundromat
 		 */
-//		loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-//		loader.parse();
+		// loader.load(new
+		// CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+		// loader.parse();
 
 		/**
 		 * Parsing Linked Open Vocabularies (lov.okfn.org)
 		 */
-//		loader.load(new LOVParser());
-//		loader.parse();
+		// loader.load(new LOVParser());
+		// loader.parse();
 
 		/**
 		 * Parsing lod-cloud (lod-cloud.net)
 		 */
-//		loader.load(new LODCloudParser());
-//		loader.parse();
+		// loader.load(new LODCloudParser());
+		// loader.parse();
 
 		/**
 		 * Parsing Linghub (linghub.lider-project.eu)
 		 */
-//		loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
-//		loader.load(new LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
-//		loader.parse();
+		// loader.load(new
+		// LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
+		// loader.load(new
+		// LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
+		// loader.parse();
 
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
 		 */
-//		String datasource = "CKAN_REPOSITORIES";
-//		CKANRepositoryLoader ckanLoader = 
-//				 new CKANRepositoryLoader();
-//		 ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories);
-//		 ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
-//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
+		String datasource = "CKAN_REPOSITORIES";
+		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
+		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
+
+		logger.info("Ckan parsing done");
 
 		/**
 		 * Parsing RE3 CKAN instances
 		 */
-		String datasource = "RE3_REPOSITORIES";
-		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+		datasource = "RE3_REPOSITORIES";
+		ckanLoader = new CKANRepositoryLoader();
 		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
 		new CkanToLODVaderConverter().convert(datasource);
-		
+
+		logger.info("RE3 parsing done");
 
 	}
 
@@ -135,12 +140,10 @@ public class LODVader {
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
-		
-		
-		
+
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionStatus.WAITING_TO_STREAM.toString());	
-		
+				DistributionStatus.WAITING_TO_STREAM.toString());
+
 		distributionsBeingProcessed.set(distributionObjects.size());
 
 		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with "
@@ -148,13 +151,13 @@ public class LODVader {
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-//			try {
-//				distribution.setDownloadUrl("http://www.lexvo.org/linkeddata/void.rdf");
-//			} catch (MalformedURLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
+			// try {
+			// distribution.setDownloadUrl("http://www.lexvo.org/linkeddata/void.rdf");
+			// } catch (MalformedURLException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+
 			executor.execute(new ProcessDataset(distribution));
 		}
 
@@ -251,13 +254,14 @@ public class LODVader {
 
 			// create some processors
 			BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
-			SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution,distribution.getID());
-//			BloomFilterProcessor bfProcessor = new BloomFilterProcessor(distribution);
+			SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
+			// BloomFilterProcessor bfProcessor = new
+			// BloomFilterProcessor(distribution);
 
 			// register them into the pipeline
 			coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
 			coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
-//			coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
+			// coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
 
 			// start processing
 			try {
@@ -269,7 +273,7 @@ public class LODVader {
 				// data, etc etc).
 				basicStatisticalProcessor.saveStatisticalData();
 				rawDataProcessor.closeFiles();
-//				bfProcessor.saveFilters();
+				// bfProcessor.saveFilters();
 				distribution.setStatus(DistributionStatus.DONE);
 			} catch (Exception e) {
 				distribution.setLastMsg(e.getMessage());

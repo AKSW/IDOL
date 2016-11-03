@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 
-import lodVader.application.LODVader;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.adapters.DatasetDBAdapter;
@@ -21,7 +20,6 @@ import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
 import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
-import lodVader.utils.FormatsUtils;
 
 /**
  * @author Ciro Baron Neto
@@ -41,10 +39,12 @@ public class CkanToLODVaderConverter {
 		new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME, new BasicDBObject(CkanResourceDB.DATASOURCE, dataSourceName)).forEach((obj) -> {
 			CkanResourceDB ckanResourceDB = new CkanResourceDB(obj);
 			if (ckanResourceDB.getFormat() != null)
-				if (!FormatsUtils.getEquivalentFormat(ckanResourceDB.getFormat()).equals("")) {
-					DistributionDB distributionDB = new DistributionDBAdapter(ckanResourceDB, dataSourceName);
+				if (true) {
+//					if (!FormatsUtils.getEquivalentFormat(ckanResourceDB.getFormat()).equals("")) {
+							DistributionDB distributionDB = new DistributionDBAdapter(ckanResourceDB, dataSourceName);
 					distributionDB.find(true, distributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
 					distributionDB.addDatasource(dataSourceName);
+					
 					
 					CkanDatasetDB ckanDatasetDB = new CkanDatasetDB();
 					ckanDatasetDB.find(true, CkanDatasetDB.CKAN_ID, ckanResourceDB.getCkanDataset());

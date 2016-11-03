@@ -3,10 +3,17 @@
  */
 package lodVader.mongodb.collections.ckanparser.adapters;
 
+import java.util.ArrayList;
+
+import com.hp.hpl.jena.xmloutput.impl.Basic;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.ckanparser.CkanCatalogDB;
 import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
 import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
+import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.ckanparser.models.CkanDataset;
 import lodVader.parsers.ckanparser.models.CkanResource;
 
@@ -33,6 +40,11 @@ public class CkanDatasetDBAdapter extends CkanDatasetDB {
 
 		for (CkanResource resource : dataset.getResources()) {
 			CkanResourceDB resourceDB = new CkanResourceDB();
+			ArrayList<DBObject> objects = new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME, new BasicDBObject(CkanResourceDB.CKAN_ID, resource.getId()));
+			if(objects.size()>0){
+				resourceDB = new CkanResourceDB(objects.iterator().next());
+			}
+			
 			resourceDB.setCatalog(ckanCatalogID);
 			resourceDB.setCkanDataset(getCkanID());
 			resourceDB.addDataSource(datasource);

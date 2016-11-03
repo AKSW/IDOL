@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public interface LodVaderExecutor {
 	List<String> executor(String url);
 
-	int maxNumberOfThreads = 10;
+	int maxNumberOfThreads = 15;
 	ExecutorService executor = Executors.newFixedThreadPool(maxNumberOfThreads);
 
 	default Future<List<String>> execute(String url) {

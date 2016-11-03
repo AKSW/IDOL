@@ -30,7 +30,7 @@ public class CKANRepositoryLoader {
 	final static Logger logger = LoggerFactory.getLogger(CKANRepositoryLoader.class);
 
 	// number of concurrent request to be made for each repository
-	final int numberOfConcurrentRequests = 1;
+	final int numberOfConcurrentRequests = 10;
 
 	// number of repositories to be analyzed concurrently
 	final int numberOfConcurrentRepositories = 10;
@@ -39,6 +39,7 @@ public class CKANRepositoryLoader {
 	public void loadAllRepositories(List<String> ckanRepositories, String datasource) {
 
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfConcurrentRepositories);
+	
 		ckanRepositories.forEach((repo) -> {
 			executor.execute(new HttpRepositoryRequestThread(repo,datasource));
 		});
@@ -92,8 +93,10 @@ public class CKANRepositoryLoader {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			int i = 0;
 			while(list.hasNext()){
+				if(i++==30)
+					break;
 				CkanDataset dataset = list.next();
 				CkanDatasetDB datasetDB = new CkanDatasetDBAdapter(dataset, ckanCatalog, datasource);
 				
