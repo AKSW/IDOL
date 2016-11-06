@@ -61,7 +61,7 @@ public class LODVader {
 		// s.configure();
 		// //
 		// parseFiles();
-		streamDistributions();
+		// streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -142,15 +142,11 @@ public class LODVader {
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
-//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
-//				new BasicDBObject(DistributionDB.NUMBER_OF_TRIPLES, new BasicDBObject("$eq", 0)
-//	));
-		
-//		http://deusto.gnoss.com/en/community/futureinternet/resource/TRIP-MobileEye-and-MobileSense/a81315e8-9135-497c-82d3-91127233559e?rdf
-		
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
-				DistributionDB.DOWNLOAD_URL, "http://deusto.gnoss.com/en/community/futureinternet/resource/TRIP-MobileEye-and-MobileSense/a81315e8-9135-497c-82d3-91127233559e?rdf"
-);
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+				DistributionDB.DistributionStatus.WAITING_TO_STREAM.toString());
+
+		// http://deusto.gnoss.com/en/community/futureinternet/resource/TRIP-MobileEye-and-MobileSense/a81315e8-9135-497c-82d3-91127233559e?rdf
+
 		distributionsBeingProcessed.set(distributionObjects.size());
 
 		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with "
@@ -158,13 +154,6 @@ public class LODVader {
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			// try {
-			// distribution.setDownloadUrl("http://www.lexvo.org/linkeddata/void.rdf");
-			// } catch (MalformedURLException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-
 			executor.execute(new ProcessDataset(distribution));
 		}
 
@@ -307,83 +296,5 @@ public class LODVader {
 
 		}
 	}
-
-	// java.io.IOException: Server returned HTTP response code: 400 for URL:
-	// https://data.europa.eu/euodp/en/data//api/3/action/package_show?id=0c4pFjNlVLu7Up3PzeqPA
-	// at sun.reflect.GeneratedConstructorAccessor41.newInstance(Unknown Source)
-	// at
-	// sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	// at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	// at
-	// sun.net.www.protocol.http.HttpURLConnection$10.run(HttpURLConnection.java:1890)
-	// at
-	// sun.net.www.protocol.http.HttpURLConnection$10.run(HttpURLConnection.java:1885)
-	// at java.security.AccessController.doPrivileged(Native Method)
-	// at
-	// sun.net.www.protocol.http.HttpURLConnection.getChainedException(HttpURLConnection.java:1884)
-	// at
-	// sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1457)
-	// at
-	// sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1441)
-	// at
-	// sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
-	// at
-	// lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper.getJSONResponse(HTTPConnectionHelper.java:115)
-	// at
-	// lodVader.parsers.ckanparser.CkanParser.fetchDataset(CkanParser.java:188)
-	// at
-	// lodVader.parsers.ckanparser.CkanDatasetList.next(CkanDatasetList.java:54)
-	// at
-	// lodVader.application.fileparser.CKANRepositoryLoader$HttpRepositoryRequestThread.run(CKANRepositoryLoader.java:97)
-	// at
-	// java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	// at
-	// java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	// at java.lang.Thread.run(Thread.java:745)
-	// Caused by: java.io.IOException: Server returned HTTP response code: 400
-	// for URL:
-	// https://data.europa.eu/euodp/en/data//api/3/action/package_show?id=0c4pFjNlVLu7Up3PzeqPA
-	// at
-	// sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1840)
-	// at
-	// sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1441)
-	// at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:480)
-	// at
-	// sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:338)
-	// at
-	// lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper.openConnection(HTTPConnectionHelper.java:62)
-	// at
-	// lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper.getJSONResponse(HTTPConnectionHelper.java:112)
-	// ... 6 more
-	// [2016-11-05 08:55:20.240] boot - 31709 INFO [pool-2-thread-4] ---
-	// CkanParser: Loaded dataset: null
-	// lodVader.exceptions.LODVaderMissingPropertiesException: Missing field:
-	// ckanId
-	// at lodVader.mongodb.DBSuperClass.checkField(DBSuperClass.java:451)
-	// at
-	// lodVader.mongodb.DBSuperClass.checkMandatoryFields(DBSuperClass.java:445)
-	// at lodVader.mongodb.DBSuperClass.update(DBSuperClass.java:312)
-	// at
-	// lodVader.mongodb.collections.ckanparser.adapters.CkanDatasetDBAdapter.<init>(CkanDatasetDBAdapter.java:33)
-	// at
-	// lodVader.application.fileparser.CKANRepositoryLoader$HttpRepositoryRequestThread.run(CKANRepositoryLoader.java:98)
-	// at
-	// java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	// at
-	// java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	// at java.lang.Thread.run(Thread.java:745)
-	// lodVader.exceptions.LODVaderMissingPropertiesException: Missing field:
-	// ckanId
-	// at lodVader.mongodb.DBSuperClass.checkField(DBSuperClass.java:451)
-	// at
-	// lodVader.mongodb.DBSuperClass.checkMandatoryFields(DBSuperClass.java:445)
-	// at lodVader.mongodb.DBSuperClass.update(DBSuperClass.java:312)
-	// at
-	// lodVader.application.fileparser.CKANRepositoryLoader$HttpRepositoryRequestThread.run(CKANRepositoryLoader.java:101)
-	// at
-	// java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	// at
-	// java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	// at java.lang.Thread.run(Thread.java:745)
 
 }

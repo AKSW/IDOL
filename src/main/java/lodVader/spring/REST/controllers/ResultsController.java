@@ -170,6 +170,18 @@ public class ResultsController {
 		return model;
 		
 	}
+	
+	/**
+	 * Returns a JSON object with the uncompressed size of each datasource
+	 * @return
+	 */
+	@RequestMapping(value = "/results/datasourceSize", method = RequestMethod.GET)
+	public StreamingStatusRESTModel dasourceSize() {
+		StreamingStatusRESTModel model = new StreamingStatusRESTModel();
+		model.checkStatus();
+		return model;
+		
+	}
 
 	// @RequestMapping(value = "/results/triplesPerDataSource", method =
 	// RequestMethod.GET)
