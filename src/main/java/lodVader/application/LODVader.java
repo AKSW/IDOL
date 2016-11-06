@@ -55,7 +55,7 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-		 new Fix().fix1();
+//		 new Fix().fix1();
 
 //		LODVaderConfigurator s = new LODVaderConfigurator();
 //		s.configure();
@@ -277,7 +277,8 @@ public class LODVader {
 			} catch (Exception e) {
 				distribution.setLastMsg(e.getMessage());
 				distribution.setStatus(DistributionStatus.ERROR);
-				e.printStackTrace();
+				logger.error("ERROR! Distribution: "+distribution.getDownloadUrl() + " has status " + distribution.getStatus().toString() + " with error msg '"+distribution.getLastMsg()+"'.");
+//				e.printStackTrace();
 			}
 
 			try {
