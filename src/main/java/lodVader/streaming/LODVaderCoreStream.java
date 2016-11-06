@@ -135,12 +135,12 @@ public class LODVaderCoreStream {
 	// startStream();
 	// }
 
-	public void startParsing(DistributionDB distributionMongoDBObj) throws IOException, LODVaderLODGeneralException {
+	public void startParsing(DistributionDB distributionMongoDBObj) throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
 		this.distribution = distributionMongoDBObj;
 		startParsing(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
 	}
 
-	public void startParsing(String downloadUrl, String rdfFormat) throws IOException, LODVaderLODGeneralException {
+	public void startParsing(String downloadUrl, String rdfFormat) throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
 		COMPRESSION_FORMATS compressionFormat;
 		if(downloadUrl.contains("lodlaundromat"))
 			
@@ -229,9 +229,9 @@ public class LODVaderCoreStream {
 	}
 
 	private void startStream(InputStream inputStream, COMPRESSION_FORMATS compressionFormat, String rdfFormat)
-			throws IOException {
+			throws IOException, RDFParseException, RDFHandlerException {
 
-		try {
+//		try {
 			// check whether file is tar/zip type
 			if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.ZIP)) {
 				InputStream data = new BufferedInputStream(inputStream);
@@ -331,9 +331,9 @@ public class LODVaderCoreStream {
 				}
 			}
 
-		} catch (RDFHandlerException | IOException | RDFParseException e) {
-			e.printStackTrace();
-		}
+//		} catch (RDFHandlerException | IOException | RDFParseException e) {
+//			e.printStackTrace();
+//		}
 
 		inputStream.close();
 	}
