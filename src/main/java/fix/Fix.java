@@ -37,11 +37,49 @@ public class Fix {
 
 		for (DBObject dist : distributions) {
 			DistributionDB distribution = new DistributionDB(dist);
-			if (distribution.getDownloadUrl().contains(".xls") || distribution.getDownloadUrl().contains(".xlsx") || 
-					distribution.getDownloadUrl().contains(".doc") || distribution.getDownloadUrl().contains(".docx") || distribution.getDownloadUrl().contains(".csv")) {
+			if (distribution.getDownloadUrl().contains(".xls") || distribution.getDownloadUrl().contains(".xlsx")
+					|| distribution.getDownloadUrl().contains(".doc") || distribution.getDownloadUrl().contains(".docx")
+					|| distribution.getDownloadUrl().contains(".csv")) {
 				System.out.println(distribution.getDownloadUrl());
 				new DistributionServices().removeDistribution(distribution, true);
 			}
+		}
+
+	}
+
+	// refine serialization format
+	public void fix3() {
+
+		List<DBObject> distributions = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject());
+
+		for (DBObject dist : distributions) {
+			DistributionDB distribution = new DistributionDB(dist);
+			if (distribution.getDownloadUrl().endsWith(".ttl")) {
+				if (!distribution.getFormat().equals("ttl")) {
+					System.out.println(distribution.getDownloadUrl());
+					distribution.setFormat("ttl");
+					try {
+						distribution.update();
+					} catch (LODVaderMissingPropertiesException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			else if (distribution.getDownloadUrl().endsWith(".nt")) {
+				if (!distribution.getFormat().equals("nt")) {
+					System.out.println(distribution.getDownloadUrl());
+					distribution.setFormat("nt");
+					try {
+						distribution.update();
+					} catch (LODVaderMissingPropertiesException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
 		}
 
 	}
@@ -71,29 +109,28 @@ public class Fix {
 		for (DBObject obj : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject())) {
 			DistributionDB ckanResource = new DistributionDB(obj);
-			
+
 			HashSet<String> repositories = new HashSet<>(ckanResource.getRepositories());
-			HashSet<String> repositoriesDelete = new HashSet<>(); 
-			
-			for(String repository : repositories){
-				if(!repository.endsWith("/")){
-					repositories.add(repository+ "/");
+			HashSet<String> repositoriesDelete = new HashSet<>();
+
+			for (String repository : repositories) {
+				if (!repository.endsWith("/")) {
+					repositories.add(repository + "/");
 					repositoriesDelete.add(repository);
 				}
 			}
-			
-			for(String repository : repositoriesDelete){
+
+			for (String repository : repositoriesDelete) {
 				repositories.remove(repository);
 			}
-			
+
 			try {
 				ckanResource.update();
 			} catch (LODVaderMissingPropertiesException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+
 			if (searched++ % 100000 == 0)
 				System.out.println("searched " + searched);
 
