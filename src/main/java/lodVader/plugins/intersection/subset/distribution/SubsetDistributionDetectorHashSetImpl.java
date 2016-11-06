@@ -62,7 +62,12 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 
 			stream.getPipelineProcessor().registerProcessor(processor);
 
-			stream.startParsing(sourceDistribution);
+			try {
+				stream.startParsing(sourceDistribution);
+			} catch (IOException | LODVaderLODGeneralException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			processor.saveFile();
 
 			sourceSet = loadSetFromDisk(fileName);
@@ -82,7 +87,12 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 						targetDistributionFileName);
 
 				stream.getPipelineProcessor().registerProcessor(processor);
-				stream.startParsing(targetDistribution);
+				try {
+					stream.startParsing(targetDistribution);
+				} catch (IOException | LODVaderLODGeneralException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				targetSet = loadSetFromDisk(targetDistributionFileName);
 				processor.saveFile();
 
