@@ -127,6 +127,8 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	 */
 	@Override
 	public void process(Statement st) {
+		
+		System.out.println(st.getSubject());
 
 		// collects all predicates
 		// addToMap(allPredicates, st.getPredicate().toString());

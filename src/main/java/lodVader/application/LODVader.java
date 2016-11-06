@@ -142,9 +142,15 @@ public class LODVader {
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
+//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
+//				new BasicDBObject(DistributionDB.NUMBER_OF_TRIPLES, new BasicDBObject("$eq", 0)
+//	));
+		
+//		http://deusto.gnoss.com/en/community/futureinternet/resource/TRIP-MobileEye-and-MobileSense/a81315e8-9135-497c-82d3-91127233559e?rdf
+		
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
-				new BasicDBObject(DistributionDB.NUMBER_OF_TRIPLES, new BasicDBObject("$eq", 0)));
-
+				DistributionDB.DOWNLOAD_URL, "http://deusto.gnoss.com/en/community/futureinternet/resource/TRIP-MobileEye-and-MobileSense/a81315e8-9135-497c-82d3-91127233559e?rdf"
+);
 		distributionsBeingProcessed.set(distributionObjects.size());
 
 		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with "
@@ -279,6 +285,9 @@ public class LODVader {
 					// bfProcessor.saveFilters();
 					distribution.setStatus(DistributionStatus.DONE);
 				} catch (Exception e) {
+					rawDataProcessor.closeFiles();
+					basicStatisticalProcessor.saveStatisticalData();
+
 					distribution.setLastMsg(e.getMessage());
 					distribution.setStatus(DistributionStatus.ERROR);
 					logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "

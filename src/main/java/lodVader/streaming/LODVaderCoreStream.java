@@ -331,16 +331,16 @@ public class LODVaderCoreStream {
 			try {
 				RDFParser rdfParser = getSuitableParser(rdfFormat);
 				rdfParser.parse(inputStream, "");
+
 			} catch (LODVaderFormatNotAcceptedException e) {
 				e.printStackTrace();
-			}
+			} 
 		}
 
 		// } catch (RDFHandlerException | IOException | RDFParseException e) {
 		// e.printStackTrace();
 		// }
 
-		inputStream.close();
 	}
 
 	/**
@@ -396,17 +396,19 @@ public class LODVaderCoreStream {
 				httpConn.setRequestProperty("Accept", "application/rdf+xml");
 			}
 
+		logger.info("Opening HTTP connection for URL: " + downloadUrl.toString());
+
 		httpConn.setReadTimeout(5000);
 		httpConn.setConnectTimeout(5000);
 		int responseCode = httpConn.getResponseCode();
 
-		logger.info("Opening HTTP connection for URL: " + downloadUrl.toString());
+		
+		logger.info("We received the following HTTP response code: " + responseCode);
 
 		// check HTTP response code
 		if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
 				|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
 			downloadUrl = httpConn.getHeaderField("Location");
-			logger.info("We received the following HTTP response code: " + responseCode);
 			logger.info("Redirecting connection to URL: " + downloadUrl);
 			redirection++;
 			if (redirection == 10)
