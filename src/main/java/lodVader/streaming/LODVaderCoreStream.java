@@ -135,12 +135,12 @@ public class LODVaderCoreStream {
 	// startStream();
 	// }
 
-	public void startParsing(DistributionDB distributionMongoDBObj) {
+	public void startParsing(DistributionDB distributionMongoDBObj) throws IOException, LODVaderLODGeneralException {
 		this.distribution = distributionMongoDBObj;
 		startParsing(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
 	}
 
-	public void startParsing(String downloadUrl, String rdfFormat) {
+	public void startParsing(String downloadUrl, String rdfFormat) throws IOException, LODVaderLODGeneralException {
 		COMPRESSION_FORMATS compressionFormat;
 		if(downloadUrl.contains("lodlaundromat"))
 			
@@ -149,7 +149,6 @@ public class LODVaderCoreStream {
 			
 			compressionFormat = new FormatsUtils().getCompressionFormat(downloadUrl);
 		
-		try {
 			InputStream inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 			inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
 			if (rdfFormat.equals(""))
@@ -157,9 +156,7 @@ public class LODVaderCoreStream {
 
 			startStream(inputStream, compressionFormat, rdfFormat);
 
-		} catch (IOException | LODVaderLODGeneralException e) {
-			e.printStackTrace();
-		}
+		
 	}
 
 	public RDFParser getSuitableParser(String rdfFormat) throws IOException, LODVaderFormatNotAcceptedException {

@@ -60,7 +60,7 @@ public class LODVader {
 //		s.configure();
 //		//
 //		parseFiles();
-//		streamDistributions();
+		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -139,8 +139,8 @@ public class LODVader {
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionStatus.WAITING_TO_STREAM.toString());
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.NUMBER_OF_TRIPLES,
+				new BasicDBObject("$eq", 0)));
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
