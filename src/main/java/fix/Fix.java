@@ -4,6 +4,7 @@
 package fix;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.plaf.synth.SynthSpinnerUI;
@@ -16,6 +17,7 @@ import com.mongodb.DBObject;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
+import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.services.mongodb.distribution.DistributionServices;
 import lodVader.utils.NSUtils;
@@ -27,122 +29,78 @@ import lodVader.utils.NSUtils;
  */
 public class Fix {
 
-//	ExecutorService ex = Executors.newFixedThreadPool(3);
+	// ExecutorService ex = Executors.newFixedThreadPool(3);
 	/**
-	 * Constructor for Class Fix 
+	 * Constructor for Class Fix
 	 */
 	public Fix() {
-		
-		List<DBObject> distributions = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
-		
-		for(DBObject dist : distributions){
+	}
+
+	public void fix1() {
+
+		List<DBObject> distributions = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject());
+
+		for (DBObject dist : distributions) {
 			DistributionDB distribution = new DistributionDB(dist);
-			if(distribution.getDownloadUrl().contains(".xls") || 
-					distribution.getDownloadUrl().contains(".doc")	){
+			if (distribution.getDownloadUrl().contains(".xls") || distribution.getDownloadUrl().contains(".doc")) {
 				System.out.println(distribution.getDownloadUrl());
-//				new DistributionServices().removeDistribution(distribution, true);
+				new DistributionServices().removeDistribution(distribution, true);
 			}
 		}
-		
-		
-
 
 	}
-	
-//	public static void main(String[] args) {
-//		new Fix();
-//	}
-	
-	
-//	public void getNS(String resource_collection, String relation_collection){
-//		
-//		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
-//				new BasicDBObject(), null, "uri");
-//		
-//		
-//		List<String> ids = new ArrayList<>();
-//		NSUtils nsUtils = new NSUtils();
-//		String lastURINS = nsUtils.getNSFromString(objects.iterator().next().get("uri").toString());
-//		
-//		for(DBObject object : objects){
-//			String uri = object.get("uri").toString();
-//			String ns = nsUtils.getNSFromString(uri);
-//			if(ns.startsWith(lastURINS))
-//				ids.add(object.get("_id").toString());
-//			else{
-//				// remove 
-//				lastURINS = ns;
-//			}
-//				
-//		}
-//		
-//		
-//		
-//		
-//		
-//	}
-	
-	
-	
 
-//	public void removeBlankNodes(String resource_collection, String relation_collection) {
-//
-//		List<DBObject> relationIDs = new ArrayList<>(); 
-//		List<DBObject> resourceIDs = new ArrayList<>();
-//
-//		List<DBObject> objects = new GeneralQueriesHelper().getObjects(resource_collection,
-//				new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
-//		
-//
-//		int i = 0;
-//		while (objects.size() > 0) {
-//			System.out.println(i++ +" Loading...");
-//			for (DBObject object : objects) {
-//				relationIDs
-//						.add((new BasicDBObject("predicateID", new ObjectId(object.get("_id").toString()).toString())));
-//				resourceIDs.add((new BasicDBObject("_id", new ObjectId(object.get("_id").toString()))));
-//			}
-//
-////			ex.execute(new Remove(relationIDs, resourceIDs, resource_collection, relation_collection));
-//			removeObjects(relationIDs, resourceIDs, resource_collection,relation_collection);
-// 
-//			objects = new GeneralQueriesHelper().getObjects(resource_collection,
-//					new BasicDBObject(GeneralResourceDB.URI, new BasicDBObject("$regex", "^(?!http).+")), 100000, null);
-//		}
-//		
-//
-//		System.out.println("end ");
-//
-//	}
-	
-	
+	public void fix2() {
+		List<String> catalogs = new ArrayList<>(
+				Arrays.asList("http://data.bris.ac.uk/data/", "http://open.canada.ca/data/en/",
+						"http://catalog.data.gov/", "http://data.gov.au/", "https://datastore.landcareresearch.co.nz/",
+						"https://datahub.io/", "https://iatiregistry.org/", "http://data.london.gov.uk/"));
 
-	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection) {
-	System.out.println("removing relations...");
+		for (String catalog : catalogs) {
+
+			for (DBObject obj : new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME,
+					CkanResourceDB.DATASOURCE, catalog)) {
+				System.out.println(new CkanResourceDB(obj).getCatalog());
+			}
+		}
+
+	}
+
+	public static void main(String[] args) {
+		new Fix().fix2();
+
+	}
+
+	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection,
+			String relation_collection) {
+		System.out.println("removing relations...");
 		new DBSuperClass(relation_collection).bulkRemove(relationIDs);
 		relationIDs = new ArrayList<>();
 		System.out.println("removing resources...");
-		
+
 		new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
 		resourceIDs = new ArrayList<>();
 	}
-	
-	class Remove implements Runnable{
-		
+
+	class Remove implements Runnable {
+
 		List<DBObject> relationIDs;
 		List<DBObject> resourceIDs;
 		String resource_collection;
 		String relation_collection;
+
 		/**
-		 * Constructor for Class Fix.Remove 
+		 * Constructor for Class Fix.Remove
 		 */
-		public Remove(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection, String relation_collection ) {
+		public Remove(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection,
+				String relation_collection) {
 			this.relation_collection = relation_collection;
 			this.resource_collection = resource_collection;
 			this.relationIDs = relationIDs;
 			this.resourceIDs = resourceIDs;
 		}
-		
+
 		public void run() {
 			new DBSuperClass(relation_collection).bulkRemove(relationIDs);
 			relationIDs = new ArrayList<>();

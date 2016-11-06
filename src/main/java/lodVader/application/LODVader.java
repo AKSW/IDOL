@@ -117,18 +117,18 @@ public class LODVader {
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
 		 */
-		String datasource = "CKAN_REPOSITORIES";
-		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
-		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
-		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
-
-		logger.info("Ckan parsing done");
+//		String datasource = "CKAN_REPOSITORIES";
+//		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+//		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
+//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
+//
+//		logger.info("Ckan parsing done");
 
 		/**
 		 * Parsing RE3 CKAN instances
 		 */
-		datasource = "RE3_REPOSITORIES";
-		ckanLoader = new CKANRepositoryLoader();
+		String datasource = "RE3_REPOSITORIES";
+		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
 		new CkanToLODVaderConverter().convert(datasource);
 
@@ -291,5 +291,61 @@ public class LODVader {
 
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	java.io.IOException: Server returned HTTP response code: 400 for URL: https://data.europa.eu/euodp/en/data//api/3/action/package_show?id=0c4pFjNlVLu7Up3PzeqPA
+//        at sun.reflect.GeneratedConstructorAccessor41.newInstance(Unknown Source)
+//        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+//        at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+//        at sun.net.www.protocol.http.HttpURLConnection$10.run(HttpURLConnection.java:1890)
+//        at sun.net.www.protocol.http.HttpURLConnection$10.run(HttpURLConnection.java:1885)
+//        at java.security.AccessController.doPrivileged(Native Method)
+//        at sun.net.www.protocol.http.HttpURLConnection.getChainedException(HttpURLConnection.java:1884)
+//        at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1457)
+//        at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1441)
+//        at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
+//        at lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper.getJSONResponse(HTTPConnectionHelper.java:115)
+//        at lodVader.parsers.ckanparser.CkanParser.fetchDataset(CkanParser.java:188)
+//        at lodVader.parsers.ckanparser.CkanDatasetList.next(CkanDatasetList.java:54)
+//        at lodVader.application.fileparser.CKANRepositoryLoader$HttpRepositoryRequestThread.run(CKANRepositoryLoader.java:97)
+//        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+//        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+//        at java.lang.Thread.run(Thread.java:745)
+//Caused by: java.io.IOException: Server returned HTTP response code: 400 for URL: https://data.europa.eu/euodp/en/data//api/3/action/package_show?id=0c4pFjNlVLu7Up3PzeqPA
+//        at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1840)
+//        at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1441)
+//        at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:480)
+//        at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:338)
+//        at lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper.openConnection(HTTPConnectionHelper.java:62)
+//        at lodVader.parsers.ckanparser.helpers.HTTPConnectionHelper.getJSONResponse(HTTPConnectionHelper.java:112)
+//        ... 6 more
+//[2016-11-05 08:55:20.240] boot - 31709  INFO [pool-2-thread-4] --- CkanParser: Loaded dataset: null
+//lodVader.exceptions.LODVaderMissingPropertiesException: Missing field: ckanId
+//        at lodVader.mongodb.DBSuperClass.checkField(DBSuperClass.java:451)
+//        at lodVader.mongodb.DBSuperClass.checkMandatoryFields(DBSuperClass.java:445)
+//        at lodVader.mongodb.DBSuperClass.update(DBSuperClass.java:312)
+//        at lodVader.mongodb.collections.ckanparser.adapters.CkanDatasetDBAdapter.<init>(CkanDatasetDBAdapter.java:33)
+//        at lodVader.application.fileparser.CKANRepositoryLoader$HttpRepositoryRequestThread.run(CKANRepositoryLoader.java:98)
+//        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+//        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+//        at java.lang.Thread.run(Thread.java:745)
+//lodVader.exceptions.LODVaderMissingPropertiesException: Missing field: ckanId
+//        at lodVader.mongodb.DBSuperClass.checkField(DBSuperClass.java:451)
+//        at lodVader.mongodb.DBSuperClass.checkMandatoryFields(DBSuperClass.java:445)
+//        at lodVader.mongodb.DBSuperClass.update(DBSuperClass.java:312)
+//        at lodVader.application.fileparser.CKANRepositoryLoader$HttpRepositoryRequestThread.run(CKANRepositoryLoader.java:101)
+//        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+//        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+//        at java.lang.Thread.run(Thread.java:745)
+
 
 }

@@ -189,7 +189,7 @@ public class CkanParser implements CkanParserInterface {
 									getOperations().makeDatasetRequest(ckanCatalog.getCatalogAddress(), datasetID))
 							.get("result").toString()));
 		} catch (JSONException | IOException e) {
-			// TODO Auto-generated catch block
+//			System.out.println(connectionHelper.getResponseCode());
 			e.printStackTrace();
 		}
 

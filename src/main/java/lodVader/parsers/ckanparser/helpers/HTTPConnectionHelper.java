@@ -111,7 +111,8 @@ public class HTTPConnectionHelper {
 		try {
 			openConnection((url), true);
 			o = readJsonFromUrl();
-		} finally {
+		} 
+		finally {
 			getHttpConnection().getInputStream().close();
 		}
 		return o;
