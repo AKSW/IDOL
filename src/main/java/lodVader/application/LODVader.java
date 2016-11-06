@@ -55,13 +55,13 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-		 new Fix().fix3();
+//		 new Fix().fix3();
 
 //		LODVaderConfigurator s = new LODVaderConfigurator();
 //		s.configure();
 //		//
 //		parseFiles();
-//		streamDistributions();
+		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
