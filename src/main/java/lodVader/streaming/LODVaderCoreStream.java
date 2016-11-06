@@ -135,28 +135,33 @@ public class LODVaderCoreStream {
 	// startStream();
 	// }
 
-	public void startParsing(DistributionDB distributionMongoDBObj) throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
+	public void startParsing(DistributionDB distributionMongoDBObj)
+			throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
 		this.distribution = distributionMongoDBObj;
 		startParsing(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
 	}
 
-	public void startParsing(String downloadUrl, String rdfFormat) throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
+	public void startParsing(String downloadUrl, String rdfFormat)
+			throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
 		COMPRESSION_FORMATS compressionFormat;
-		if(downloadUrl.contains("lodlaundromat"))
-			
+		if (downloadUrl.contains("lodlaundromat"))
+
 			compressionFormat = COMPRESSION_FORMATS.GZ;
 		else
-			
+
 			compressionFormat = new FormatsUtils().getCompressionFormat(downloadUrl);
-		
-			InputStream inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
+		InputStream inputStream = null;
+		try {
+			inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 			inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
 			if (rdfFormat.equals(""))
 				rdfFormat = FormatsUtils.getEquivalentFormat(downloadUrl);
 
 			startStream(inputStream, compressionFormat, rdfFormat);
+		} finally {
+			inputStream.close();
+		}
 
-		
 	}
 
 	public RDFParser getSuitableParser(String rdfFormat) throws IOException, LODVaderFormatNotAcceptedException {
@@ -231,109 +236,109 @@ public class LODVaderCoreStream {
 	private void startStream(InputStream inputStream, COMPRESSION_FORMATS compressionFormat, String rdfFormat)
 			throws IOException, RDFParseException, RDFHandlerException {
 
-//		try {
-			// check whether file is tar/zip type
-			if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.ZIP)) {
-				InputStream data = new BufferedInputStream(inputStream);
-				logger.debug("File extension is zip, creating ZipInputStream and checking compressed files...");
+		// try {
+		// check whether file is tar/zip type
+		if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.ZIP)) {
+			InputStream data = new BufferedInputStream(inputStream);
+			logger.debug("File extension is zip, creating ZipInputStream and checking compressed files...");
 
-				ZipInputStream zip = new ZipInputStream(data);
-				int nf = 0;
-				ZipEntry entry = zip.getNextEntry();
-				while (entry != null) {
-					if (!entry.isDirectory()) {
-						logger.info(++nf + " zip file(s) uncompressed.");
-						logger.info("File name: " + entry.getName());
+			ZipInputStream zip = new ZipInputStream(data);
+			int nf = 0;
+			ZipEntry entry = zip.getNextEntry();
+			while (entry != null) {
+				if (!entry.isDirectory()) {
+					logger.info(++nf + " zip file(s) uncompressed.");
+					logger.info("File name: " + entry.getName());
 
-						rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
+					rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
 
-						if (!rdfFormat.equals("")) {
-							System.out.println(rdfFormat);
-
-							File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
-
-							try {
-								RDFParser rdfParser = getSuitableParser(rdfFormat);
-
-								simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), zip);
-								try {
-									rdfParser.parse(new FileInputStream(f), "");
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							} catch (LODVaderFormatNotAcceptedException e1) {
-								inputStream.close();
-								e1.printStackTrace();
-							}
-							f.delete();
-						} else {
-							logger.info("File extension not supported: " + entry.getName());
-						}
-
-					}
-
-					// if(zip.)
-					entry = zip.getNextEntry();
-				}
-
-				// setExtension(FilenameUtils.getExtension(getFileName()));
-			}
-
-			else if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.TAR)) {
-
-				InputStream data = new BufferedInputStream(inputStream);
-				logger.info("File extension is tar, creating TarArchiveInputStream and checking compressed files...");
-
-				TarArchiveInputStream tar = new TarArchiveInputStream(data);
-				int nf = 0;
-				TarArchiveEntry entry = (TarArchiveEntry) tar.getNextEntry();
-				while (entry != null) {
-					if (entry.isFile() && !entry.isDirectory()) {
-
-						logger.info(++nf + " tar file(s) uncompressed.");
-						logger.info("File name: " + entry.getName());
+					if (!rdfFormat.equals("")) {
+						System.out.println(rdfFormat);
 
 						File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
 
-						rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
-						if (!rdfFormat.equals("")) {
-							COMPRESSION_FORMATS newCompressionFormat = new FormatsUtils()
-									.getCompressionFormat(entry.getName());
+						try {
+							RDFParser rdfParser = getSuitableParser(rdfFormat);
 
-							// check if file is not compressed
-
-							if (!newCompressionFormat.equals(COMPRESSION_FORMATS.NO_COMPRESSION)) {
-								simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(),
-										loadCompressors(new BufferedInputStream(tar), newCompressionFormat));
-							} else {
-								simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), tar);
-							}
-
+							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), zip);
 							try {
-								RDFParser rdfParser = getSuitableParser(rdfFormat);
 								rdfParser.parse(new FileInputStream(f), "");
-							} catch (LODVaderFormatNotAcceptedException e) {
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
+						} catch (LODVaderFormatNotAcceptedException e1) {
+							inputStream.close();
+							e1.printStackTrace();
+						}
+						f.delete();
+					} else {
+						logger.info("File extension not supported: " + entry.getName());
+					}
+
+				}
+
+				// if(zip.)
+				entry = zip.getNextEntry();
+			}
+
+			// setExtension(FilenameUtils.getExtension(getFileName()));
+		}
+
+		else if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.TAR)) {
+
+			InputStream data = new BufferedInputStream(inputStream);
+			logger.info("File extension is tar, creating TarArchiveInputStream and checking compressed files...");
+
+			TarArchiveInputStream tar = new TarArchiveInputStream(data);
+			int nf = 0;
+			TarArchiveEntry entry = (TarArchiveEntry) tar.getNextEntry();
+			while (entry != null) {
+				if (entry.isFile() && !entry.isDirectory()) {
+
+					logger.info(++nf + " tar file(s) uncompressed.");
+					logger.info("File name: " + entry.getName());
+
+					File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
+
+					rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
+					if (!rdfFormat.equals("")) {
+						COMPRESSION_FORMATS newCompressionFormat = new FormatsUtils()
+								.getCompressionFormat(entry.getName());
+
+						// check if file is not compressed
+
+						if (!newCompressionFormat.equals(COMPRESSION_FORMATS.NO_COMPRESSION)) {
+							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(),
+									loadCompressors(new BufferedInputStream(tar), newCompressionFormat));
+						} else {
+							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), tar);
 						}
 
+						try {
+							RDFParser rdfParser = getSuitableParser(rdfFormat);
+							rdfParser.parse(new FileInputStream(f), "");
+						} catch (LODVaderFormatNotAcceptedException e) {
+							e.printStackTrace();
+						}
 					}
-					entry = (TarArchiveEntry) tar.getNextEntry();
-				}
-			}
 
-			else {
-				try {
-					RDFParser rdfParser = getSuitableParser(rdfFormat);
-					rdfParser.parse(inputStream, "");
-				} catch (LODVaderFormatNotAcceptedException e) {
-					e.printStackTrace();
 				}
+				entry = (TarArchiveEntry) tar.getNextEntry();
 			}
+		}
 
-//		} catch (RDFHandlerException | IOException | RDFParseException e) {
-//			e.printStackTrace();
-//		}
+		else {
+			try {
+				RDFParser rdfParser = getSuitableParser(rdfFormat);
+				rdfParser.parse(inputStream, "");
+			} catch (LODVaderFormatNotAcceptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// } catch (RDFHandlerException | IOException | RDFParseException e) {
+		// e.printStackTrace();
+		// }
 
 		inputStream.close();
 	}
