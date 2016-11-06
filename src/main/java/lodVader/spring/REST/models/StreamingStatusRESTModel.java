@@ -32,6 +32,9 @@ public class StreamingStatusRESTModel {
 
 	// the total number of triples
 	private Double totalTriples = 0.0;
+	
+	// the total number of distributions with error
+	private Integer totalDistributionWithError =0;
 
 	/**
 	 * @return the totalBlankNodes
@@ -99,18 +102,17 @@ public class StreamingStatusRESTModel {
 			// for each datasource within the distribution, start or accumulate
 			// the numbers
 			for (String datasource : distributionDB.getDatasources()) {
-				if (!datasource.equals(
-						"http://data.dws.informatik.uni-mannheim.de/lodcloud/2014/ISWC-RDB/datacatalog_metadata.tar.gz")) {
-					if (datasources.get(datasource) == null) {
-						initializeDatasourceStatus(distributionDB, datasource);
-					} else {
-						addToDataseurceStatus(distributionDB, datasource, datasources.get(datasource));
-					}
 
-					// for each distribution, increment the counters
-					totalBlankNodes = totalBlankNodes + distributionDB.getBlankNodes();
-					totalTriples = totalTriples + distributionDB.getNumberOfTriples();
+				if (datasources.get(datasource) == null) {
+					initializeDatasourceStatus(distributionDB, datasource);
+				} else {
+					addToDataseurceStatus(distributionDB, datasource, datasources.get(datasource));
 				}
+
+				// for each distribution, increment the counters
+				totalBlankNodes = totalBlankNodes + distributionDB.getBlankNodes();
+				totalTriples = totalTriples + distributionDB.getNumberOfTriples();
+
 			}
 
 		}
@@ -132,16 +134,19 @@ public class StreamingStatusRESTModel {
 		if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.DONE)) {
 			datasourceStatus.distributionsProcessed = 1;
 			datasourceStatus.distributionsWaiting = 0;
+			datasourceStatus.distributionsWithError = 0;
 		} else if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.WAITING_TO_STREAM)) {
 			datasourceStatus.distributionsWaiting = 1;
 			datasourceStatus.distributionsProcessed = 0;
+			datasourceStatus.distributionsWithError = 0;			
+		}else if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.ERROR)) {
+			datasourceStatus.distributionsWaiting = 0;
+			datasourceStatus.distributionsProcessed = 0;
+			datasourceStatus.distributionsWithError = 1;			
 		}
 		datasourceStatus.setDatasource(datasource);
 	}
 
-	
-	
-	
 	/**
 	 * Update the datasourceStatus status within the map
 	 * 
@@ -159,6 +164,9 @@ public class StreamingStatusRESTModel {
 			totalDistributionsProcessed++;
 		} else if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.WAITING_TO_STREAM)) {
 			datasourceStatus.distributionsWaiting++;
+			totalDistributionsWaiting++;
+		}else if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.ERROR)) {
+			datasourceStatus.distributionsWithError++;
 			totalDistributionsWaiting++;
 		}
 	}
@@ -182,6 +190,15 @@ public class StreamingStatusRESTModel {
 
 		public Integer distributionsWaiting = 0;
 
+		public Integer distributionsWithError = 0;
+
+		/**
+		 * @return the distributionsWithError
+		 */
+		public Integer getDistributionsWithError() {
+			return distributionsWithError;
+		}
+		
 		/**
 		 * @return the triples
 		 */

@@ -59,8 +59,8 @@ public class LODVader {
 //		LODVaderConfigurator s = new LODVaderConfigurator();
 //		s.configure();
 //		//
-		parseFiles();
-//		streamDistributions();
+//		parseFiles();
+		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
