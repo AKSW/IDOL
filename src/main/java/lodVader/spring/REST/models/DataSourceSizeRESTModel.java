@@ -11,6 +11,7 @@ import java.util.HashMap;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 
@@ -28,7 +29,7 @@ public class DataSourceSizeRESTModel {
 
 
 	// mapping of datasources and datasourcestatus
-	public Ds datasourcesSize = new Ds();
+	public HashMap<String, Double>  datasourcesSize = new Ds();
 	
 	class Ds extends HashMap<String, Double>{
 		/* (non-Javadoc)
@@ -47,7 +48,7 @@ public class DataSourceSizeRESTModel {
 	 * 
 	 * @return
 	 */
-	public HashMap<String, Double> checkStatus(String path) {
+	public HashMap<String, Double> checkStatus() {
 
 		// fetch all distributions
 		ArrayList<DBObject> objects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
@@ -61,7 +62,7 @@ public class DataSourceSizeRESTModel {
 			// the numbers
 			for (String datasource : distributionDB.getDatasources()) {
 				
-				String filePath = path+"/"+distributionDB.getID();
+				String filePath = LODVaderProperties.BASE_PATH + "/raw_files/__RAW_"+distributionDB.getID();
 				
 				File f = new File(filePath);
 				double bytes = f.length()/1024/1024;

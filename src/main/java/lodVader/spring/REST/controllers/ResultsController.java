@@ -25,6 +25,7 @@ import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
+import lodVader.spring.REST.models.DataSourceSizeRESTModel;
 import lodVader.spring.REST.models.StreamingStatusRESTModel;
 
 /**
@@ -176,8 +177,8 @@ public class ResultsController {
 	 * @return
 	 */
 	@RequestMapping(value = "/results/datasourceSize", method = RequestMethod.GET)
-	public StreamingStatusRESTModel dasourceSize() {
-		StreamingStatusRESTModel model = new StreamingStatusRESTModel();
+	public DataSourceSizeRESTModel dasourceSize() {
+		DataSourceSizeRESTModel model = new DataSourceSizeRESTModel();
 		model.checkStatus();
 		return model;
 		
