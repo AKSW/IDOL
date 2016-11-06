@@ -60,7 +60,7 @@ public class LODVader {
 //		s.configure();
 //		//
 //		parseFiles();
-		streamDistributions();
+//		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
