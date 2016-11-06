@@ -65,12 +65,13 @@ public class Fix {
 			}
 		}
 
+		
 	}
 
-	public static void main(String[] args) {
-		new Fix().fix2();
-
-	}
+//	public static void main(String[] args) {
+//		new Fix().fix2();
+//
+//	}
 
 	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection,
 			String relation_collection) {
