@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.loader.LODVaderProperties;
@@ -64,7 +67,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 
 			try {
 				stream.startParsing(sourceDistribution);
-			} catch (IOException | LODVaderLODGeneralException e) {
+			} catch (IOException | LODVaderLODGeneralException | RDFParseException | RDFHandlerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -89,7 +92,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 				stream.getPipelineProcessor().registerProcessor(processor);
 				try {
 					stream.startParsing(targetDistribution);
-				} catch (IOException | LODVaderLODGeneralException e) {
+				} catch (IOException | LODVaderLODGeneralException | RDFParseException | RDFHandlerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
