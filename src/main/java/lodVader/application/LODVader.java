@@ -16,10 +16,10 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import fix.Fix;
 import lodVader.application.fileparser.CKANRepositoryLoader;
 import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.loader.LODVaderConfigurator;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
@@ -56,13 +56,13 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-		// new Fix();
+		 new Fix().fix2();;
 
-		LODVaderConfigurator s = new LODVaderConfigurator();
-		s.configure();
-		//
-		parseFiles();
-		streamDistributions();
+//		LODVaderConfigurator s = new LODVaderConfigurator();
+//		s.configure();
+//		//
+//		parseFiles();
+//		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");

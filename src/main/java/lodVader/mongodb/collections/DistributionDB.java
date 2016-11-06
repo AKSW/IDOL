@@ -324,6 +324,13 @@ public class DistributionDB extends DBSuperClass {
 		}
 	}
 
+	/**
+	 * @return the repository
+	 */
+	public ArrayList<String> getRepositories() {
+		return  (ArrayList<String>) getField(REPOSITORY);
+	}
+
 	public void addDatasource(String datasource) {
 		ArrayList<String> ids = (ArrayList<String>) getField(DATASOURCE);
 		if (ids != null) {

@@ -3,24 +3,20 @@
  */
 package fix;
 
+import java.awt.image.RescaleOp;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
-import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.services.mongodb.distribution.DistributionServices;
-import lodVader.utils.NSUtils;
 
 /**
  * @author Ciro Baron Neto
@@ -52,26 +48,64 @@ public class Fix {
 	}
 
 	public void fix2() {
-		List<String> catalogs = new ArrayList<>(
-				Arrays.asList("http://data.bris.ac.uk/data/", "http://open.canada.ca/data/en/",
-						"http://catalog.data.gov/", "http://data.gov.au/", "https://datastore.landcareresearch.co.nz/",
-						"https://datahub.io/", "https://iatiregistry.org/", "http://data.london.gov.uk/"));
+		System.out.println("Fixing...");
+		// List<String> catalogs = new ArrayList<>(
+		// Arrays.asList("http://data.bris.ac.uk/data/",
+		// "http://open.canada.ca/data/en/",
+		// "http://catalog.data.gov/", "http://data.gov.au/",
+		// "https://datastore.landcareresearch.co.nz/",
+		// "https://datahub.io/", "https://iatiregistry.org/",
+		// "http://data.london.gov.uk/"));
 
-		for (String catalog : catalogs) {
+		// for (String catalog : catalogs) {
+		//
+		// System.out.println(catalog);
+		// for (DBObject obj : new
+		// GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME,
+		// CkanResourceDB.CKAN_CATALOG, catalog)) {
+		// System.out.println(new CkanResourceDB(obj).getCatalog());
+		// }
+		// }
 
-			for (DBObject obj : new GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME,
-					CkanResourceDB.DATASOURCE, catalog)) {
-				System.out.println(new CkanResourceDB(obj).getCatalog());
+		int updated = 0;
+		int searched = 0;
+		for (DBObject obj : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject())) {
+			DistributionDB ckanResource = new DistributionDB(obj);
+			
+			HashSet<String> repositories = new HashSet<>(ckanResource.getRepositories());
+			HashSet<String> repositoriesDelete = new HashSet<>(); 
+			
+			for(String repository : repositories){
+				if(!repository.endsWith("/")){
+					repositories.add(repository+ "/");
+					repositoriesDelete.add(repository);
+				}
 			}
+			
+			for(String repository : repositoriesDelete){
+				repositories.remove(repository);
+			}
+			
+			try {
+				ckanResource.update();
+			} catch (LODVaderMissingPropertiesException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			if (searched++ % 100000 == 0)
+				System.out.println("searched " + searched);
+
 		}
 
-		
 	}
 
-//	public static void main(String[] args) {
-//		new Fix().fix2();
-//
-//	}
+	// public static void main(String[] args) {
+	// new Fix().fix2();
+	//
+	// }
 
 	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection,
 			String relation_collection) {
