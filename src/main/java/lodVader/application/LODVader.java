@@ -16,6 +16,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import fix.Fix;
 import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DistributionDB;
@@ -54,13 +55,13 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-//		 new Fix().fix2();;
+		 new Fix().fix1();
 
 //		LODVaderConfigurator s = new LODVaderConfigurator();
 //		s.configure();
 //		//
 //		parseFiles();
-		streamDistributions();
+//		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
