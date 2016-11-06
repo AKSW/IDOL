@@ -51,6 +51,7 @@ public class CkanToLODVaderConverter {
 
 							DatasetDB datasetDB = new DatasetDBAdapter(ckanDatasetDB, dataSourceName);
 							datasetDB.find(true, DatasetDB.URI, datasetDB.getUri());
+							datasetDB.addProvenance(dataSourceName);
 
 							try {
 								datasetDB.update();

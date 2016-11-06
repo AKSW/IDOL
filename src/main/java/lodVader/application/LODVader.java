@@ -16,8 +16,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import fix.Fix;
-import lodVader.application.fileparser.CKANRepositoryLoader;
 import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DistributionDB;
@@ -56,12 +54,12 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-		 new Fix().fix2();;
+//		 new Fix().fix2();;
 
 //		LODVaderConfigurator s = new LODVaderConfigurator();
 //		s.configure();
 //		//
-//		parseFiles();
+		parseFiles();
 //		streamDistributions();
 		// detectDatasets();
 
@@ -117,19 +115,19 @@ public class LODVader {
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
 		 */
-//		String datasource = "CKAN_REPOSITORIES";
+		String datasource = "CKAN_REPOSITORIES";
 //		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 //		ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
-//		new CkanToLODVaderConverter().convert("CKAN_REPOSITORIES");
+		new CkanToLODVaderConverter().convert(datasource);
 //
 //		logger.info("Ckan parsing done");
 
 		/**
 		 * Parsing RE3 CKAN instances
 		 */
-		String datasource = "RE3_REPOSITORIES";
-		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
-		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
+		datasource = "RE3_REPOSITORIES";
+//		CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+//		ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
 		new CkanToLODVaderConverter().convert(datasource);
 
 		logger.info("RE3 parsing done");

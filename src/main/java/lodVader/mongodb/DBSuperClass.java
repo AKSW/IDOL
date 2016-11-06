@@ -115,7 +115,7 @@ public class DBSuperClass {
 	}
 
 	// add pair key/value to the persistence object
-	protected void addField(String key, List val) {
+	public void addField(String key, List val) {
 		mongoDBObject.put(key, val);
 	}
 

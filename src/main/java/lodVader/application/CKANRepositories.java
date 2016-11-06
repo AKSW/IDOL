@@ -83,6 +83,7 @@ public class CKANRepositories {
 	// "https://www.facs.org/quality-programs/cancer/ncdb",
 	// "http://mlvis.com/",
 	static ArrayList<String> RE3Repositories = new ArrayList<>(Arrays.asList(
+			//these are duplicated
 //			"http://data.bris.ac.uk/data/", 
 //			"http://open.canada.ca/data/en/", 
 //			"http://catalog.data.gov/", 
@@ -92,15 +93,17 @@ public class CKANRepositories {
 //			"https://iatiregistry.org/",
 //			"http://data.london.gov.uk/", 
 
+			
+			//these are unique
 			"https://open-data.europa.eu/en/data/"
-//			, 
-//			"http://b2find.eudat.eu/",
-//			"http://data.nhm.ac.uk/", 
-//			"https://wci.earth2observe.eu/data/",
-//			"https://repod.pon.edu.pl/", 
-//			"http://en.openei.org/datasets/",
-//			"http://openresearchdata.ch/", 
-//			"http://search.geothermaldata.org/"
+			, 
+			"http://b2find.eudat.eu/",
+			"http://data.nhm.ac.uk/", 
+			"https://wci.earth2observe.eu/data/",
+			"https://repod.pon.edu.pl/", 
+			"http://en.openei.org/datasets/",
+			"http://openresearchdata.ch/", 
+			"http://search.geothermaldata.org/"
 			));
 
 
