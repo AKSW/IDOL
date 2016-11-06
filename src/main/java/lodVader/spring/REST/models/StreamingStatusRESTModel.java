@@ -34,7 +34,14 @@ public class StreamingStatusRESTModel {
 	private Double totalTriples = 0.0;
 	
 	// the total number of distributions with error
-	private Integer totalDistributionWithError =0;
+	private Integer totalDistributionsWithError =0;
+	
+	/**
+	 * @return the totalDistributionsWithError
+	 */
+	public Integer getTotalDistributionsWithError() {
+		return totalDistributionsWithError;
+	}
 
 	/**
 	 * @return the totalBlankNodes
@@ -167,7 +174,7 @@ public class StreamingStatusRESTModel {
 			totalDistributionsWaiting++;
 		}else if (distributionDB.getStatus().equals(DistributionDB.DistributionStatus.ERROR)) {
 			datasourceStatus.distributionsWithError++;
-			totalDistributionsWaiting++;
+			totalDistributionsWithError++;
 		}
 	}
 
