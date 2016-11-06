@@ -390,8 +390,10 @@ public class LODVaderCoreStream {
 
 		// if file format is unknown, try to fetch TTL data
 		if (rdfFormat != null)
-			if (rdfFormat.equals("ttl") || rdfFormat.equals("")) {
+			if (rdfFormat.equals("ttl")) {
 				httpConn.setRequestProperty("Accept", "text/turtle");
+			} else if (rdfFormat.equals("rdf") || rdfFormat.equals("")) {
+				httpConn.setRequestProperty("Accept", "application/rdf+xml");
 			}
 
 		httpConn.setReadTimeout(5000);
