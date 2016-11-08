@@ -141,12 +141,14 @@ public class ResultsController {
 
 	@RequestMapping(value = "/results/triplesInterval", method = RequestMethod.GET)
 	public HashMap<Integer, Integer> triplesInterval(
-			@RequestParam(value = "interval", required = false, defaultValue = "1000000") Integer interval) {
+			@RequestParam(value = "interval", required = false, defaultValue = "1000000") Integer interval,
+			@RequestParam(value = "min", required = false, defaultValue = "0") Integer min
+			) {
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
-			if (distribution.getNumberOfTriples() > 0) {
+			if (distribution.getNumberOfTriples() > min) {
 				int n = ((Number) (distribution.getNumberOfTriples() / interval)).intValue();
 				if (map.get(n) == null) {
 					map.put(n, 1);
