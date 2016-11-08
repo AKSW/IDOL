@@ -91,6 +91,6 @@ public interface BloomFilterI {
 	 * @return
 	 */
 	public Object getImplementation();
-	
+		
 
 }

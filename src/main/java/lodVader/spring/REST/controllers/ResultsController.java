@@ -1,6 +1,3 @@
-/**
- * 
- */
 package lodVader.spring.REST.controllers;
 
 import java.text.DecimalFormat;
@@ -51,8 +48,8 @@ public class ResultsController {
 			DatasetDB datasetDB = new DatasetDB(d);
 			if (datasetDB.getDistributionsIDs() != null)
 				if (datasetDB.getDistributionsIDs().size() > 1) {
-//					if(datasetDB.getProvenance().equals("http://data.dws.informatik.uni-mannheim.de/lodcloud/2014/ISWC-RDB/datacatalog_metadata.tar.gz"))
-						System.out.println(datasetDB.getProvenance() + datasetDB.getDistributionsIDs().size());
+					// if(datasetDB.getProvenance().equals("http://data.dws.informatik.uni-mannheim.de/lodcloud/2014/ISWC-RDB/datacatalog_metadata.tar.gz"))
+					System.out.println(datasetDB.getProvenance() + datasetDB.getDistributionsIDs().size());
 					if (map.get(datasetDB.getProvenance()) == null) {
 						map.put(datasetDB.getProvenance(), datasetDB.getDistributionsIDs().size());
 					} else {
@@ -149,19 +146,21 @@ public class ResultsController {
 		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
-			int n = ((Number) (distribution.getNumberOfTriples() / interval)).intValue();
-			if (map.get(n) == null) {
-				map.put(n, 1);
-			} else {
-				map.put(n, map.get(n) + 1);
+			if (distribution.getNumberOfTriples() > 0) {
+				int n = ((Number) (distribution.getNumberOfTriples() / interval)).intValue();
+				if (map.get(n) == null) {
+					map.put(n, 1);
+				} else {
+					map.put(n, map.get(n) + 1);
+				}
 			}
 		}
 		return map;
 	}
-	
-	
+
 	/**
 	 * Returns a JSON object with the status of each datasource
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/results/streamingStatus", method = RequestMethod.GET)
@@ -169,11 +168,12 @@ public class ResultsController {
 		StreamingStatusRESTModel model = new StreamingStatusRESTModel();
 		model.checkStatus();
 		return model;
-		
+
 	}
-	
+
 	/**
 	 * Returns a JSON object with the uncompressed size of each datasource
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/results/datasourceSize", method = RequestMethod.GET)
@@ -181,7 +181,7 @@ public class ResultsController {
 		DataSourceSizeRESTModel model = new DataSourceSizeRESTModel();
 		model.checkStatus();
 		return model;
-		
+
 	}
 
 	// @RequestMapping(value = "/results/triplesPerDataSource", method =

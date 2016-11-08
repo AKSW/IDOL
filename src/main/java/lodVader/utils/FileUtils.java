@@ -2,7 +2,9 @@ package lodVader.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,8 +17,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lodVader.bloomfilters.BloomFilterI;
+import lodVader.bloomfilters.impl.BloomFilterFactory;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.loader.LODVaderProperties;
+import orestes.bloomfilter.BloomFilter;
+import orestes.bloomfilter.FilterBuilder;
 
 public class FileUtils {
 
@@ -53,8 +59,8 @@ public class FileUtils {
 		if (!f.exists())
 			f.mkdirs();
 	}
-	
-	public static  void createFolder(String folder){
+
+	public static void createFolder(String folder) {
 		File f = new File(folder);
 		if (!f.exists())
 			f.mkdirs();
@@ -152,86 +158,126 @@ public class FileUtils {
 	}
 
 	//
-	
+
 	static BufferedWriter w;
+
 //	public static void main(String[] args) {
 //		// new FileUtils().compareTwoFiles("/home/ciro/lodvaderdata/tmp/oi2/1",
 //		// "/home/ciro/lodvaderdata/tmp/oi2/2");
 //
-//		try {
-//			w= new BufferedWriter(new FileWriter(new File("/home/ciro/lodvaderdata/tmp/exp")));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+//		// try {
+//		// w= new BufferedWriter(new FileWriter(new
+//		// File("/home/ciro/lodvaderdata/tmp/exp")));
+//		// } catch (IOException e) {
+//		// // TODO Auto-generated catch block
+//		// e.printStackTrace();
+//		// }
 //		FileUtils aa = new FileUtils();
-//		int filterSize = 200000;
-//		int amountOfElements = 200000;
+//		int filterSize = 25000;
+//		int amountOfElements = 25000;
 //
-//		for(int i=10000; i<=200000; i = i + 1000)
-//			aa.runExp(filterSize, i);
-//		
-//		try {
-//			w.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-////		System.out.println(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100) ;
-////		System.out.println( (1 + (int)(Math.random() * 130))/100);
+//		// for(int i=190000; i<=200000; i = i + 10000)
+//		aa.runExp(filterSize, amountOfElements);
+//
+//		// try {
+//		// w.close();
+//		// } catch (IOException e) {
+//		// // TODO Auto-generated catch block
+//		// e.printStackTrace();
+//		// }
+//
 //	}
 
-//	public void runExp(int filterSize, int amountOfElements) {
-//		FileUtils aa = new FileUtils();
-//
-//		int experiments = 5;
-//		
-//		for (int i = 0; i < experiments; i++) {
+	public void runExp(int filterSize, int amountOfElements) {
+		FileUtils aa = new FileUtils();
+
+		int experiments = 1;
+
+		for (int i = 0; i < experiments; i++) {
 //			BloomFilterI bf1 = BloomFilterFactory.newBloomFilter();
 //			bf1.create(filterSize, 0.0000001);
 //			BloomFilterI bf2 = BloomFilterFactory.newBloomFilter();
 //			bf2.create(filterSize, 0.0000001);
-//
-//			for (String l : aa.makeDataet(amountOfElements)) {
-////				for (String l : aa.makeDataet(10000)) {
+
+//			for (String l : aa.makeDataset(amountOfElements)) {
+//				// for (String l : aa.makeDataet(10000)) {
 //				bf1.add(l);
 //			}
-////			System.out.println(((BloomFilter<String>) bf1.getImplementation()).getEstimatedPopulation());
-//
-//			for (String l : aa.makeDataet(amountOfElements)) {
+			// System.out.println(((BloomFilter<String>)
+			// bf1.getImplementation()).getEstimatedPopulation());
+
+//			for (String l : aa.makeDataset(amountOfElements)) {
 //				bf2.add(l);
 //			}
-//
-////			System.out.println(((BloomFilter<String>) bf1.getImplementation()).getEstimatedPopulation());
-//
-//			// System.out.println(((BloomFilter<String>)
-//			// bf2.getImplementation()).getEstimatedPopulation());
-//			//
-//			// System.out.println(((BloomFilter<String>)
-//			// bf2.getImplementation()).intersect(((BloomFilter<String>)
-//			// bf1.getImplementation())));
-//			//
-//			// System.out.println(((BloomFilter<String>)
-////			 bf2.getImplementation()).getEstimatedPopulation());
-//			Double intersectValue = bf2.intersection(bf1);
-////			System.out.println((amountOfElements + i) + " "+((1 - intersectValue / amountOfElements) -(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100)));
-////			System.out.print(" "+((1 - intersectValue / amountOfElements) - (double) (1 + (int)(Math.random() * 150))/10000));
-//
-//			try {
-//				w.write((amountOfElements + i) + " "+((1 - intersectValue / amountOfElements) -(((double) (1 + (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() * 130))/100)) + "\n");
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//
-//	}
 
-	public Set<String> makeDataet(int size) {
+			BloomFilter<String> one1 = new FilterBuilder(filterSize, 0.00000001).hashes(1).buildBloomFilter();
+			BloomFilter<String> one12 = new FilterBuilder(filterSize, 0.00000001).hashes(1).buildBloomFilter();
+			BloomFilter<String> one2 = new FilterBuilder(filterSize, 0.00000001).hashes(1).buildBloomFilter();
+			BloomFilter<String> one22 = new FilterBuilder(filterSize, 0.00000001).hashes(1).buildBloomFilter();
+			for (String l : aa.makeDataset(amountOfElements)) {
+				one1.add(l);
+			}
+			for (String l : aa.makeDataset(amountOfElements)) {
+				one12.add(l);
+			}
+			System.out.println(one1.union(one2));
+			System.out.println(one12.union(one22));
+			
+			System.out.println(one22);
+
+			// System.out.println(((BloomFilter<String>)
+			// bf1.getImplementation()).getEstimatedPopulation());
+
+			// System.out.println(((BloomFilter<String>)
+			// bf2.getImplementation()).getEstimatedPopulation());
+			//
+			// System.out.println(((BloomFilter<String>)
+			// bf2.getImplementation()).intersect(((BloomFilter<String>)
+			// bf1.getImplementation())));
+			//
+			// System.out.println(((BloomFilter<String>)
+			// bf2.getImplementation()).getEstimatedPopulation());
+			one1.intersect(one12);
+			Double intersectValue = one1.getEstimatedPopulation();
+			// System.out.println((amountOfElements + i) + " "+((1 -
+			// intersectValue / amountOfElements) -(((double) (1 +
+			// (int)(Math.random() * 150))/10000) * (1 + (int)(Math.random() *
+			// 130))/100)));
+			System.out.print(intersectValue);
+			System.out.print(" " + (1 - intersectValue / amountOfElements));
+			
+//			BloomFilterI bf1 = BloomFilterFactory.newBloomFilter();
+			
+
+			try {
+				new ObjectOutputStream(new FileOutputStream(new File("/tmp/bf"))).writeObject(one1);
+//				bf1.writeTo(new FileOutputStream(new File("/tmp/bf")));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// try {
+			// w.write((amountOfElements + i) + " "+(1 - intersectValue /
+			// amountOfElements));
+			// w.write((amountOfElements + i) + " "+(1 - intersectValue /
+			// amountOfElements));
+			// } catch (IOException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+		}
+		System.out.println();
+
+	}
+
+	double i = 0;
+
+	public Set<String> makeDataset(int size) {
 		Set<String> list = new HashSet<String>();
 		while (list.size() < size)
-			list.add(gerador3());
+			// list.add(gerador3());
+			list.add("s " + i++);
 
 		return list;
 	}

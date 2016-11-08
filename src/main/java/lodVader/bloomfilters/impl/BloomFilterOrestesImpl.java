@@ -39,15 +39,26 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 
 		if (fpp > 1)
 			fpp = 0.00000001;
-		if (initialSize < 200000)
-			initialSize = 200000;
+//		if (initialSize < 200000)
+//			initialSize = 200000;
 		
 		//murmu
 		// carter
 
 		if (bf == null)
-			bf = new FilterBuilder(initialSize, fpp).hashes(1).hashFunction(HashMethod.Murmur3).
-			buildBloomFilter();
+			bf = new FilterBuilder(initialSize, 0.0000001)
+//					bf = new FilterBuilder()
+//					.expectedElements(initialSize)
+//					.size(820000*8)
+					.hashes(1)
+////					.hashFunction(HashMethod.Murmur3)
+//					.hashes(2).hashFunction(HashMethod.CarterWegman)
+//					.hashes(3).hashFunction(HashMethod.Murmur3KirschMitzenmacher)
+//					.hashes(4).hashFunction(HashMethod.MD5)
+//					.hashes(5).hashFunction(HashMethod.MD2)
+//					.hashes(6).hashFunction(HashMethod.Murmur2)
+			.buildBloomFilter();
+		System.out.println(bf);
 		this.initialSize = initialSize;
 		this.fpp = fpp;
 		return true;
