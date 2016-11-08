@@ -163,32 +163,32 @@ public class FileUtils {
 
 	static BufferedWriter w;
 
-	public static void main(String[] args) {
-		// new FileUtils().compareTwoFiles("/home/ciro/lodvaderdata/tmp/oi2/1",
-		// "/home/ciro/lodvaderdata/tmp/oi2/2");
-
-		// try {
-		// w= new BufferedWriter(new FileWriter(new
-		// File("/home/ciro/lodvaderdata/tmp/exp")));
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		FileUtils aa = new FileUtils();
-		int filterSize = 200_000;
-		int amountOfElements =1000000;
-
-		// for(int i=190000; i<=200000; i = i + 10000)
-		aa.runExp(filterSize, amountOfElements);
-
-		// try {
-		// w.close();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-
-	}
+//	public static void main(String[] args) {
+//		// new FileUtils().compareTwoFiles("/home/ciro/lodvaderdata/tmp/oi2/1",
+//		// "/home/ciro/lodvaderdata/tmp/oi2/2");
+//
+//		// try {
+//		// w= new BufferedWriter(new FileWriter(new
+//		// File("/home/ciro/lodvaderdata/tmp/exp")));
+//		// } catch (IOException e) {
+//		// // TODO Auto-generated catch block
+//		// e.printStackTrace();
+//		// }
+//		FileUtils aa = new FileUtils();
+//		int filterSize = 200_000;
+//		int amountOfElements =1000000;
+//
+//		// for(int i=190000; i<=200000; i = i + 10000)
+//		aa.runExp(filterSize, amountOfElements);
+//
+//		// try {
+//		// w.close();
+//		// } catch (IOException e) {
+//		// // TODO Auto-generated catch block
+//		// e.printStackTrace();
+//		// }
+//
+//	}
 
 	public void runExp(int filterSize, int amountOfElements) {
 		FileUtils aa = new FileUtils();
