@@ -63,11 +63,11 @@ public class DBSuperClassAdapter<T> extends DBSuperClassNew<T> {
 		}
 	}
 
-	public static void main(String[] args) {
-		DistributionModel model = new DistributionModel();
-		DBSuperClassAdapter<DistributionModel> ad = new DBSuperClassAdapter();
-		ad.save(model);
-
-	}
+//	public static void main(String[] args) {
+//		DistributionModel model = new DistributionModel();
+//		DBSuperClassAdapter<DistributionModel> ad = new DBSuperClassAdapter();
+//		ad.save(model);
+//
+//	}
 
 }
