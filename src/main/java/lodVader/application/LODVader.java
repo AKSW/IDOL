@@ -16,19 +16,20 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import fix.Fix;
-import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
+import lodVader.loader.LODVaderConfigurator;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
+import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
 import lodVader.streaming.LODVaderCoreStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
+import lodVader.tupleManager.processors.BloomFilterProcessor2;
 import lodVader.tupleManager.processors.SaveRawDataProcessor;
 
 /**
@@ -48,7 +49,7 @@ public class LODVader {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
-	int numberOfThreads = 6;
+	int numberOfThreads = 7;
 
 	/**
 	 * Main method
@@ -57,11 +58,11 @@ public class LODVader {
 
 		// new Fix().fix3();
 
-		// LODVaderConfigurator s = new LODVaderConfigurator();
-		// s.configure();
+		LODVaderConfigurator s = new LODVaderConfigurator();
+		s.configure();
 		// //
-		// parseFiles();
-		// streamDistributions();
+		 parseFiles();
+		streamDistributions();
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -95,8 +96,8 @@ public class LODVader {
 		/**
 		 * Parsing Linked Open Vocabularies (lov.okfn.org)
 		 */
-		// loader.load(new LOVParser());
-		// loader.parse();
+		 loader.load(new LOVParser());
+		 loader.parse();
 
 		/**
 		 * Parsing lod-cloud (lod-cloud.net)
@@ -116,22 +117,22 @@ public class LODVader {
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
 		 */
-		String datasource = "CKAN_REPOSITORIES";
+//		String datasource = "CKAN_REPOSITORIES";
 		// CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 		// ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList,
 		// datasource);
-		new CkanToLODVaderConverter().convert(datasource);
+//		new CkanToLODVaderConverter().convert(datasource);
 		//
 		// logger.info("Ckan parsing done");
 
 		/**
 		 * Parsing RE3 CKAN instances
 		 */
-		datasource = "RE3_REPOSITORIES";
+//		datasource = "RE3_REPOSITORIES";
 		// CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 		// ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories,
 		// datasource);
-		new CkanToLODVaderConverter().convert(datasource);
+//		new CkanToLODVaderConverter().convert(datasource);
 
 		logger.info("RE3 parsing done");
 
@@ -142,10 +143,12 @@ public class LODVader {
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionDB.DistributionStatus.WAITING_TO_STREAM.toString());
 
-		// http://deusto.gnoss.com/en/community/futureinternet/resource/TRIP-MobileEye-and-MobileSense/a81315e8-9135-497c-82d3-91127233559e?rdf
+//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+//				DistributionDB.DistributionStatus.WAITING_TO_STREAM.toString());
+
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+				DistributionDB.DistributionStatus.DONE.toString());
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
@@ -253,13 +256,12 @@ public class LODVader {
 				BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(
 						distribution);
 				SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
-				// BloomFilterProcessor bfProcessor = new
-				// BloomFilterProcessor(distribution);
+				BloomFilterProcessor2 bfProcessor = new BloomFilterProcessor2(distribution);
 
 				// register them into the pipeline
-				coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
-				coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
-				// coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
+				// coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
+				// coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
+				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
 
 				// start processing
 				try {
@@ -269,9 +271,9 @@ public class LODVader {
 					coreStream.startParsing(distribution);
 					// after finishing processing, finalize the processors (save
 					// data, etc etc).
-					basicStatisticalProcessor.saveStatisticalData();
-					rawDataProcessor.closeFiles();
-					// bfProcessor.saveFilters();
+					// basicStatisticalProcessor.saveStatisticalData();
+					// rawDataProcessor.closeFiles();
+					bfProcessor.saveFilters();
 					distribution.setStatus(DistributionStatus.DONE);
 				} catch (Exception e) {
 					rawDataProcessor.closeFiles();

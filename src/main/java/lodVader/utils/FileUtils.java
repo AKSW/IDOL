@@ -10,16 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Time;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.bloomfilters.BloomFilterI;
-import lodVader.bloomfilters.impl.BloomFilterFactory;
 import lodVader.exceptions.LODVaderFormatNotAcceptedException;
 import lodVader.loader.LODVaderProperties;
 import orestes.bloomfilter.BloomFilter;
@@ -163,32 +161,53 @@ public class FileUtils {
 
 	static BufferedWriter w;
 
-//	public static void main(String[] args) {
-//		// new FileUtils().compareTwoFiles("/home/ciro/lodvaderdata/tmp/oi2/1",
-//		// "/home/ciro/lodvaderdata/tmp/oi2/2");
-//
-//		// try {
-//		// w= new BufferedWriter(new FileWriter(new
-//		// File("/home/ciro/lodvaderdata/tmp/exp")));
-//		// } catch (IOException e) {
-//		// // TODO Auto-generated catch block
-//		// e.printStackTrace();
-//		// }
+	public static void main(String[] args) {
+		// new FileUtils().compareTwoFiles("/home/ciro/lodvaderdata/tmp/oi2/1",
+		// "/home/ciro/lodvaderdata/tmp/oi2/2");
+
+		// try {
+		// w= new BufferedWriter(new FileWriter(new
+		// File("/home/ciro/lodvaderdata/tmp/exp")));
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 //		FileUtils aa = new FileUtils();
 //		int filterSize = 200_000;
 //		int amountOfElements =1000000;
-//
-//		// for(int i=190000; i<=200000; i = i + 10000)
+
+		// for(int i=190000; i<=200000; i = i + 10000)
 //		aa.runExp(filterSize, amountOfElements);
-//
-//		// try {
-//		// w.close();
-//		// } catch (IOException e) {
-//		// // TODO Auto-generated catch block
-//		// e.printStackTrace();
-//		// }
-//
-//	}
+
+		// try {
+		// w.close();
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		
+		
+		int s = 10000000;
+		Set<String> list = new FileUtils().makeDataset(s);
+		Timer t = new Timer();
+		t.startTimer();
+		for (String ss : list){
+			ss.substring(1);
+		}
+
+		
+		System.out.println(t.stopTimer());
+
+		t = new Timer();
+		t.startTimer();
+
+		list.forEach(i->{
+			i.substring(1);
+		});
+		System.out.println(t.stopTimer());
+		
+
+	}
 
 	public void runExp(int filterSize, int amountOfElements) {
 		FileUtils aa = new FileUtils();

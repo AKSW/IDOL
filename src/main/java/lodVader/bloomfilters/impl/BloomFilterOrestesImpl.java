@@ -50,7 +50,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 //					bf = new FilterBuilder()
 //					.expectedElements(initialSize)
 //					.size(820000*8)
-					.hashes(1)
+//					.hashes(1)
 ////					.hashFunction(HashMethod.Murmur3)
 //					.hashes(2).hashFunction(HashMethod.CarterWegman)
 //					.hashes(3).hashFunction(HashMethod.Murmur3KirschMitzenmacher)
@@ -58,7 +58,6 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 //					.hashes(5).hashFunction(HashMethod.MD2)
 //					.hashes(6).hashFunction(HashMethod.Murmur2)
 			.buildBloomFilter();
-		System.out.println(bf);
 		this.initialSize = initialSize;
 		this.fpp = fpp;
 		return true;
