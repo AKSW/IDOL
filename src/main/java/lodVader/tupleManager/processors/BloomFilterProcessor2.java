@@ -91,7 +91,7 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 	 */
 	private List<String> saveResources(FileList<String> list, TYPE_OF_FILE type) {
 
-		logger.debug("Saving resources from file " + list.getFullPath());
+		logger.info("Saving resources from file " + list.getFullPath());
 
 		List<String> resources = new ArrayList<>();
 
@@ -139,7 +139,7 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 				}
 
 				// save NS into Mongodb each 5k ns
-				if (lineCounter % 5000 == 0) {
+				if (ns0.size() % 10000 == 0) {
 					if (type == TYPE_OF_FILE.OBJECT) {
 						SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
 								GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
@@ -219,7 +219,7 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 		subjectWriter.clear();
 		triplesWriter.clear();
 		
-		logger.debug(getClass().getName() + " finished.");
+		logger.info(getClass().getName() + " finished.");
 	}
 
 }

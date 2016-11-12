@@ -255,7 +255,7 @@ public class LODVader {
 				// create some processors
 				BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(
 						distribution);
-				SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
+//				SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
 				BloomFilterProcessor2 bfProcessor = new BloomFilterProcessor2(distribution);
 
 				// register them into the pipeline
@@ -276,9 +276,10 @@ public class LODVader {
 					bfProcessor.saveFilters();
 					distribution.setStatus(DistributionStatus.DONE);
 				} catch (Exception e) {
-					rawDataProcessor.closeFiles();
-					basicStatisticalProcessor.saveStatisticalData();
+//					rawDataProcessor.closeFiles();
+//					basicStatisticalProcessor.saveStatisticalData();
 
+					bfProcessor.saveFilters();
 					distribution.setLastMsg(e.getMessage());
 					distribution.setStatus(DistributionStatus.ERROR);
 					logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "
