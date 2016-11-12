@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.AbstractList;
 import java.util.Iterator;
 
+import com.fasterxml.jackson.core.base.GeneratorBase;
+
 /**
  * This class uses a file to store and manage a list
  * 
@@ -222,6 +224,13 @@ public class FileList<T> extends AbstractList<T> implements Iterator<T> {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * @return the br
+	 */
+	public BufferedReader getBr() {
+		return br;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -235,26 +244,27 @@ public class FileList<T> extends AbstractList<T> implements Iterator<T> {
 		return super.iterator();
 	}
 
-//	public static void main(String[] args) {
-//		FileList<Integer> f = new FileList<>("/tmp", "oiii");
-//
-//		f.add(234);
-//		f.add(234444);
-//		f.add(2324);
-//		f.add(234);
-//
-//		f.close();
-//
-//
-//		for (Integer s : f) {
-//			System.out.println(f.next());
-//		}
-//		for (Integer s : f) {
-//			System.out.println(f.next());
-//		}
-//		System.out.println(f.size());
-//		f.clear();
-//
-//	}
+	public static void main(String[] args) {
+		FileList<Integer> f = new FileList<>("/tmp", "oiii");
+
+		f.add(234);
+		f.add(234444);
+		f.add(2324);
+		f.add(234);
+
+		f.close();
+		
+
+
+		for (Integer s : f) {
+			System.out.println(f.next());
+		}
+		for (Integer s : f) {
+			System.out.println(f.next());
+		}
+		System.out.println(f.size());
+		f.clear();
+
+	}
 
 }

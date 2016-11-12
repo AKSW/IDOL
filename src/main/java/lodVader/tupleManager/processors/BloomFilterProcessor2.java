@@ -99,7 +99,7 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 		 * Collections which will hold the namespaces
 		 */
 		HashMap<String, Integer> ns0 = new HashMap<>();
-		HashMap<String, Integer> ns = new HashMap<>();
+//		HashMap<String, Integer> ns = new HashMap<>();
 
 		/**
 		 * Starting bloom filter
@@ -134,7 +134,7 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 
 				if (type != TYPE_OF_FILE.TRIPLES) {
 					// extract ns if we are processing objects or subjects
-					addToMap(ns, nsUtils.getNSFromString(line));
+//					addToMap(ns, nsUtils.getNSFromString(line));
 					addToMap(ns0, nsUtils.getNS0(line));
 				}
 
@@ -143,16 +143,16 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 					if (type == TYPE_OF_FILE.OBJECT) {
 						SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
 								GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
-						SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
-								GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
+//						SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
+//								GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
 					} else if (type == TYPE_OF_FILE.SUBJECT) {
 						SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0,
 								GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
-						SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
-								GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
+//						SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
+//								GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 					}
 					ns0 = new HashMap<>();
-					ns = new HashMap<>();
+//					ns = new HashMap<>();
 				}
 			}
 		}
@@ -161,13 +161,13 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 		if (type == TYPE_OF_FILE.OBJECT) {
 			SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
 					GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
-			SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
-					GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
+//			SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
+//					GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
 		} else if (type == TYPE_OF_FILE.SUBJECT) {
 			SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0,
 					GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
-			SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
-					GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
+//			SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
+//					GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 		}
 		
 		bucket.saveBF(bloomFilter, distribution.getID(), 0, null, null);
