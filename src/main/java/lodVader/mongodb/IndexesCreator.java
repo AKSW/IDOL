@@ -31,7 +31,9 @@ public class IndexesCreator {
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL, 1, true);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.IS_VOCABULARY, 1);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS, 1);
+
 		
+
 
 		addIndex(CkanCatalogDB.COLLECTION_NAME, CkanCatalogDB.CATALOG_URL, 1, true);
 		addIndex(CkanDatasetDB.COLLECTION_NAME, CkanDatasetDB.CKAN_ID, 1, true);
@@ -55,8 +57,8 @@ public class IndexesCreator {
 		}
 
 		for (GeneralResourceRelationDB.COLLECTIONS collection : GeneralResourceRelationDB.COLLECTIONS.values()) {
-			addIndex(collection.toString(), GeneralResourceRelationDB.DISTRIBUTION_ID, 1);
-			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1);
+			addIndex(collection.toString(), GeneralResourceRelationDB.DISTRIBUTION_ID, 1, true);
+			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1, true);
 		}
 
 	}
