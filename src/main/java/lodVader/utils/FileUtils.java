@@ -172,12 +172,12 @@ public class FileUtils {
 //		// // TODO Auto-generated catch block
 //		// e.printStackTrace();
 //		// }
-////		FileUtils aa = new FileUtils();
-////		int filterSize = 200_000;
-////		int amountOfElements =1000000;
+//		FileUtils aa = new FileUtils();
+//		int filterSize = 1000000;
+//		int amountOfElements =200000;
 //
 //		// for(int i=190000; i<=200000; i = i + 10000)
-////		aa.runExp(filterSize, amountOfElements);
+//		aa.runExp(filterSize, amountOfElements);
 //
 //		// try {
 //		// w.close();
@@ -185,26 +185,7 @@ public class FileUtils {
 //		// // TODO Auto-generated catch block
 //		// e.printStackTrace();
 //		// }
-//		
-//		
-//		int s = 10000000;
-//		Set<String> list = new FileUtils().makeDataset(s);
-//		Timer t = new Timer();
-//		t.startTimer();
-//		for (String ss : list){
-//			ss.substring(1);
-//		}
-//
-//		
-//		System.out.println(t.stopTimer());
-//
-//		t = new Timer();
-//		t.startTimer();
-//
-//		list.forEach(i->{
-//			i.substring(1);
-//		});
-//		System.out.println(t.stopTimer());
+//	
 //		
 //
 //	}
@@ -231,10 +212,10 @@ public class FileUtils {
 //				bf2.add(l);
 //			}
 
-			BloomFilter<String> one1 = new FilterBuilder(filterSize,  0.000000001)
-					.hashFunction(HashMethod.Murmur3).hashes(1).buildBloomFilter();
-			BloomFilter<String> one12 = new FilterBuilder(filterSize, 0.000000001)
-					.hashFunction(HashMethod.Murmur3).hashes(1).buildBloomFilter();
+			BloomFilter<String> one1 = new FilterBuilder(filterSize,  0.0001)
+					.buildBloomFilter();
+			BloomFilter<String> one12 = new FilterBuilder(filterSize, 0.0001)
+					.buildBloomFilter();
 //			BloomFilter<String> one2 = new FilterBuilder(filterSize, 0.0000001).hashes(1).buildBloomFilter();
 //			BloomFilter<String> one22 = new FilterBuilder(filterSize, 0.0000001).hashes(1).buildBloomFilter();
 			for (String l : aa.makeDataset(amountOfElements)) {

@@ -18,6 +18,7 @@ import com.mongodb.DBObject;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderConfigurator;
+import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
@@ -28,6 +29,7 @@ import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
 import lodVader.streaming.LODVaderCoreStream;
+import lodVader.streaming.LODVaderRawDataStream;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor2;
 import lodVader.tupleManager.processors.SaveRawDataProcessor;
@@ -49,7 +51,7 @@ public class LODVader {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
-	int numberOfThreads = 6;
+	int numberOfThreads = 1;
 
 	/**
 	 * Main method
@@ -145,7 +147,9 @@ public class LODVader {
 
 
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				DistributionDB.DistributionStatus.DONE.toString());
+				DistributionDB.DistributionStatus.WAITING_TO_STREAM.toString());
+//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+//				DistributionDB.DistributionStatus.DONE.toString());
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
@@ -247,17 +251,18 @@ public class LODVader {
 				Logger logger = LoggerFactory.getLogger(ProcessDataset.class);
 
 				// load the main LODVader streamer
-				LODVaderCoreStream coreStream = new LODVaderCoreStream();
+//				LODVaderCoreStream coreStream = new LODVaderCoreStream();
+				LODVaderRawDataStream coreStream = new LODVaderRawDataStream(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_");
 
 				// create some processors
-				BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(
-						distribution);
+//				BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(
+//						distribution);
 //				SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
 				BloomFilterProcessor2 bfProcessor = new BloomFilterProcessor2(distribution);
 
 				// register them into the pipeline
 				// coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
-				// coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
+//				 coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
 				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
 
 				// start processing
@@ -268,15 +273,16 @@ public class LODVader {
 					coreStream.startParsing(distribution);
 					// after finishing processing, finalize the processors (save
 					// data, etc etc).
-					// basicStatisticalProcessor.saveStatisticalData();
-					// rawDataProcessor.closeFiles();
+//					 basicStatisticalProcessor.saveStatisticalData();
+					
+//					rawDataProcessor.closeFiles();
 					bfProcessor.saveFilters();
 					distribution.setStatus(DistributionStatus.DONE);
 				} catch (Exception e) {
 //					rawDataProcessor.closeFiles();
+					bfProcessor.saveFilters();
 //					basicStatisticalProcessor.saveStatisticalData();
 
-					bfProcessor.saveFilters();
 					distribution.setLastMsg(e.getMessage());
 					distribution.setStatus(DistributionStatus.ERROR);
 					logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "

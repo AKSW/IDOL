@@ -60,9 +60,9 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 	@Override
 	public void process(Statement st) {
 
-		String triple = st.getSubject().toString() + " " + st.getPredicate() + " " + st.getObject();
-		String subject = st.getSubject().toString();
-		String object = st.getObject().toString();
+		String triple = st.getSubject().stringValue() + " " + st.getPredicate().stringValue() + " " + st.getObject().stringValue();
+		String subject = st.getSubject().stringValue();
+		String object = st.getObject().stringValue();
 
 		triplesWriter.add(triple);
 		if (subject.startsWith("http"))

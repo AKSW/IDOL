@@ -31,6 +31,7 @@ public class PipelineProcessor extends RDFHandlerBase {
 	public void registerProcessor(BasicProcessorInterface processor) {
 		processors.add(processor);
 	}
+	
 
 	@Override
 	public void handleStatement(Statement st) {

@@ -38,7 +38,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 	public boolean create(int initialSize, double fpp) {
 
 		if (fpp > 1)
-			fpp = 0.00000001;
+			fpp = 0.0000001;
 		if (initialSize < 500)
 			initialSize = 500;
 		
