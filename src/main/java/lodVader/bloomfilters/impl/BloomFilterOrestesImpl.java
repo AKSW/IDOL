@@ -39,8 +39,8 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 
 		if (fpp > 1)
 			fpp = 0.00000001;
-		if (initialSize < 5000)
-			initialSize = 5000;
+		if (initialSize < 500)
+			initialSize = 500;
 		
 		//murmu
 		// carter

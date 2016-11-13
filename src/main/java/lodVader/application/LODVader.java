@@ -49,7 +49,7 @@ public class LODVader {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
-	int numberOfThreads = 1;
+	int numberOfThreads = 6;
 
 	/**
 	 * Main method
