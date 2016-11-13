@@ -71,7 +71,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			processor.saveFile();
+			processor.closeFile();
 
 			sourceSet = loadSetFromDisk(fileName);
 		}
@@ -97,7 +97,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 					e.printStackTrace();
 				}
 				targetSet = loadSetFromDisk(targetDistributionFileName);
-				processor.saveFile();
+				processor.closeFile();
 
 			}
 			Double commonTriples = compareTwoSets(sourceSet, targetSet);
