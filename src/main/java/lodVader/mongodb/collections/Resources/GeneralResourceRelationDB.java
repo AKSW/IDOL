@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.hp.hpl.jena.xmloutput.impl.Basic;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteException;
+import com.mongodb.BulkWriteOperation;
+import com.mongodb.BulkWriteResult;
 import com.mongodb.DBObject;
 
 import lodVader.mongodb.DBSuperClass;
@@ -79,6 +83,10 @@ public class GeneralResourceRelationDB extends DBSuperClass {
 
 	public void insertSet(HashMap<String, Integer> set, List<GeneralResourceDB> resources, String distributionLODVaderID, String topDatasetLODVaderID){
 		
+		// first check whether the relations exists, then update the values
+		
+		
+		
 		List<DBObject> objects = new ArrayList<>();
 		for(GeneralResourceDB resource : resources){ 
 			DBObject object = new BasicDBObject();
@@ -88,6 +96,34 @@ public class GeneralResourceRelationDB extends DBSuperClass {
 			objects.add(object);
 		}
 		
-		bulkSave2(objects);
+		bulkSave(objects);
 	}
+	
+	
+	public boolean bulkSave(List<DBObject> objects) {
+		boolean isAck = false;
+		try {
+			if (objects.size() == 0)
+				return false;
+			BulkWriteOperation builder = getCollection().initializeUnorderedBulkOperation();
+			for (DBObject doc : objects) {
+				// and
+				List<DBObject> find = new ArrayList<>();
+				find.add(new BasicDBObject(DISTRIBUTION_ID, doc.get(DISTRIBUTION_ID)));
+				find.add(new BasicDBObject(PREDICATE_ID, doc.get(PREDICATE_ID)));
+				DBObject and = new BasicDBObject();
+				and.put("$and", find);
+				
+				builder.find(and).upsert()
+					.update(new BasicDBObject("$inc", new BasicDBObject(AMOUNT, doc.get(AMOUNT))));
+			}
+			BulkWriteResult result = builder.execute();
+			isAck = result.isAcknowledged();
+
+		} catch (BulkWriteException e) {
+			e.printStackTrace();
+		}
+		return isAck;
+	}
+	
 }

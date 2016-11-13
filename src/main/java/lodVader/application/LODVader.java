@@ -49,7 +49,7 @@ public class LODVader {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
-	int numberOfThreads = 7;
+	int numberOfThreads = 1;
 
 	/**
 	 * Main method
@@ -133,8 +133,8 @@ public class LODVader {
 		// ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories,
 		// datasource);
 //		new CkanToLODVaderConverter().convert(datasource);
+//		logger.info("RE3 parsing done");
 
-		logger.info("RE3 parsing done");
 
 	}
 
@@ -143,9 +143,6 @@ public class LODVader {
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
-
-//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-//				DistributionDB.DistributionStatus.WAITING_TO_STREAM.toString());
 
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
 				DistributionDB.DistributionStatus.DONE.toString());

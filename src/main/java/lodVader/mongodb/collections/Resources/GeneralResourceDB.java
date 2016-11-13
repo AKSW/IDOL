@@ -101,7 +101,7 @@ public class GeneralResourceDB extends DBSuperClass {
 			isAck = result.isAcknowledged();
 
 		} catch (BulkWriteException e) {
-
+			e.printStackTrace();
 		}
 		return isAck;
 	}

@@ -52,13 +52,19 @@ public class IndexesCreator {
 		}
 		 
 		for (BucketDB.COLLECTIONS collection : BucketDB.COLLECTIONS.values()) {
-			addIndex(collection.toString(), BucketDB.DISTRIBUTION_ID, 1, true);
-			addIndex(collection.toString(), BucketDB.SEQUENCE_NR, 1, true);
+			addIndex(collection.toString(), BucketDB.DISTRIBUTION_ID, 1);
+//			addIndex(collection.toString(), BucketDB.SEQUENCE_NR, 1);
 		}
 
 		for (GeneralResourceRelationDB.COLLECTIONS collection : GeneralResourceRelationDB.COLLECTIONS.values()) {
-			addIndex(collection.toString(), GeneralResourceRelationDB.DISTRIBUTION_ID, 1, true);
-			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1, true);
+//			addIndex(collection.toString(), GeneralResourceRelationDB.DISTRIBUTION_ID, 1, true);
+//			addIndex(collection.toString(), GeneralResourceRelationDB.PREDICATE_ID, 1, true);
+			DBObject indexFields = new BasicDBObject();
+			indexFields.put(GeneralResourceRelationDB.DISTRIBUTION_ID, 1);
+			indexFields.put(GeneralResourceRelationDB.PREDICATE_ID, 1);
+	
+			addIndex(collection.toString(), indexFields, true);
+			
 		}
 
 	}
@@ -77,6 +83,16 @@ public class IndexesCreator {
 			DBObject uniqueField = new BasicDBObject();
 			uniqueField.put("unique", true);
 			DBSuperClass.getCollection(collection).createIndex(indexOptions, uniqueField);
+		} catch (MongoCommandException e) {
+
+		}
+	}
+	
+	public void addIndex(String collection, DBObject obj, boolean unique) {
+		try {
+			DBObject uniqueField = new BasicDBObject();
+			uniqueField.put("unique", true);
+			DBSuperClass.getCollection(collection).createIndex(obj, uniqueField);
 		} catch (MongoCommandException e) {
 
 		}

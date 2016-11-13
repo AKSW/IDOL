@@ -377,6 +377,7 @@ public class DBSuperClass {
 	public boolean bulkSave2(List<DBObject> objects) {
 
 		boolean isAck = false;
+		BulkWriteResult result=null;
 		try {
 			if (objects.size() == 0)
 				return false;
@@ -384,10 +385,10 @@ public class DBSuperClass {
 			for (DBObject doc : objects) {
 				builder.insert(doc);
 			}
-			BulkWriteResult result = builder.execute();
+			result = builder.execute();
 			isAck = result.isAcknowledged();
 		} catch (BulkWriteException e) {
-
+			e.printStackTrace();
 		}
 		return isAck;
 	}
