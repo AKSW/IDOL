@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import lodVader.application.LODVader;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.tupleManager.PipelineProcessor;
+import lodVader.utils.FileStatement;
+import lodVader.utils.StatementUtils;
 
 /**
  * @author Ciro Baron Neto
@@ -33,8 +35,11 @@ public class LODVaderRawDataStream {
 	DistributionDB distribution = null;
 
 	String path = null;
+	
+	FileStatement fileTriple = null;
 
 	PipelineProcessor pipelineProcessor = new PipelineProcessor();
+	StatementUtils statementUtils = new StatementUtils();
 
 	/**
 	 * Constructor for Class LODVaderRawDataStream
@@ -52,84 +57,14 @@ public class LODVaderRawDataStream {
 
 		try {
 			logger.info("Loading: " + path + distribution.getID());
-			BufferedReader br = new BufferedReader(new FileReader(new File(path + distribution.getID())));
-
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] split = line.split(" ",3);
-				if (split.length > 2)
-					callProcessors(split[0], split[1], split[2]);
-			}
-			br.close();
+			fileTriple = new FileStatement(path, "__RAW_" + distribution.getID());
+			while(fileTriple.hasNext())
+				pipelineProcessor.handleStatement(fileTriple.getStatement());
+			fileTriple.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private Statement createStatement(String subject, String predicate, String object) {
-
-		return new Statement() {
-
-			@Override
-			public Resource getSubject() {
-				// TODO Auto-generated method stub
-				return new Resource() {
-
-					@Override
-					public String stringValue() {
-						return subject;
-					}
-				};
-			}
-
-			@Override
-			public URI getPredicate() {
-				return new URI() {
-
-					@Override
-					public String stringValue() {
-						return predicate;
-					}
-
-					@Override
-					public String getNamespace() {
-						// TODO Auto-generated method stub
-						return null;
-					}
-
-					@Override
-					public String getLocalName() {
-						// TODO Auto-generated method stub
-						return null;
-					}
-				};
-			}
-
-			@Override
-			public Value getObject() {
-				return new Value() {
-
-					@Override
-					public String stringValue() {
-						return object;
-					}
-				};
-			}
-
-			@Override
-			public Resource getContext() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-		};
-
-	}
-
-	private void callProcessors(String subject, String predicate, String object) {
-		Statement s = createStatement(subject, predicate, object);
-		pipelineProcessor.handleStatement(s);
 	}
 
 }
