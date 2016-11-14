@@ -147,16 +147,15 @@ public class LODVader {
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
 		// load distributions to be analyzed
-		// List<DBObject> distributionObjects =
-		// queries.getObjects(DistributionDB.COLLECTION_NAME,
-		// DistributionDB.STATUS,
-		// status.toString());
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+				status.toString());
 
 		// 582896c6b5c0f62c1adc8d3a
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.ID,
-				"582896c6b5c0f62c1adc8d3a");
+		// List<DBObject> distributionObjects =
+		// queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.ID,
+		// "582896c6b5c0f62c1adc8d3a");
 
-		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with "
+		logger.info("Streaming distributions for " + distributionsBeingProcessed.get() + " distributions with "
 				+ numberOfThreads + " threads.");
 
 		GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(), BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES.toString());
@@ -164,9 +163,8 @@ public class LODVader {
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-
 			if (gfsFile.find(new BasicDBObject(BucketDB.DISTRIBUTION_ID, distribution.getID())).size() == 0) {
-				 executor.execute(new ProcessDataset(distribution));
+				executor.execute(new ProcessDataset(distribution));
 				distributionsBeingProcessed.set(distributionsBeingProcessed.incrementAndGet());
 			}
 		}
