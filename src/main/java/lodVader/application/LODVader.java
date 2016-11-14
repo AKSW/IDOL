@@ -28,9 +28,9 @@ import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
-import lodVader.streaming.LODVaderCoreStream;
 import lodVader.streaming.LODVaderRawDataStream;
-import lodVader.tupleManager.processors.SaveRawDataProcessor;
+import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
+import lodVader.tupleManager.processors.BloomFilterProcessor2;
 
 /**
  * @author Ciro Baron Neto
@@ -254,19 +254,19 @@ public class LODVader {
 				Logger logger = LoggerFactory.getLogger(ProcessDataset.class);
 
 				// load the main LODVader streamer
-				LODVaderCoreStream coreStream = new LODVaderCoreStream();
-//				LODVaderRawDataStream coreStream = new LODVaderRawDataStream(LODVaderProperties.BASE_PATH + "/raw_files/");
+//				LODVaderCoreStream coreStream = new LODVaderCoreStream();
+				LODVaderRawDataStream coreStream = new LODVaderRawDataStream(LODVaderProperties.BASE_PATH + "/raw_files/");
 
 				// create some processors
 //				BasicStatisticalDataProcessor basicStatisticalProcessor = new BasicStatisticalDataProcessor(
 //						distribution);
-				SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
-//				BloomFilterProcessor2 bfProcessor = new BloomFilterProcessor2(distribution);
+//				SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
+				BloomFilterProcessor2 bfProcessor = new BloomFilterProcessor2(distribution);
 
 				// register them into the pipeline
 //				 coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
-				 coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
-//				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
+//				 coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
+				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
 
 				// start processing
 				try {
@@ -278,12 +278,12 @@ public class LODVader {
 					// data, etc etc).
 //					 basicStatisticalProcessor.saveStatisticalData();
 					
-					rawDataProcessor.closeFile();
-//					bfProcessor.saveFilters();
+//					rawDataProcessor.closeFile();
+					bfProcessor.saveFilters();
 					distribution.setStatus(DistributionStatus.DONE);
 				} catch (Exception e) {
-					rawDataProcessor.closeFile();
-//					bfProcessor.saveFilters();
+//					rawDataProcessor.closeFile();
+					bfProcessor.saveFilters();
 //					basicStatisticalProcessor.saveStatisticalData();
 
 					distribution.setLastMsg(e.getMessage());
