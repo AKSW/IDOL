@@ -16,10 +16,12 @@ import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mongodb.gridfs.GridFS;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderConfigurator;
 import lodVader.loader.LODVaderProperties;
+import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
@@ -145,21 +147,26 @@ public class LODVader {
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
 		// load distributions to be analyzed
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				status.toString());
+		// List<DBObject> distributionObjects =
+		// queries.getObjects(DistributionDB.COLLECTION_NAME,
+		// DistributionDB.STATUS,
+		// status.toString());
+
+		// 582896c6b5c0f62c1adc8d3a
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.ID,
+				"582896c6b5c0f62c1adc8d3a");
 
 		logger.info("Discovering subset for " + distributionsBeingProcessed.get() + " distributions with "
 				+ numberOfThreads + " threads.");
+
+		GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(), BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES.toString());
+
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
 
-			List<DBObject> objects = new GeneralQueriesHelper().getObjects(
-					BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES.toString(), BucketDB.DISTRIBUTION_ID,
-					distribution.getID());
-
-			if (objects.size() == 0) {
-				executor.execute(new ProcessDataset(distribution));
+			if (gfsFile.find(new BasicDBObject(BucketDB.DISTRIBUTION_ID, distribution.getID())).size() == 0) {
+				 executor.execute(new ProcessDataset(distribution));
 				distributionsBeingProcessed.set(distributionsBeingProcessed.incrementAndGet());
 			}
 		}

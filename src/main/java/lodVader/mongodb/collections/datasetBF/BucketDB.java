@@ -86,8 +86,8 @@ public class BucketDB {
 
 	// public boolean query(int distributionID) {
 	//
-	// GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(),
-	// COLLECTION_NAME);
+//	 GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(),
+//	 COLLECTION_NAME);
 	//
 	// boolean result = false;
 	//
@@ -103,7 +103,7 @@ public class BucketDB {
 	// and.add(lastResource);
 	// and.add(distribution);
 	//
-	// GridFSDBFile file = gfsFile.findOne(new BasicDBObject("$and", and));
+//	 GridFSDBFile file = gfsFile.findOne(new BasicDBObject("$and", and));
 	//
 	// // Timer t = new Timer();
 	// // t.startTimer();
