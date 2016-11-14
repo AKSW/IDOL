@@ -146,11 +146,11 @@ public class LODVader {
 
 //		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL,
 //		"http://lov.okfn.org/dataset/lov/sparql?query=CONSTRUCT+%7B+%3Fs+%3Fp+%3Fo+%7D+WHERE+%7B+GRAPH+%3Chttp%3A%2F%2Fwww.w3.org%2F2005%2FIncubator%2Fssn%2Fssnx%2Fssn%3E+%7B+%3Fs+%3Fp+%3Fo+%7D+%7D");
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
+//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
 //		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
 //		DistributionDB.DistributionStatus.WAITING_TO_STREAM.toString());
-//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-//				DistributionDB.DistributionStatus.DONE.toString());
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+				DistributionDB.DistributionStatus.DONE.toString());
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 
