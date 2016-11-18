@@ -65,6 +65,7 @@ public class LODVader {
 	/**
 	 * Streaming and processing
 	 */
+	boolean streamDistribution = false;
 	boolean streamFromInternet = false;
 	boolean createDumpOnDisk = false;
 	boolean processStatisticalData = false;
@@ -106,7 +107,8 @@ public class LODVader {
 		/**
 		 * Stream and process distributions
 		 */
-		streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+		if (streamDistribution)
+			streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
 
 		// detectDatasets();
 
@@ -208,7 +210,7 @@ public class LODVader {
 
 			// if we are dealing wth bloom filter creation
 			if (createBloomFilter) {
-				
+
 				// ignore distributions if BF has already been created
 				if (ignoreCreatedBF) {
 					GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(),
