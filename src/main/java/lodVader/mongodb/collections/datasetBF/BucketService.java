@@ -134,14 +134,14 @@ public class BucketService {
 		BucketDB bucket = new BucketDB(collection);
 		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), bucket.COLLECTION.toString());
 
-		List<GridFSDBFile> obj = gfs.find(new BasicDBObject(BucketDB.DISTRIBUTION_ID, distributionID));
-		if (obj.size() > 0) {
-			GridFSDBFile f = obj.iterator().next();
+		List<GridFSDBFile> gridFSObjects = gfs.find(new BasicDBObject(BucketDB.DISTRIBUTION_ID, distributionID));
+		if (gridFSObjects.size() > 0) {
+			GridFSDBFile gridFSObject = gridFSObjects.iterator().next();
 			BloomFilterI filter = null;
 			if (loadBF) {
 				filter = BloomFilterFactory.newBloomFilter();
 				try {
-					filter.readFrom(f.getInputStream());
+					filter.readFrom(gridFSObject.getInputStream());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -149,15 +149,25 @@ public class BucketService {
 				filter = null;
 
 			bucket.setBloomFilter(filter);
-			bucket.setDistributionID(f.get(BucketDB.DISTRIBUTION_ID).toString());
-			bucket.setFirst(f.get(BucketDB.FIRST).toString());
-			bucket.setLast(f.get(BucketDB.LAST).toString());
-			bucket.setFpp(Double.parseDouble(f.get(BucketDB.FPP).toString()));
-			bucket.setSize(Double.parseDouble(f.get(BucketDB.SIZE).toString()));
-			bucket.setSequenceNr(Integer.parseInt(f.get(BucketDB.SIZE).toString()));
-			bucket.setBfByteSize(f.getLength());
+			bucket.setDistributionID(gridFSObject.get(BucketDB.DISTRIBUTION_ID).toString());
+			bucket.setFirst(getWithNullHelper(gridFSObject, BucketDB.FIRST));
+			bucket.setLast(getWithNullHelper(gridFSObject, BucketDB.LAST));
+			bucket.setFpp(Double.parseDouble(gridFSObject.get(BucketDB.FPP).toString()));
+			bucket.setSize(Double.parseDouble(gridFSObject.get(BucketDB.SIZE).toString()));
+			bucket.setSequenceNr(Integer.parseInt(gridFSObject.get(BucketDB.SEQUENCE_NR).toString()));
+			bucket.setBfByteSize(gridFSObject.getLength());
 		}
 		return bucket;
 	}
 
+	private String getWithNullHelper(GridFSDBFile gridFSObject, String field){
+		try{ 
+			return gridFSObject.get(BucketDB.LAST).toString();
+		}
+		catch (NullPointerException e)
+		{
+			return null;
+		}
+	}
+	
 }

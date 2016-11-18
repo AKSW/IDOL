@@ -26,13 +26,13 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
  */
 public class DataSourceSizeRESTModel {
 
-	private DecimalFormat formatter = new DecimalFormat("###,###,###,###,###.###");
 
 	// mapping of datasources and datasourcestatus
-	public HashMap<String, SizeMap>  datasourcesSize = new HashMap<String, SizeMap> ();
-	
+	public HashMap<String, SizeMap> datasourcesSize = new HashMap<String, SizeMap>();
+
 	/**
-	 * Method which iterates over all distributions and create the hashmap with datsources and their respective sizes
+	 * Method which iterates over all distributions and create the hashmap with
+	 * datsources and their respective sizes
 	 * 
 	 * @return the hashmap with the datasources and their uncompressed sizes
 	 */
@@ -46,29 +46,31 @@ public class DataSourceSizeRESTModel {
 
 			DistributionDB distributionDB = new DistributionDB(o);
 
-			// for each datasource within the distribution, start the map and sum up the sizes
+			// for each datasource within the distribution, start the map and
+			// sum up the sizes
 			for (String datasource : distributionDB.getDatasources()) {
-				
+
 				/**
 				 * Getting the uncompressed size
 				 */
-				String filePath = LODVaderProperties.BASE_PATH + "/raw_files/__RAW_"+distributionDB.getID();
+				String filePath = LODVaderProperties.BASE_PATH + "/raw_files/__RAW_" + distributionDB.getID();
 				File f = new File(filePath);
-				double bytes = f.length()/1024/1024;
-				
+				long bytes = f.length();
+
 				/**
 				 * Getting the BF size (in MB)
 				 */
-				Double bfSize = (double) ((new BucketService().getBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionDB.getID(), true).getBfByteSize())
-						/1024/1024);
+				long bfSize = new BucketService()
+						.getBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionDB.getID(), true)
+						.getBfByteSize();
 
 				/**
 				 * updating the return map
 				 */
 				if (datasourcesSize.get(datasource) == null) {
 					SizeMap m = new SizeMap();
-					m.setUncompressedSize(bytes);
-					m.setBFSize(bfSize);
+					m.setUncompressedSize((bytes));
+					m.setBFSize((bfSize));
 					datasourcesSize.put(datasource, m);
 				} else {
 					SizeMap m = datasourcesSize.get(datasource);
@@ -81,48 +83,63 @@ public class DataSourceSizeRESTModel {
 		return datasourcesSize;
 	}
 
-	
 	/**
 	 * Class representing the datasources sizes and BF sizes
+	 * 
 	 * @author Ciro Baron Neto
 	 * 
-	 * Nov 18, 2016
+	 *         Nov 18, 2016
 	 */
 	class SizeMap {
-		Double uncompressedSize = 0.0;
-		Double BFSize = 0.0;
-		
+		long uncompressedSize;
+		long BFSize;
+
 		/**
 		 * @return the bFSize
 		 */
-		public Double getBFSize() {
+		public long getBFSize() {
 			return BFSize;
 		}
 		
 		/**
-		 * @param bFSize 
-		 * Set the bFSize value.
+		 * @return the bFSize
 		 */
-		public void setBFSize(Double bFSize) {
+		public String getFormattedBFSize() {
+			DecimalFormat formatter = new DecimalFormat("###,###,###,###,###.###");
+			return formatter.format(BFSize);
+		}
+
+		/**
+		 * @param bFSize
+		 *            Set the bFSize value.
+		 */
+		public void setBFSize(long bFSize) {
 			BFSize = bFSize;
+		}
+
+		/**
+		 * @return the uncompressedSize
+		 */
+		public long getUncompressedSize() {
+			return uncompressedSize;
 		}
 		
 		/**
 		 * @return the uncompressedSize
 		 */
-		public Double getUncompressedSize() {
-			return uncompressedSize;
+		public String getFormattedUncompressedSize() {
+			DecimalFormat formatter = new DecimalFormat("###,###,###,###,###.###");
+			return formatter.format(uncompressedSize);
 		}
-		
+
 		/**
-		 * @param uncompressedSize 
-		 * Set the uncompressedSize value.
+		 * @param uncompressedSize
+		 *            Set the uncompressedSize value.
 		 */
-		public void setUncompressedSize(Double uncompressedSize) {
+		public void setUncompressedSize(long uncompressedSize) {
 			this.uncompressedSize = uncompressedSize;
 		}
-		
+
 	}
-	
 
 }
