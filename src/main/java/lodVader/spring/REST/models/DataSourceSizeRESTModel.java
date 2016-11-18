@@ -61,7 +61,7 @@ public class DataSourceSizeRESTModel {
 				 * Getting the BF size (in MB)
 				 */
 				long bfSize = new BucketService()
-						.getBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionDB.getID(), true)
+						.getBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionDB.getID(), false)
 						.getBfByteSize();
 
 				/**
