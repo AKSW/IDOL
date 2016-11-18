@@ -74,43 +74,6 @@ public class ResultsController {
 				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
 			DistributionDB distribution = new DistributionDB(d);
 
-			// define the thresholds
-
-			// for (double q = distribution.getNumberOfTriples(); q > 0; q = q -
-			// 0.1) {
-			//
-			// value = ((Number) (distribution.getNumberOfTriples() *
-			// q)).intValue();
-			//
-			// DBObject or = new BasicDBList();
-			// or.put(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION,
-			// distribution.getID());
-			// or.put(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION,
-			// distribution.getID());
-			//
-			// DBObject and = new BasicDBList();
-			// and.put(LODVaderIntersectionPlugin.VALUE, new
-			// BasicDBObject("$gt", value));
-			//
-			// DBObject query = new BasicDBObject(new BasicDBObject("$and", new
-			// BasicDBObject("$or", or)));
-			//
-			// if(! new
-			// GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
-			// query, 1, null).isEmpty())
-			// {
-			// if(map.get(q) == null)
-			// map.put(q, value);
-			// else{
-			// map.put(q, map.get(q) + 1);
-			// }
-			// }
-			//
-			// }
-
-			// value = ((Number) (distribution.getNumberOfTriples() *
-			// q)).intValue();
-
 			List<DBObject> or = new ArrayList<>();
 			or.add(new BasicDBObject(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString(),
 					distribution.getID().toString()));
@@ -186,27 +149,6 @@ public class ResultsController {
 
 	}
 
-	// @RequestMapping(value = "/results/triplesPerDataSource", method =
-	// RequestMethod.GET)
-	// public HashMap<String, Integer> triplesPerDataSource() {
-	// HashMap<String, Integer> map = new HashMap<String, Integer>();
-	//
-	// for (DBObject d : new GeneralQueriesHelper().getObjects(
-	// DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS,
-	// DistributionDB.DistributionStatus.DONE.toString()))) {
-	// DistributionDB distribution = new DistributionDB(d);
-	// int n = ((Number) (distribution.getNumberOfTriples() /
-	// interval)).intValue();
-	// if (map.get(n) == null){
-	// map.put(n, 1);
-	// }
-	// else{
-	// map.put(n, map.get(n)+1);
-	// }
-	// }
-	// return map;
-	// }
-
 	@RequestMapping(value = "/results/topPredicates", method = RequestMethod.GET)
 	public HashMap<String, Integer> predicates() {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -245,69 +187,4 @@ public class ResultsController {
 
 		return result;
 	}
-
-	// public static void main(String[] args) {
-	// // List<DBObject> list = new
-	// // GeneralQueriesHelper().getObjects("PLUGIN_INTERSECTION_PLUGIN", new
-	// // BasicDBObject(), null,
-	// // LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString());
-	// // for(DBObject o : list){
-	// //
-	// System.out.println(o.get(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION)+
-	// // " "+ o.get(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION) +" "+
-	// // o.get(LODVaderIntersectionPlugin.IMPLEMENTATION));
-	// // }
-	//
-	// Object[] list = new GeneralQueriesHelper()
-	// .getObjects("PLUGIN_INTERSECTION_PLUGIN", new BasicDBObject(), null,
-	// LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString())
-	// .stream().sorted(new Comparator<DBObject>() {
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see java.util.Comparator#compare(java.lang.Object,
-	// * java.lang.Object)
-	// */
-	// @Override
-	// public int compare(DBObject o1, DBObject o2) {
-	// if
-	// (o1.get(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString()).toString().compareTo(
-	// o2.get(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString()).toString())
-	// > 0) {
-	// return 1;
-	// } else if
-	// (o1.get(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString()).toString()
-	// .compareTo(o2.get(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString())
-	// .toString()) < 0) {
-	// return -1;
-	// } else {
-	//
-	// if
-	// (o1.get(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION.toString()).toString().compareTo(
-	// o2.get(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION.toString()).toString())
-	// > 0) {
-	// return 1;
-	// } else if
-	// (o1.get(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION.toString()).toString()
-	// .compareTo(o2.get(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION.toString())
-	// .toString()) < 0) {
-	// return -1;
-	// }
-	// }
-	//
-	// return 0;
-	// }
-	// }).toArray();
-	//
-	// for (Object ob : list) {
-	// DBObject o = (DBObject) ob;
-	// System.out.println(o.get(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION)
-	// + " "
-	// + o.get(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION) + " "
-	// + o.get(LODVaderIntersectionPlugin.IMPLEMENTATION) + " " +
-	// o.get(LODVaderIntersectionPlugin.VALUE));
-	// }
-	//
-	// }
-
 }

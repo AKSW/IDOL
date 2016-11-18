@@ -42,9 +42,7 @@ public abstract class SubsetDetectionService {
 	 */
 	public HashMap<String, Double> runDetector() {
 		loadTargetDatasetsIds();
-		// 3. run the detector
 		return subsetDetector.runDetection(distribution, datasetsIDs);
-
 	}
 
 	public abstract List<String> loadTargetDatasetsIds();

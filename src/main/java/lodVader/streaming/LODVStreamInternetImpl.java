@@ -45,9 +45,9 @@ import lodVader.tupleManager.PipelineProcessor;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.FormatsUtils.COMPRESSION_FORMATS;
 
-public class LODVaderCoreStream {
+public class LODVStreamInternetImpl implements LODVStreamInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(LODVaderCoreStream.class);
+	final static Logger logger = LoggerFactory.getLogger(LODVStreamInternetImpl.class);
 
 	// HTTP header fields
 	public String httpDisposition = null;
@@ -59,36 +59,12 @@ public class LODVaderCoreStream {
 
 	DistributionDB distribution;
 
-	// COMPRESSION_FORMATS compressionFormat;
-
-	protected static final int BUFFER_SIZE = 1024 * 256;
-	// public URL downloadUrl = null;
-
-	// public InputStream inputStream = null;
-
-	final byte[] buffer = new byte[BUFFER_SIZE];
-	int n = 0;
-	int aux = 0;
-
-	// public String fileName = null;
-	// public String extension = null;
-	// public String RDFFormat = null;
-
-	public String objectFilePath;
-
-	public String hashFileName = null;
-	public double contentLengthAfterDownloaded = 0;
-
-	// HttpURLConnection httpConn = null;
-
-	String accessURL = null;
-
 	private PipelineProcessor pipelineProcessor;
 
 	/**
 	 * Constructor for Class LODVaderCoreStream
 	 */
-	public LODVaderCoreStream() {
+	public LODVStreamInternetImpl() {
 		PipelineProcessor pipelineProcessor = new PipelineProcessor();
 		this.pipelineProcessor = pipelineProcessor;
 	}
@@ -117,26 +93,9 @@ public class LODVaderCoreStream {
 
 	}
 
-	// public void startParsing(DistributionDB distributionMongoDBObj)
-	// throws IOException, LODVaderLODGeneralException,
-	// LODVaderFormatNotAcceptedException {
-	// this.downloadUrl = new URL(distributionMongoDBObj.getDownloadUrl());
-	// this.compressionFormat = new
-	// FormatsUtils().getCompressionFormat(distributionMongoDBObj.getDownloadUrl());
-	// this.RDFFormat = distributionMongoDBObj.getFormat();
-	// this.distribution = distributionMongoDBObj;
-	// logger.info("Let's try to read: "+this.downloadUrl .toString());
-	//
-	// InputStream stream = this.downloadUrl.openStream();
-	//
-	//// stream = checkCompression(new BufferedInputStream(stream));
-	// discoverRDFFormat(distributionMongoDBObj.getDownloadUrl());
-	//// openStream();
-	// startStream();
-	// }
-
+	@Override
 	public void startParsing(DistributionDB distributionMongoDBObj)
-			throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
+			throws Exception {
 		this.distribution = distributionMongoDBObj;
 		startParsing(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
 	}
@@ -145,10 +104,8 @@ public class LODVaderCoreStream {
 			throws IOException, LODVaderLODGeneralException, RDFParseException, RDFHandlerException {
 		COMPRESSION_FORMATS compressionFormat;
 		if (downloadUrl.contains("lodlaundromat"))
-
 			compressionFormat = COMPRESSION_FORMATS.GZ;
 		else
-
 			compressionFormat = new FormatsUtils().getCompressionFormat(downloadUrl);
 		InputStream inputStream = null;
 		try {
@@ -275,12 +232,8 @@ public class LODVaderCoreStream {
 					}
 
 				}
-
-				// if(zip.)
 				entry = zip.getNextEntry();
 			}
-
-			// setExtension(FilenameUtils.getExtension(getFileName()));
 		}
 
 		else if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.TAR)) {

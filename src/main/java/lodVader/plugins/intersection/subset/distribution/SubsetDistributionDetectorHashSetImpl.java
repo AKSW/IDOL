@@ -19,7 +19,7 @@ import lodVader.exceptions.LODVaderLODGeneralException;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
-import lodVader.streaming.LODVaderCoreStream;
+import lodVader.streaming.LODVStreamInternetImpl;
 import lodVader.tupleManager.processors.SaveRawDataProcessor;
 
 /**
@@ -59,7 +59,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 		HashSet<String> sourceSet = loadSetFromDisk(fileName);
 
 		if (sourceSet == null) {
-			LODVaderCoreStream stream = new LODVaderCoreStream();
+			LODVStreamInternetImpl stream = new LODVStreamInternetImpl();
 
 			SaveRawDataProcessor processor = new SaveRawDataProcessor(sourceDistribution, fileName);
 
@@ -67,7 +67,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 
 			try {
 				stream.startParsing(sourceDistribution);
-			} catch (IOException | LODVaderLODGeneralException | RDFParseException | RDFHandlerException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -84,7 +84,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 			targetDistribution.find(true, DistributionDB.ID, targetDistributionID);
 
 			if (targetSet == null) {
-				LODVaderCoreStream stream = new LODVaderCoreStream();
+				LODVStreamInternetImpl stream = new LODVStreamInternetImpl();
 
 				SaveRawDataProcessor processor = new SaveRawDataProcessor(targetDistribution,
 						targetDistributionFileName);
@@ -92,7 +92,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 				stream.getPipelineProcessor().registerProcessor(processor);
 				try {
 					stream.startParsing(targetDistribution);
-				} catch (IOException | LODVaderLODGeneralException | RDFParseException | RDFHandlerException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

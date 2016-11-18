@@ -3,21 +3,9 @@
  */
 package lodVader.streaming;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
-import javax.management.StandardEmitterMBean;
-
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lodVader.application.LODVader;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.tupleManager.PipelineProcessor;
 import lodVader.utils.FileStatement;
@@ -28,9 +16,9 @@ import lodVader.utils.StatementUtils;
  * 
  *         Nov 13, 2016
  */
-public class LODVaderRawDataStream {
+public class LODVStreamFileImpl implements LODVStreamInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(LODVaderRawDataStream.class);
+	final static Logger logger = LoggerFactory.getLogger(LODVStreamFileImpl.class);
 
 	DistributionDB distribution = null;
 
@@ -44,7 +32,7 @@ public class LODVaderRawDataStream {
 	/**
 	 * Constructor for Class LODVaderRawDataStream
 	 */
-	public LODVaderRawDataStream(String basePath) {
+	public LODVStreamFileImpl(String basePath) {
 		this.path = basePath;
 	}
 
@@ -58,9 +46,13 @@ public class LODVaderRawDataStream {
 		try {
 			logger.info("Loading: " + path + distribution.getID());
 			fileTriple = new FileStatement(path, "__RAW_" + distribution.getID());
-			while(fileTriple.hasNext())
+			int triples= 0;
+			while(fileTriple.hasNext()){
 				pipelineProcessor.handleStatement(fileTriple.getStatement());
+				triples++;
+			}
 			fileTriple.close();
+			logger.info(triples+ " triples handled.");			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

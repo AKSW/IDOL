@@ -13,7 +13,7 @@ import lodVader.bloomfilters.BloomFilterI;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
-import lodVader.mongodb.collections.datasetBF.BucketDBHelper;
+import lodVader.mongodb.collections.datasetBF.BucketService;
 import lodVader.plugins.LODVaderPlugin;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.services.mongodb.resourceRelation.GeneralResourceRelationServices;
@@ -38,7 +38,7 @@ public class LinksetDetectorBFImpl extends LODVaderIntersectionPlugin{
 
 	private HashMap<String, List<BloomFilterI>> getBucketFromDatasets(List<String> distributions) {
 
-		return new BucketDBHelper().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_SUBJECTS, distributions);
+		return new BucketService().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_SUBJECTS, distributions);
 
 	}
 	
@@ -46,7 +46,7 @@ public class LinksetDetectorBFImpl extends LODVaderIntersectionPlugin{
 
 		List<String> list = new ArrayList<String>();
 		list.add(distribution);
-		HashMap<String, List<BloomFilterI>> filters = new BucketDBHelper().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_OBJECTS, list);
+		HashMap<String, List<BloomFilterI>> filters = new BucketService().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_OBJECTS, list);
  		if(filters.size()>0){
  			return filters.values().iterator().next();
  		}

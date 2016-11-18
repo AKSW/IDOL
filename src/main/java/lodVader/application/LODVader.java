@@ -12,12 +12,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
 
+import lodVader.application.fileparser.CKANRepositoryLoader;
+import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderConfigurator;
 import lodVader.loader.LODVaderProperties;
@@ -27,14 +28,21 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
+import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
+import lodVader.parsers.descriptionFileParser.Impl.DataIDFileParser;
+import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
+import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
-import lodVader.streaming.LODVaderRawDataStream;
+import lodVader.streaming.LODVStreamFileImpl;
+import lodVader.streaming.LODVStreamInterface;
+import lodVader.streaming.LODVStreamInternetImpl;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor2;
+import lodVader.tupleManager.processors.SaveRawDataProcessor;
 
 /**
  * @author Ciro Baron Neto
@@ -45,28 +53,61 @@ import lodVader.tupleManager.processors.BloomFilterProcessor2;
  */
 public class LODVader {
 
-	// public static void main(String[] args) {
-	// new LODVader().Manager();
-	// }
-
 	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
+	/**
+	 * Number of threads
+	 */
 	int numberOfThreads = 4;
+
+	/**
+	 * Streaming and processing
+	 */
+	boolean streamFromInternet = true;
+	boolean createDumpOnDisk = true;
+	boolean processStatisticalData = false;
+	boolean createBloomFilter = false;
+
+	/**
+	 * Parsing options
+	 */
+	boolean parseLOV = false;
+	boolean parseDBpedia = false;
+	boolean parseLaundromat = false;
+	boolean parseLODCloud = false;
+	boolean parseRE3 = false;
+	boolean parseCKANRepositories = false;
+	boolean parseLinghub = false;
+
+	/**
+	 * BF options.
+	 */
+	// check if there already is a BF created for the distribution
+	boolean ignoreCreatedBF = true;
 
 	/**
 	 * Main method
 	 */
 	public void Manager() {
 
-		// new Fix().fix3();
-
+		/**
+		 * Load properties file, create MondoDB indexes, etc
+		 */
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
-		// //
-		// parseFiles();
-		streamDistributions(DistributionDB.DistributionStatus.DONE);
+
+		/**
+		 * Start parsing files
+		 */
+		parseFiles();
+
+		/**
+		 * Stream and process distributions
+		 */
+		streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -86,58 +127,66 @@ public class LODVader {
 		/**
 		 * Parsing DBpedia DataID file
 		 */
-		// loader.load(new
-		// DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
-		// loader.parse();
+		if (parseDBpedia) {
+			loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+			loader.parse();
+		}
 
 		/**
 		 * Parsing LODLaundromat
 		 */
-		// loader.load(new
-		// CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
-		// loader.parse();
+		if (parseLaundromat) {
+			loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+			loader.parse();
+		}
 
 		/**
 		 * Parsing Linked Open Vocabularies (lov.okfn.org)
 		 */
-		loader.load(new LOVParser());
-		loader.parse();
+		if (parseLOV) {
+			loader.load(new LOVParser());
+			loader.parse();
+		}
 
 		/**
 		 * Parsing lod-cloud (lod-cloud.net)
 		 */
-		// loader.load(new LODCloudParser());
-		// loader.parse();
+		if (parseLODCloud) {
+			loader.load(new LODCloudParser());
+			loader.parse();
+		}
 
 		/**
 		 * Parsing Linghub (linghub.lider-project.eu)
 		 */
-		// loader.load(new
-		// LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
-		// loader.load(new
-		// LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
-		// loader.parse();
+		if (parseLinghub) {
+			loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
+			// loader.load(new
+			// LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
+			loader.parse();
+		}
 
 		/**
 		 * Parsing CKAN repositories (ckan.org/instances/#)
 		 */
-		// String datasource = "CKAN_REPOSITORIES";
-		// CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
-		// ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList,
-		// datasource);
-		// new CkanToLODVaderConverter().convert(datasource);
-		//
-		// logger.info("Ckan parsing done");
+		if (parseCKANRepositories) {
+			String datasource = "CKAN_REPOSITORIES";
+			CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+			ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
+			new CkanToLODVaderConverter().convert(datasource);
+			logger.info("Ckan parsing done");
+		}
 
 		/**
 		 * Parsing RE3 CKAN instances
 		 */
-		// datasource = "RE3_REPOSITORIES";
-		// CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
-		// ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories,
-		// datasource);
-		// new CkanToLODVaderConverter().convert(datasource);
-		// logger.info("RE3 parsing done");
+		if (parseRE3) {
+			String datasource = "RE3_REPOSITORIES";
+			CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
+			ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
+			new CkanToLODVaderConverter().convert(datasource);
+			logger.info("RE3 parsing done");
+		}
 
 	}
 
@@ -150,20 +199,27 @@ public class LODVader {
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
 				status.toString());
 
-		// 582896c6b5c0f62c1adc8d3a
-		// List<DBObject> distributionObjects =
-		// queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.ID,
-		// "582896c6b5c0f62c1adc8d3a");
-
-		logger.info("Streaming distributions for " + distributionsBeingProcessed.get() + " distributions with "
-				+ numberOfThreads + " threads.");
-
-		GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(), BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES.toString());
+		logger.info("Streaming " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
+				+ " threads.");
 
 		// for each object create a instance of distributionDB
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			if (gfsFile.find(new BasicDBObject(BucketDB.DISTRIBUTION_ID, distribution.getID())).size() == 0) {
+
+			// if we are dealing wth bloom filter creation
+			if (createBloomFilter) {
+				
+				// ignore distributions if BF has already been created
+				if (ignoreCreatedBF) {
+					GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(),
+							BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES.toString());
+					if (gfsFile.find(new BasicDBObject(BucketDB.DISTRIBUTION_ID, distribution.getID())).size() == 0) {
+						executor.execute(new ProcessDataset(distribution));
+						distributionsBeingProcessed.set(distributionsBeingProcessed.incrementAndGet());
+					}
+
+				}
+			} else {
 				executor.execute(new ProcessDataset(distribution));
 				distributionsBeingProcessed.set(distributionsBeingProcessed.incrementAndGet());
 			}
@@ -253,58 +309,91 @@ public class LODVader {
 		}
 
 		public void run() {
-			if (!distribution.getStatus().equals(DistributionDB.DistributionStatus.ERROR)) {
-				Logger logger = LoggerFactory.getLogger(ProcessDataset.class);
 
-				// load the main LODVader streamer
-				// LODVaderCoreStream coreStream = new LODVaderCoreStream();
-				LODVaderRawDataStream coreStream = new LODVaderRawDataStream(
-						LODVaderProperties.BASE_PATH + "/raw_files/");
+			Logger logger = LoggerFactory.getLogger(ProcessDataset.class);
 
-				// create some processors
-				// BasicStatisticalDataProcessor basicStatisticalProcessor = new
-				// BasicStatisticalDataProcessor(
-				// distribution);
-				// SaveRawDataProcessor rawDataProcessor = new
-				// SaveRawDataProcessor(distribution, distribution.getID());
-				BloomFilterProcessor2 bfProcessor = new BloomFilterProcessor2(distribution);
+			/**
+			 * Check whether LODVader should stream from the internet of loca
+			 * files
+			 */
+			LODVStreamInterface coreStream = null;
 
-				// register them into the pipeline
-				// coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
-				// coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
+			if (streamFromInternet)
+				coreStream = new LODVStreamInternetImpl();
+			else
+				coreStream = new LODVStreamFileImpl(LODVaderProperties.BASE_PATH + "/raw_files/");
+
+			/**
+			 * Registering statistical data processor
+			 */
+			BasicStatisticalDataProcessor basicStatisticalProcessor = null;
+			if (processStatisticalData) {
+				basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
+				coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
+			}
+
+			/**
+			 * Registering raw data processor
+			 */
+			SaveRawDataProcessor rawDataProcessor = null;
+			if (createDumpOnDisk) {
+				rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
+				coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
+			}
+
+			/**
+			 * Registering bloom filter processor
+			 */
+			BloomFilterProcessor2 bfProcessor = null;
+			if (createBloomFilter) {
+				bfProcessor = new BloomFilterProcessor2(distribution);
 				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
+			}
 
-				// start processing
-				try {
-					distribution.setStatus(DistributionStatus.STREAMING);
-					distribution.update();
+			// start processing
+			try {
+				distribution.setStatus(DistributionStatus.STREAMING);
+				distribution.update();
 
-					coreStream.startParsing(distribution);
-					// after finishing processing, finalize the processors (save
-					// data, etc etc).
-					// basicStatisticalProcessor.saveStatisticalData();
+				coreStream.startParsing(distribution);
 
-					// rawDataProcessor.closeFile();
+				// after finishing processing, finalize the processors (save
+				// data, etc etc).
+				if (processStatisticalData)
+					basicStatisticalProcessor.saveStatisticalData();
+
+				if (createDumpOnDisk)
+					rawDataProcessor.closeFile();
+
+				if (createBloomFilter)
 					bfProcessor.saveFilters();
-					distribution.setStatus(DistributionStatus.DONE);
-				} catch (Exception e) {
-					// rawDataProcessor.closeFile();
+
+				distribution.setStatus(DistributionStatus.DONE);
+
+			} catch (Exception e) {
+
+				// case get an exception, finalize the processors (save
+				// data, etc etc).
+				if (createDumpOnDisk)
+					rawDataProcessor.closeFile();
+
+				if (processStatisticalData)
+					basicStatisticalProcessor.saveStatisticalData();
+
+				if (createBloomFilter)
 					bfProcessor.saveFilters();
-					// basicStatisticalProcessor.saveStatisticalData();
 
-					distribution.setLastMsg(e.getMessage());
-					distribution.setStatus(DistributionStatus.ERROR);
-					logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "
-							+ distribution.getStatus().toString() + " with error msg '" + distribution.getLastMsg()
-							+ "'.");
-					// e.printStackTrace();
-				}
+				distribution.setLastMsg(e.getMessage());
+				distribution.setStatus(DistributionStatus.ERROR);
+				logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "
+						+ distribution.getStatus().toString() + " with error msg '" + distribution.getLastMsg() + "'.");
+			}
 
-				try {
-					distribution.update();
-				} catch (LODVaderMissingPropertiesException e) {
-					e.printStackTrace();
-				}
+			try {
+				distribution.update();
+			} catch (LODVaderMissingPropertiesException e) {
+				e.printStackTrace();
+
 			}
 
 			logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());

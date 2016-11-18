@@ -35,7 +35,7 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
-import lodVader.streaming.LODVaderCoreStream;
+import lodVader.streaming.LODVStreamInternetImpl;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.FormatsUtils.COMPRESSION_FORMATS;
 
@@ -183,7 +183,7 @@ public class LODCloudParser implements DescriptionFileParserInterface {
 	@Override
 	public void parse() {
 
-		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
+		LODVStreamInternetImpl streamProcessor = new LODVStreamInternetImpl();
 		try {
 			logger.info("Reading repository: "+repositoryAddress);
 //			streamProcessor.downloadUrl = new URL(repositoryAddress);

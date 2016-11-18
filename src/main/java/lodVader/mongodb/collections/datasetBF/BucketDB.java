@@ -42,52 +42,203 @@ public class BucketDB {
 
 	static public String FPP = "fpp";
 
+	private int sequenceNr;
+
+	private String distributionID;
+
+	private double size;
+
+	private String first;
+
+	private String last;
+
+	private double fpp;
+
+	BloomFilterI bloomFilter;
+	
+	long bfByteSize;
+	
+	
 	/**
 	 * Constructor for Class BucketDB
 	 */
 	public BucketDB(COLLECTIONS collection) {
 		this.COLLECTION = collection;
 	}
-
-	public void saveBF(BloomFilterI bf, String distributionID, int bfSequenceNr, String first, String last) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-		try {
-			bf.writeTo(out);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION.toString());
-		GridFSInputFile gfsFile;
-
-		try {
-			gfsFile = gfs.createFile(new BufferedInputStream(new ByteArrayInputStream(out.toByteArray())));
-			gfsFile.put(DISTRIBUTION_ID, distributionID);
-			gfsFile.put(SEQUENCE_NR, bfSequenceNr);
-			gfsFile.put(SIZE, bf.getFilterInitialSize());
-			gfsFile.put(FPP, bf.getFPP());
-			gfsFile.put(FIRST, first);
-			gfsFile.put(LAST, last);
-			gfsFile.save();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	
+	
+	public BucketDB(COLLECTIONS collection, BloomFilterI bf, String distributionID, int bfSequenceNr, String first, String last) {
+		this.COLLECTION = collection;
+		setBloomFilter(bf);
+		setDistributionID(distributionID);
+		setFirst(first);
+		setFpp(bf.getFPP());
+		setLast(last);
+		setSize(bf.getFilterInitialSize());
+		setSequenceNr(bfSequenceNr);
 	}
 
-	public void remove(String distributionID) {
-		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION.toString());
-		gfs.remove(new BasicDBObject(DISTRIBUTION_ID, distributionID));
+//	public void saveBF(BloomFilterI bf, String distributionID, int bfSequenceNr, String first, String last) {
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//
+//		try {
+//			bf.writeTo(out);
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//
+//		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), COLLECTION.toString());
+//		GridFSInputFile gfsFile;
+//
+//		try {
+//			gfsFile = gfs.createFile(new BufferedInputStream(new ByteArrayInputStream(out.toByteArray())));
+//			gfsFile.put(DISTRIBUTION_ID, distributionID);
+//			gfsFile.put(SEQUENCE_NR, bfSequenceNr);
+//			gfsFile.put(SIZE, bf.getFilterInitialSize());
+//			gfsFile.put(FPP, bf.getFPP());
+//			gfsFile.put(FIRST, first);
+//			gfsFile.put(LAST, last);
+//			gfsFile.save();
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+
+	
+	/**
+	 * @param bloomFilter 
+	 * Set the bloomFilter value.
+	 */
+	public void setBloomFilter(BloomFilterI bloomFilter) {
+		this.bloomFilter = bloomFilter;
 	}
+	
+	/**
+	 * @return the bloomFilter
+	 */
+	public BloomFilterI getBloomFilter() {
+		return bloomFilter;
+	}
+	
+	/**
+	 * @return the bfByteSize
+	 */
+	public long getBfByteSize() {
+		return bfByteSize;
+	}
+	
+	/**
+	 * @param bfByteSize 
+	 * Set the bfByteSize value.
+	 */
+	public void setBfByteSize(long bfByteSize) {
+		this.bfByteSize = bfByteSize;
+	}
+	
+	
+	/**
+	 * @param first
+	 *            Set the first value.
+	 */
+	public void setFirst(String first) {
+		this.first = first;
+	}
+
+	/**
+	 * @return the first
+	 */
+	public String getFirst() {
+		return first;
+	}
+
+	/**
+	 * @param last
+	 *            Set the last value.
+	 */
+	public void setLast(String last) {
+		this.last = last;
+	}
+
+	/**
+	 * @return the last
+	 */
+	public String getLast() {
+		return last;
+	}
+
+	/**
+	 * @param fpp
+	 *            Set the fpp value.
+	 */
+	public void setFpp(double fpp) {
+		this.fpp = fpp;
+	}
+
+	/**
+	 * @return the fpp
+	 */
+	public double getFpp() {
+		return fpp;
+	}
+
+	/**
+	 * @param sequenceNr
+	 *            Set the sequenceNr value.
+	 */
+	public void setSequenceNr(int sequenceNr) {
+		this.sequenceNr = sequenceNr;
+	}
+
+	/**
+	 * @return the sequenceNr
+	 */
+	public int getSequenceNr() {
+		return sequenceNr;
+	}
+
+	/**
+	 * @param size
+	 *            Set the size value.
+	 */
+	public void setSize(double size) {
+		this.size = size;
+	}
+
+	/**
+	 * @return the size
+	 */
+	public double getSize() {
+		return size;
+	}
+
+	/**
+	 * @return the distributionID
+	 */
+	public String getDistributionID() {
+		return distributionID;
+	}
+
+	/**
+	 * @param distributionID
+	 *            Set the distributionID value.
+	 */
+	public void setDistributionID(String distributionID) {
+		this.distributionID = distributionID;
+	}
+
+	// public void remove(String distributionID) {
+	// GridFS gfs = new GridFS(DBSuperClass.getDBInstance(),
+	// COLLECTION.toString());
+	// gfs.remove(new BasicDBObject(DISTRIBUTION_ID, distributionID));
+	// }
 
 	// public boolean query(int distributionID) {
 	//
-//	 GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(),
-//	 COLLECTION_NAME);
+	// GridFS gfsFile = new GridFS(DBSuperClass.getDBInstance(),
+	// COLLECTION_NAME);
 	//
 	// boolean result = false;
 	//
@@ -103,7 +254,7 @@ public class BucketDB {
 	// and.add(lastResource);
 	// and.add(distribution);
 	//
-//	 GridFSDBFile file = gfsFile.findOne(new BasicDBObject("$and", and));
+	// GridFSDBFile file = gfsFile.findOne(new BasicDBObject("$and", and));
 	//
 	// // Timer t = new Timer();
 	// // t.startTimer();
@@ -152,6 +303,5 @@ public class BucketDB {
 	//
 	// }
 	//
-
 
 }

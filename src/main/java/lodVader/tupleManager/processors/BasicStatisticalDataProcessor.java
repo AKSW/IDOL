@@ -185,8 +185,8 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 					List<GeneralResourceDB> generalResources = new GeneralResourceDB(resourceCollection)
 							.insertSet(resources.keySet());
 
-					new GeneralResourceRelationDB(relationCollection).insertSet(resources, generalResources, distribution.getID(),
-							distribution.getTopDatasetID());
+					new GeneralResourceRelationDB(relationCollection).insertSet(resources, generalResources, distribution.getID()
+							);
 
 					resources = new HashMap<String, Integer>();
 
@@ -204,8 +204,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 			List<GeneralResourceDB> generalResources = new GeneralResourceDB(resourceCollection)
 					.insertSet(resources.keySet());
 
-			new GeneralResourceRelationDB(relationCollection).insertSet(resources, generalResources, distribution.getID(),
-					distribution.getTopDatasetID());
+			new GeneralResourceRelationDB(relationCollection).insertSet(resources, generalResources, distribution.getID());
 			
 			br.close();
 

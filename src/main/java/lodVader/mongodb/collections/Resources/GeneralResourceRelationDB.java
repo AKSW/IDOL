@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.hp.hpl.jena.xmloutput.impl.Basic;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteException;
 import com.mongodb.BulkWriteOperation;
@@ -37,11 +36,11 @@ public class GeneralResourceRelationDB extends DBSuperClass {
 	public COLLECTIONS collection;
 
 
-//	public GeneralRDFResourceRelationDB(COLLECTIONS collection, DBObject obj) {
-//		super(collection.toString(), obj);
-//		setParameters();
-//		this.collection = collection;
-//	}
+	public GeneralResourceRelationDB(COLLECTIONS collection, DBObject obj) {
+		super(collection.toString(), obj);
+		setParameters();
+		this.collection = collection;
+	}
 //
 //	
 	public GeneralResourceRelationDB(COLLECTIONS collection) {
@@ -81,7 +80,7 @@ public class GeneralResourceRelationDB extends DBSuperClass {
 		addField(AMOUNT, amount);
 	}
 
-	public void insertSet(HashMap<String, Integer> set, List<GeneralResourceDB> resources, String distributionLODVaderID, String topDatasetLODVaderID){
+	public void insertSet(HashMap<String, Integer> set, List<GeneralResourceDB> resources, String distributionLODVaderID){
 		
 		// first check whether the relations exists, then update the values
 		

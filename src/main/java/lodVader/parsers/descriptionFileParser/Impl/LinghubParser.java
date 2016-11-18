@@ -27,7 +27,7 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
 import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
-import lodVader.streaming.LODVaderCoreStream;
+import lodVader.streaming.LODVStreamInternetImpl;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.FormatsUtils.COMPRESSION_FORMATS;
 
@@ -143,7 +143,7 @@ public class LinghubParser implements DescriptionFileParserInterface {
 	@Override
 	public void parse() {
 
-		LODVaderCoreStream streamProcessor = new LODVaderCoreStream();
+		LODVStreamInternetImpl streamProcessor = new LODVStreamInternetImpl();
 		try {
 			streamProcessor.simpleDownload(LODVaderProperties.TMP_FOLDER + "/LingHubFile",
 					new URL(repositoryAddress).openStream());

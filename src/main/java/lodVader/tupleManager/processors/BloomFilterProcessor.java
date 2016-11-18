@@ -25,6 +25,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
+import lodVader.mongodb.collections.datasetBF.BucketService;
 import lodVader.utils.FileUtils;
 import lodVader.utils.NSUtils;
 
@@ -217,7 +218,6 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	private void saveBF(HashSet<String> set, TYPE_OF_FILE type, int bfCounter) {
 
-
 		BloomFilterI bloomFilter = BloomFilterFactory.newBloomFilter();
 		bloomFilter.create(200000, 0.0000001);
 
@@ -225,23 +225,24 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			bloomFilter.add(str);
 		}
 
-		BucketDB bucket = null;
+		BucketDB.COLLECTIONS collection;
 
 		if (type == TYPE_OF_FILE.OBJECT) {
-			bucket = new BucketDB(BucketDB.COLLECTIONS.BLOOM_FILTER_OBJECTS);
+			collection = BucketDB.COLLECTIONS.BLOOM_FILTER_OBJECTS;
 		} else if ((type == TYPE_OF_FILE.SUBJECT)) {
-			bucket = new BucketDB(BucketDB.COLLECTIONS.BLOOM_FILTER_SUBJECTS);
+			collection = BucketDB.COLLECTIONS.BLOOM_FILTER_SUBJECTS;
 		} else {
-			bucket = new BucketDB(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES);
+			collection = BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES;
 		}
 
-		// remove old bloom filters
-		bucket.remove(distribution.getID());
+		BucketDB bucket = new BucketDB(collection, bloomFilter, distribution.getID(), bfCounter,
+				new ArrayList<String>(set).get(0), new ArrayList<String>(set).get(set.size() - 1));
 
-		// create the new one
+		// remove buckets
+		new BucketService().removeBucket(bucket.COLLECTION, distribution.getID());
 
-		bucket.saveBF(bloomFilter, distribution.getID(), bfCounter, new ArrayList<String>(set).get(0),
-				new ArrayList<String>(set).get(set.size() - 1));
+		// create a new one
+		new BucketService().saveBucket(bucket);
 
 	}
 
@@ -256,8 +257,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			GeneralResourceRelationDB.COLLECTIONS relationCollection) {
 		List<GeneralResourceDB> resources = new GeneralResourceDB(resourceCollection).insertSet(nss.keySet());
 
-		new GeneralResourceRelationDB(relationCollection).insertSet(nss, resources, distribution.getID(),
-				distribution.getTopDatasetID());
+		new GeneralResourceRelationDB(relationCollection).insertSet(nss, resources, distribution.getID());
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 		fileUtils.sortFile(objectTmpFilePath);
 		fileUtils.sortFile(subjectTmpFilePath);
-//		fileUtils.sortFile(triplesTmpFilePath);
+		// fileUtils.sortFile(triplesTmpFilePath);
 		saveResources(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
 		fileUtils.removeFile(objectTmpFilePath);
 		saveResources(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
