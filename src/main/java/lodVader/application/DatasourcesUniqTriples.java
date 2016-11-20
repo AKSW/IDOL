@@ -81,7 +81,7 @@ public class DatasourcesUniqTriples {
 					processStatement(f.getStatement(), fileStatement1);
 					totalTriples++;
 					if (totalTriples % msgInterval == 0) {
-						logger.info(formatter.format(totalTriples) + " statements processed.");
+						logger.info(formatter.format(totalTriples) + " statements processed ("+uniq+" unique).");
 					}
 				}
 				f.close();
@@ -101,9 +101,6 @@ public class DatasourcesUniqTriples {
 			while (fileStatement1.hasNext()) {
 				processStatement(fileStatement1.getStatement(), fileStatement2);
 				total++;
-				if (total % msgInterval == 0) {
-					logger.info(total + " statements processed.");
-				}
 			}
 			fileStatement2.close();
 			fileStatement1.close();
@@ -139,7 +136,7 @@ public class DatasourcesUniqTriples {
 			} else {
 				bf.add(triple);
 				uniq++;
-				if (uniq % bfSize == 0)
+				if (uniq % bfSize/100 == 0)
 					updateCounter(totalUniq, totalTriples);
 				keepProcessing = false;
 				totalUniq++;

@@ -5,8 +5,12 @@ package lodVader.utils;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
+import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
 
 /**
  * @author Ciro Baron Neto
@@ -15,6 +19,8 @@ import lodVader.bloomfilters.impl.BloomFilterFactory;
  */
 public class BloomFilterCache {
 	
+	final static Logger logger = LoggerFactory.getLogger(BloomFilterCache.class);
+
 
 	// default bloom filter size
 	private int initialSize = 2_147_483_647;
@@ -69,6 +75,7 @@ public class BloomFilterCache {
 		cache.create(initialSize, fpp);
 		cache.add(resource);
 		caches.add(cache); 
+		logger.info("New BF created! ");
 	}
 
 	/**
