@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -58,7 +59,7 @@ public class DataSourceSizeRESTModel {
 				long bytes = f.length();
 
 				/**
-				 * Getting the BF size (in MB)
+				 * Getting the BF size
 				 */
 				long bfSize = new BucketService()
 						.getBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionDB.getID(), false)
@@ -97,6 +98,7 @@ public class DataSourceSizeRESTModel {
 		/**
 		 * @return the bFSize
 		 */
+		@JsonIgnore
 		public long getBFSize() {
 			return BFSize;
 		}
@@ -120,6 +122,7 @@ public class DataSourceSizeRESTModel {
 		/**
 		 * @return the uncompressedSize
 		 */
+		@JsonIgnore
 		public long getUncompressedSize() {
 			return uncompressedSize;
 		}

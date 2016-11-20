@@ -14,7 +14,7 @@ import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
-import lodVader.services.mongodb.distribution.DistributionServices;
+import lodVader.services.mongodb.DistributionServices;
 
 /**
  * @author Ciro Baron Neto

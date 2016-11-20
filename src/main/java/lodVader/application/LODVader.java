@@ -36,7 +36,7 @@ import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
-import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
+import lodVader.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.streaming.LODVStreamInternetImpl;
@@ -58,23 +58,23 @@ public class LODVader {
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
 	/**
-	 * Number of threads
+	 * How many operation to run in parallel.
 	 */
 	int numberOfThreads = 4;
 
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = false;
-	boolean streamFromInternet = false;
-	boolean createDumpOnDisk = false;
+	boolean streamDistribution = true;
+	boolean streamFromInternet = true;
+	boolean createDumpOnDisk = true;
 	boolean processStatisticalData = false;
 	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
 	 */
-	boolean parseLOV = false;
+	boolean parseLOV = true;
 	boolean parseDBpedia = false;
 	boolean parseLaundromat = false;
 	boolean parseLODCloud = false;
@@ -108,7 +108,8 @@ public class LODVader {
 		 * Stream and process distributions
 		 */
 		if (streamDistribution)
-			streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+//			streamDistributions(DistributionDB.DistributionStatus.DONE);
+		streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
 
 		// detectDatasets();
 
@@ -286,7 +287,7 @@ public class LODVader {
 			logger.info("Discovering subset for " + distribution.getTitle() + "(" + distribution.getID() + "). "
 					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
 
-			LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
+			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorBFIntersectImpl();
 			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution);
 			subsetService.saveSubsets();
 		}

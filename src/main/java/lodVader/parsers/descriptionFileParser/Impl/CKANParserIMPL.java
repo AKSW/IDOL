@@ -3,9 +3,6 @@
  */
 package lodVader.parsers.descriptionFileParser.Impl;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,11 +13,10 @@ import org.slf4j.LoggerFactory;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.ckanparser.CkanParser;
 import lodVader.parsers.ckanparser.models.CkanDataset;
 import lodVader.parsers.ckanparser.models.CkanResource;
-import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.MetadataParser;
 import lodVader.utils.FormatsUtils;
 
 /**
@@ -30,15 +26,13 @@ import lodVader.utils.FormatsUtils;
  * 
  *         Sep 27, 2016
  */
-public class CKANParserIMPL implements DescriptionFileParserInterface {
+public class CKANParserIMPL extends MetadataParser {
 
 	final static Logger logger = LoggerFactory.getLogger(CKANParserIMPL.class);
+	
+	String parserName = "CKAN_PARSER";
 
-	HashMap<String, DistributionDB> distributions = new HashMap<String, DistributionDB>();
-
-	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
-
-	String repositoryAddress = null;
+	String repositoryAddress;
 
 	int numberOfConcurrentRequests;
 
@@ -46,11 +40,13 @@ public class CKANParserIMPL implements DescriptionFileParserInterface {
 	 * Constructor for Class CKANHelper
 	 */
 	public CKANParserIMPL(String repositoryAddress, int numberOfConcurrentRequests) {
+		super("CKAN_PARSER");
 		this.repositoryAddress = repositoryAddress;
 		this.numberOfConcurrentRequests = numberOfConcurrentRequests;
 	}
 
 	private CKANParserIMPL() {
+		super(null);
 	}
 
 	/**
@@ -87,23 +83,7 @@ public class CKANParserIMPL implements DescriptionFileParserInterface {
 	 */
 	public DatasetDB saveDataset(CkanDataset dataset, String provenance) {
 
-		DatasetDB datasetDB = new DatasetDB(dataset.getId());
-		datasetDB.setIsVocabulary(false);
-		datasetDB.setTitle(dataset.getTitle());
-		datasetDB.setLabel(dataset.getTitle());
-		datasetDB.addProvenance(provenance);
-
-		logger.info("Dataset found: " + dataset.getId());
-		try {
-			datasetDB.update();
-		} catch (LODVaderMissingPropertiesException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		datasets.put(datasetDB.getUri(), datasetDB);
-
-		return datasetDB;
+		return addDataset(dataset.getId(), false, dataset.getTitle(), dataset.getTitle(), provenance);
 	}
 
 	/**
@@ -115,29 +95,8 @@ public class CKANParserIMPL implements DescriptionFileParserInterface {
 	 */
 	public DistributionDB saveDistribution(CkanResource resource, DatasetDB datasetDB) {
 
-		DistributionDB distributionDB = new DistributionDB(resource.getUrl());
-		distributionDB.setTitle(resource.getId());
-		distributionDB.setUri(resource.getUrl());
-
-		try {
-			distributionDB.setDownloadUrl(resource.getUrl());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(resource.getFormat()));
-		distributionDB.setTopDataset(datasetDB.getID());
-		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
-		if (distributionDB.getID() == null)
-			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
-
-		distributions.put(distributionDB.getUri(), distributionDB);
-		try {
-			distributionDB.update();
-		} catch (LODVaderMissingPropertiesException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return distributionDB;
+		return addDistribution(resource.getUrl(), false, resource.getTitle(), resource.getFormat(), resource.getUrl(),
+				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress);
 
 	}
 
@@ -194,33 +153,10 @@ public class CKANParserIMPL implements DescriptionFileParserInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getDistributions()
-	 */
-	@Override
-	public List<DistributionDB> getDistributions() {
-		return new ArrayList<DistributionDB>(distributions.values());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getDatasets()
-	 */
-	@Override
-	public List<DatasetDB> getDatasets() {
-		return new ArrayList<DatasetDB>(datasets.values());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#parse()
 	 */
 	@Override
 	public void parse() {
-
 		CkanParser client;
 		client = new CkanParser(repositoryAddress);
 		List<String> datasets = client.fetchDatasetIds();
@@ -228,28 +164,6 @@ public class CKANParserIMPL implements DescriptionFileParserInterface {
 		saveInstances(datasets, repositoryAddress);
 
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getParserName(
-	 * )
-	 */
-	@Override
-	public String getParserName() {
-		return "CKAN_PARSER";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getRepositoryAddress()
-	 */
-	@Override
-	public String getRepositoryAddress() {
-		return repositoryAddress;
-	}
+	
 
 }

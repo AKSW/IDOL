@@ -5,7 +5,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoCommandException;
 
 import lodVader.mongodb.collections.DatasetDB;
-import lodVader.mongodb.collections.DescriptionFileParserDB;
+import lodVader.mongodb.collections.MetadataParserDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
@@ -45,7 +45,7 @@ public class IndexesCreator {
 		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.TARGET_DISTRIBUTION.toString(), 1);
 		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.VALUE.toString(), 1);
 
-		addIndex(DescriptionFileParserDB.COLLECTION_NAME, DescriptionFileParserDB.REPOSITORY_ADDRESS, 1, true);
+		addIndex(MetadataParserDB.COLLECTION_NAME, MetadataParserDB.PARSER_NAME, 1, true);
 
 		for (GeneralResourceDB.COLLECTIONS collection : GeneralResourceDB.COLLECTIONS.values()) {
 			addIndex(collection.toString(), GeneralResourceDB.URI, 1, true);

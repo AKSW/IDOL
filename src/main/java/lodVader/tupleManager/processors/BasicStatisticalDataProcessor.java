@@ -128,35 +128,33 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	@Override
 	public void process(Statement st) {
 		
-		System.out.println(st.getSubject());
-
 		// collects all predicates
-		// addToMap(allPredicates, st.getPredicate().toString());
-		writeToFile(st.getPredicate().toString(), allPredicatesWriter);
+		// addToMap(allPredicates, st.getPredicate().stringValue());
+		writeToFile(st.getPredicate().stringValue(), allPredicatesWriter);
 
 		numberOfTriples++;
 
 		// collects owl:class, subclass and rdftype.
-		if (st.getSubject().toString().startsWith("http")) {
-			if (st.getObject().toString().equals("http://www.w3.org/2002/07/owl#Class")) {
-				// addToMap(owlClasses, st.getSubject().toString());
-				writeToFile(st.getSubject().toString(), owlClassesWriter);
+		if (st.getSubject().stringValue().startsWith("http")) {
+			if (st.getObject().stringValue().equals("http://www.w3.org/2002/07/owl#Class")) {
+				// addToMap(owlClasses, st.getSubject().stringValue());
+				writeToFile(st.getSubject().stringValue(), owlClassesWriter);
 			}
 
 		} else
 			numberOfBlankNodes++;
 		
-		if (!st.getObject().toString().startsWith("http") && !st.getObject().toString().startsWith("_:")) {	
+		if (!st.getObject().stringValue().startsWith("http") && !st.getObject().stringValue().startsWith("_:")) {	
 			numberOfLiterals ++;
 		}
 
-		if (st.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
-			// addToMap(rdfSubClassOf, st.getObject().toString());
-			writeToFile(st.getObject().toString(), rdfSubClassOfWriter);
+		if (st.getPredicate().stringValue().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
+			// addToMap(rdfSubClassOf, st.getObject().stringValue());
+			writeToFile(st.getObject().stringValue(), rdfSubClassOfWriter);
 
-		} else if (st.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
-			// addToMap(rdfTypeObjects, st.getObject().toString());
-			writeToFile(st.getObject().toString(), rdfTypeObjectsWriter);
+		} else if (st.getPredicate().stringValue().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
+			// addToMap(rdfTypeObjects, st.getObject().stringValue());
+			writeToFile(st.getObject().stringValue(), rdfTypeObjectsWriter);
 		}
 	}
 

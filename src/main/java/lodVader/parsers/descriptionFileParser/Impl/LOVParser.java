@@ -22,7 +22,8 @@ import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
-import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.MetadataParser;
+import lodVader.parsers.descriptionFileParser.MetadataParserI;
 
 /**
  * LOV parser. Using LOV api v2 (http://lov.okfn.org/dataset/lov/api/v2/)
@@ -31,13 +32,18 @@ import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
  * 
  *         Sep 27, 2016
  */
-public class LOVParser implements DescriptionFileParserInterface {
+public class LOVParser extends MetadataParser{
+
+	/**
+	 * Constructor for Class LOVParser 
+	 * @param parserName
+	 */
+	public LOVParser() {
+		super("LOV_PARSER");
+	}
 
 	final static Logger logger = LoggerFactory.getLogger(LOVParser.class);
 
-	HashMap<String, DistributionDB> distributions = new HashMap<String, DistributionDB>();
-
-	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
 	String repositoryAddress = "http://lov.okfn.org/dataset/lov/api/v2/vocabulary/list";
 
@@ -52,32 +58,12 @@ public class LOVParser implements DescriptionFileParserInterface {
 
 		String title = ((JSONObject) ((JSONArray) object.get("titles")).get(0)).get("value").toString();
 		String url = object.get("uri").toString();
+		
+		DatasetDB dataset = addDataset(url, true, title, title, getParserName());
 
-		DatasetDB datasetDB = new DatasetDB(url);
-		datasetDB.setIsVocabulary(true);
-		datasetDB.setTitle(title);
-		datasetDB.setLabel(title);
-		datasetDB.addProvenance(repositoryAddress);
-		logger.info("LOV Ontology/Vocabulary found: " + title);
-		try {
-			datasetDB.update();
-		} catch (LODVaderMissingPropertiesException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		datasets.put(datasetDB.getUri(), datasetDB);
-		DistributionDB distribution = saveDistribution(url, title, datasetDB);
-
-		datasetDB.addDistributionID(distribution.getID());
-		try {
-			datasetDB.update();
-		} catch (LODVaderMissingPropertiesException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return datasetDB;
+		saveDistribution(url, title, dataset);
+		
+		return dataset;
 	}
 
 	/**
@@ -91,49 +77,10 @@ public class LOVParser implements DescriptionFileParserInterface {
 
 		String downloadURL = "http://lov.okfn.org/dataset/lov/sparql?query="
 				+ URLEncoder.encode("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + url + "> { ?s ?p ?o } }");
+		
+		return addDistribution(downloadURL, true, title, "ttl", downloadURL,
+				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress);
 
-		DistributionDB distributionDB = new DistributionDB(downloadURL);
-		distributionDB.setTitle(title);
-		distributionDB.setUri(url);
-		distributionDB.setFormat("ttl");
-		distributionDB.setIsVocabulary(true);
-
-		distributionDB.setTopDataset(datasetDB.getID());
-		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
-		if (distributionDB.getID() == null)
-			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
-		try {
-			distributionDB.update();
-		} catch (LODVaderMissingPropertiesException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		distributions.put(distributionDB.getUri(), distributionDB);
-
-		return distributionDB;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getDistributions()
-	 */
-	@Override
-	public List<DistributionDB> getDistributions() {
-		return new ArrayList<DistributionDB>(distributions.values());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getDatasets()
-	 */
-	@Override
-	public List<DatasetDB> getDatasets() {
-		return new ArrayList<DatasetDB>(datasets.values());
 	}
 
 	/*
@@ -157,29 +104,6 @@ public class LOVParser implements DescriptionFileParserInterface {
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getParserName(
-	 * )
-	 */
-	@Override
-	public String getParserName() {
-		return "LOV_PARSER";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getRepositoryAddress()
-	 */
-	@Override
-	public String getRepositoryAddress() {
-		return repositoryAddress;
 	}
 
 }

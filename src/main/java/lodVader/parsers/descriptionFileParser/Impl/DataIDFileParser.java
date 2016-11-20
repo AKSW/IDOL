@@ -14,7 +14,8 @@ import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
-import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.MetadataParser;
+import lodVader.parsers.descriptionFileParser.MetadataParserI;
 import lodVader.parsers.descriptionFileParser.helpers.DCATHelper;
 import lodVader.parsers.descriptionFileParser.helpers.DataIDHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
@@ -25,13 +26,9 @@ import lodVader.utils.FormatsUtils;
  * 
  *         Sep 27, 2016
  */
-public class DataIDFileParser implements DescriptionFileParserInterface {
+public class DataIDFileParser extends MetadataParser {
 
 	final static Logger logger = LoggerFactory.getLogger(DataIDFileParser.class);
-
-	ArrayList<DatasetDB> datasets = new ArrayList<>();
-
-	ArrayList<DistributionDB> distributions = new ArrayList<>();
 
 	DataIDHelper dataidHelper = new DataIDHelper();
 
@@ -41,29 +38,8 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 	 * Constructor for Class DataIDFileParser2
 	 */
 	public DataIDFileParser(String dcatFile) {
+		super("DATAID_PARSER");
 		this.repositoryAddress = dcatFile;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getDistributions()
-	 */
-	@Override
-	public List<DistributionDB> getDistributions() {
-		return distributions;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getDatasets()
-	 */
-	@Override
-	public List<DatasetDB> getDatasets() {
-		return datasets;
 	}
 
 	/*
@@ -98,30 +74,19 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 
 				}
 			}
-
 		}
-
-
 	}
 
 	public DistributionDB saveDistribution(String distribution, DatasetDB dataset) {
-
-		DistributionDB distributionDB = new DistributionDB(dataidHelper.getDownloadURL(distribution));
-		distributionDB.setUri(distribution);
-		distributionDB.setDefaultDatasets(new ArrayList<String>(Arrays.asList(dataset.getID())));
-		distributionDB.setTopDataset(dataset.getID());
-		distributionDB.setTopDatasetTitle(dataset.getTitle());
-
-		distributionDB.setTitle(dataidHelper.getTitle(distribution));
-		distributionDB.setLabel(dataidHelper.getLabel(distribution));
-		if (distributionDB.getID() == null)
-			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
-		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(dataidHelper.getFormat(distribution)));
-
-		distributions.add(distributionDB);
-		distributionDB.update(true, DistributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
-
-		return distributionDB;
+		
+		String downloadURL = dataidHelper.getDownloadURL(distribution);
+		String uri = distribution;
+		String title = dataidHelper.getTitle(distribution);
+		String topDataset = dataset.getID();
+		String topDatasetTitle = dataset.getTitle();
+		String format = dataidHelper.getFormat(distribution);
+		
+		return addDistribution(uri, false, title, format, downloadURL, topDataset, topDatasetTitle, getParserName(), repositoryAddress);
 	}
 
 	public void iterateDatasets(String dataset, DatasetDB parentDataset) {
@@ -146,40 +111,10 @@ public class DataIDFileParser implements DescriptionFileParserInterface {
 	}
 
 	public DatasetDB saveDataset(String dataset, String parentDataset) {
-		DatasetDB mainDataset = new DatasetDB(dataset);
-		mainDataset.setTitle(dataidHelper.getTitle(dataset));
-		mainDataset.setLabel(dataidHelper.getLabel(dataset));
-		mainDataset.setIsVocabulary(false);
-		mainDataset.addProvenance(repositoryAddress);
-		mainDataset.update(true, DatasetDB.URI, dataset);
+		
+		return addDataset(dataset, false, dataidHelper.getTitle(dataset), dataidHelper.getLabel(dataset), getParserName());
 
-		datasets.add(mainDataset);
 
-		return mainDataset;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getParserName(
-	 * )
-	 */
-	@Override
-	public String getParserName() {
-		return "DATAID_PARSER";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getRepositoryAddress()
-	 */
-	@Override
-	public String getRepositoryAddress() {
-		return repositoryAddress;
 	}
 
 }

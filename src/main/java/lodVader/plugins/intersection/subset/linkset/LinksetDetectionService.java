@@ -11,8 +11,8 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
-import lodVader.services.mongodb.resource.GeneralResourceServices;
-import lodVader.services.mongodb.resourceRelation.GeneralResourceRelationServices;
+import lodVader.services.mongodb.GeneralResourceRelationServices;
+import lodVader.services.mongodb.GeneralResourceServices;
 
 /**
  * @author Ciro Baron Neto

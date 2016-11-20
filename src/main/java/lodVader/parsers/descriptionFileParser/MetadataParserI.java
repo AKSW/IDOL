@@ -6,7 +6,7 @@ import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 
 
-public interface DescriptionFileParserInterface {
+public interface MetadataParserI {
 	
 	/**
 	 * Return a list of distributions found after the crawling process

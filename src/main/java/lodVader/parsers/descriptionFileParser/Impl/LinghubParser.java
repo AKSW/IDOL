@@ -24,7 +24,8 @@ import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
-import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.MetadataParser;
+import lodVader.parsers.descriptionFileParser.MetadataParserI;
 import lodVader.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.streaming.LODVStreamInternetImpl;
@@ -32,19 +33,15 @@ import lodVader.utils.FormatsUtils;
 import lodVader.utils.FormatsUtils.COMPRESSION_FORMATS;
 
 /**
- * LOV parser. Using LOV api v2 (http://lov.okfn.org/dataset/lov/api/v2/)
+ * Linghub parser
  * 
  * @author Ciro Baron Neto
  * 
  *         Sep 27, 2016
  */
-public class LinghubParser implements DescriptionFileParserInterface {
+public class LinghubParser extends MetadataParser{
 
 	final static Logger logger = LoggerFactory.getLogger(LinghubParser.class);
-
-	HashMap<String, DistributionDB> distributions = new HashMap<String, DistributionDB>();
-
-	HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
 	// String repositoryAddress =
 	// "http://cirola2000.cloudapp.net/files/linghub.nt.gz";
@@ -55,11 +52,12 @@ public class LinghubParser implements DescriptionFileParserInterface {
 	 * Constructor for Class LodCloudParser
 	 */
 	public LinghubParser(String repositoryAddress) {
+		super("LINGHUB_PARSER");
 		this.repositoryAddress = repositoryAddress;
 	}
 
 	/**
-	 * Save a LOV Vocabulary or ontology instance the main collection
+	 * Save a linghub dataset
 	 * 
 	 * @param the
 	 *            CkanDataset
@@ -67,21 +65,8 @@ public class LinghubParser implements DescriptionFileParserInterface {
 	 */
 	public DatasetDB saveDataset(String url, String title) {
 
-		DatasetDB datasetDB = new DatasetDB(url);
-		datasetDB.setIsVocabulary(true);
-		datasetDB.setTitle(title);
-		datasetDB.setLabel(title);
-		datasetDB.addProvenance(repositoryAddress);
-		try {
-			datasetDB.update();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		datasets.put(datasetDB.getUri(), datasetDB);
-
-		return datasetDB;
+		return addDataset(url, false, title, title, getParserName());
+		
 	}
 
 	/**
@@ -92,49 +77,11 @@ public class LinghubParser implements DescriptionFileParserInterface {
 	 * @return the DistributionDB instance
 	 */
 	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB) {
-
-		DistributionDB distributionDB = new DistributionDB(url);
-		distributionDB.setTitle(title);
-		distributionDB.setUri(url);
-		distributionDB.setIsVocabulary(true);
-		distributionDB.setTopDataset(datasetDB.getID());
-		distributionDB.setTopDatasetTitle(datasetDB.getTitle());
-		if (distributionDB.getID() == null)
-			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
-		distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
-		try {
-			distributionDB.update();
-		} catch (LODVaderMissingPropertiesException e) {
-			e.printStackTrace();
-		}
-		distributions.put(distributionDB.getUri(), distributionDB);
-
-		return distributionDB;
+		
+		return addDistribution(url, false, title, format, url, datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress);
 
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getDistributions()
-	 */
-	@Override
-	public List<DistributionDB> getDistributions() {
-		return new ArrayList<DistributionDB>(distributions.values());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getDatasets()
-	 */
-	@Override
-	public List<DatasetDB> getDatasets() {
-		return new ArrayList<DatasetDB>(datasets.values());
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -183,31 +130,9 @@ public class LinghubParser implements DescriptionFileParserInterface {
 			e.printStackTrace();
 		}
 
-		new SubsetHelper().rearrangeSubsets(new ArrayList<DistributionDB>(distributions.values()), datasets);
+		new SubsetHelper().rearrangeSubsets(getDistributions().values(), getDatasets());
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getParserName(
-	 * )
-	 */
-	@Override
-	public String getParserName() {
-		return "LINGHUB_PARSER";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#
-	 * getRepositoryAddress()
-	 */
-	@Override
-	public String getRepositoryAddress() {
-		return repositoryAddress;
-	}
 
 }

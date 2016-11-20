@@ -21,7 +21,7 @@ import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
-import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectorBFImpl;
+import lodVader.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.tupleManager.processors.BasicProcessorInterface;
@@ -74,7 +74,7 @@ public class BFTest {
 
 		// intersection plugin
 
-		LODVaderIntersectionPlugin subsetDetector = new SubsetDistributionDetectorBFImpl();
+		LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorBFIntersectImpl();
 		SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution1);
 		subsetService.saveSubsets();
 		

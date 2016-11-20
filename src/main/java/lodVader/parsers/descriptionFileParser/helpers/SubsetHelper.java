@@ -3,16 +3,17 @@
  */
 package lodVader.parsers.descriptionFileParser.helpers;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.services.mongodb.dataset.DatasetServices;
+import lodVader.services.mongodb.DatasetServices;
 
 /**
  * @author Ciro Baron Neto
@@ -27,10 +28,10 @@ public class SubsetHelper {
 	 * http://example.org/
 	 */
 
-	public void rearrangeSubsets(List<DistributionDB> distributions, HashMap<String, DatasetDB> datasets) {
+	public void rearrangeSubsets(Collection<DistributionDB> distributions, HashMap<String, DatasetDB> datasets) {
 
 		// sort the distributions by URI
-		Collections.sort(distributions, new Comparator<DistributionDB>() {
+		Collections.sort(new ArrayList<DistributionDB>(distributions), new Comparator<DistributionDB>() {
 			public int compare(DistributionDB a, DistributionDB b) {
 				return a.getDownloadUrl().compareTo(b.getDownloadUrl());
 			}

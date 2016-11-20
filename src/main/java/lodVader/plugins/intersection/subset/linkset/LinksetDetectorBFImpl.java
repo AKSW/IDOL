@@ -16,7 +16,7 @@ import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.collections.datasetBF.BucketService;
 import lodVader.plugins.LODVaderPlugin;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
-import lodVader.services.mongodb.resourceRelation.GeneralResourceRelationServices;
+import lodVader.services.mongodb.GeneralResourceRelationServices;
 
 /**
  * @author Ciro Baron Neto

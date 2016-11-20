@@ -9,12 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.exceptions.mongodb.LODVaderNoPKFoundException;
-import lodVader.exceptions.mongodb.LODVaderObjectAlreadyExistsException;
-import lodVader.loader.LODVaderConfigurator;
-import lodVader.mongodb.collections.DescriptionFileParserDB;
-import lodVader.services.mongodb.dataset.DatasetServices;
-import lodVader.services.mongodb.distribution.DistributionServices;
+import lodVader.mongodb.collections.MetadataParserDB;
+import lodVader.services.mongodb.DatasetServices;
+import lodVader.services.mongodb.DistributionServices;
 
 /**
  * @author Ciro Baron Neto
@@ -25,9 +22,9 @@ public class DescriptionFileParserLoader {
 
 	final static Logger logger = LoggerFactory.getLogger(DescriptionFileParserLoader.class);
 
-	private DescriptionFileParserInterface parser = null;
+	private MetadataParser parser = null;
 	
-	DescriptionFileParserDB parserDB;
+	MetadataParserDB parserDB;
 
 
 	/**
@@ -44,13 +41,13 @@ public class DescriptionFileParserLoader {
 		DatasetServices datasetServices = new DatasetServices();
 		DistributionServices distributionServices = new DistributionServices();
 
-		logger.info("Parsing " + parser.getParserName() + " for " + parser.getRepositoryAddress() + " repository.");
+		logger.info("Running parser:  " + parser.getParserName());
 
 		parser.parse();
-		datasetServices.saveAllDatasets(parser.getDatasets());
+		datasetServices.saveAllDatasets(parser.getDatasets().values());
 		logger.info("Parser saved " + parser.getDatasets().size() + " datasets!");
 
-		distributionServices.saveAllDistributions(parser.getDistributions(), parser.getRepositoryAddress(), parser.getParserName());
+		distributionServices.saveAllDistributions(parser.getDistributions().values());
 		logger.info("Parser saved " + parser.getDistributions().size() + " distributions!");
 		
 		parserDB.setLastTimeUsed(String.valueOf(new Date().getTime()));
@@ -71,9 +68,9 @@ public class DescriptionFileParserLoader {
 	 * @param parser
 	 * @return true if the parser has already been loaded into database
 	 */
-	public boolean load(DescriptionFileParserInterface parser) {
+	public boolean load(MetadataParser parser) {
 		this.parser = parser;
-		this.parserDB = new DescriptionFileParserDB(parser);
+		this.parserDB = new MetadataParserDB(parser);
 		if(this.parserDB.getLastTimeUsed() == null)
 			return false;
 		return true;

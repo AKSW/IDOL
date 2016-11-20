@@ -22,12 +22,15 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
-import lodVader.parsers.descriptionFileParser.DescriptionFileParserInterface;
+import lodVader.parsers.descriptionFileParser.MetadataParser;
+import lodVader.parsers.descriptionFileParser.MetadataParserI;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.NSUtils;
 
-public class CLODFileParser implements DescriptionFileParserInterface {
+public class CLODFileParser extends MetadataParser {
+	
+	String parserName = "CLOD_METADATA_PARSER";
 
 	final static Logger logger = LoggerFactory.getLogger(CLODFileParser.class);
 
@@ -38,20 +41,15 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 
 	String repositoryAddress = "http://download.lodlaundromat.org";
 
-
-	String URL;
 	String format;
-
-	// list of distributions and datasets found in the file
-	private List<DistributionDB> distributions = new ArrayList<>();
-	private HashMap<String, DatasetDB> datasets = new HashMap<String, DatasetDB>();
 
 	/**
 	 * Constructor for Class CLODFileParser 
 	 */
-	public CLODFileParser(String URL, String format) {
+	public CLODFileParser(String repositoryAddress, String format) {
+		super("CLOD_METADATA_PARSER");
 		this.format = format;
-		this.URL = URL;
+		this.repositoryAddress = repositoryAddress;
 	}
 
 	public void parse() {
@@ -60,11 +58,11 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 		
 		format = formatsUtils.getJenaFormat(format);
 
-		logger.info("Trying to read dataset: " + URL.toString());
+		logger.info("Trying to read dataset: " + repositoryAddress.toString());
 
 		HttpURLConnection URLConnection;
 		try {
-			URLConnection = (HttpURLConnection) new URL(URL).openConnection();
+			URLConnection = (HttpURLConnection) new URL(repositoryAddress).openConnection();
 			URLConnection.setRequestProperty("Accept", "application/rdf+xml");
 
 			inModel.read(URLConnection.getInputStream(), null, format);
@@ -84,64 +82,30 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 			try {
 
 				String downloadURL = repositoryAddress + stmt.getSubject().toString().split("resource")[1];
+				String datasetURI;
+				String datasetTitle;
 
 				String url = stmt.getObject().toString();
 				url = url.split("#")[0];
 				
-				DatasetDB dataset = new DatasetDB();
-
 				// try to get dataset URI in the format: http://example.org/dataset/
 				if(nsUtils.getNS1(url) != null){
-					dataset.setUri(nsUtils.getNS1(url));
+					datasetURI = nsUtils.getNS1(url);
 				}
 				else{
-					dataset.setUri(nsUtils.getNS0(url));
+					datasetURI = nsUtils.getNS0(url);
 				}
 				
-				DatasetDB datasetFind = new DatasetDB(); 
-				if(datasetFind.find(true, DatasetDB.URI, dataset.getUri())){
-					dataset = datasetFind;
-				}
-				else{
-					dataset.setIsVocabulary(false);
-					dataset.addProvenance(repositoryAddress);
-					dataset.setTitle(stmt.getObject().toString());
-					dataset.update();					
-				}
+				datasetTitle = stmt.getObject().toString();
 				
 
-
-				DistributionDB distribution = new DistributionDB(downloadURL);
-				distribution.setUri(url);
-				distribution.setDownloadUrl(downloadURL);
-				distribution.setTitle(url);
-				distribution.setTopDatasetTitle(url);
-				distribution.setTopDataset(dataset.getID());
-				distribution.setIsVocabulary(false);
-
-
-				ArrayList<String> defaultDatasets = new ArrayList<String>();
-				defaultDatasets.add(dataset.getID());
-				distribution.setDefaultDatasets(defaultDatasets);
-				if (distribution.getID() == null)
-					distribution.setStatus(DistributionStatus.WAITING_TO_STREAM);
-
-				try {
-					distribution.setFormat(FormatsUtils.getEquivalentFormat("nt"));
-				} catch (NoSuchElementException e) {
-					distribution.setFormat("");
-				}
-				distribution.update();
-
-				ArrayList<String> distributionList = new ArrayList<String>();
-				distributionList.add(distribution.getID());
-				dataset.setDistributionsIds(distributionList);
-
-				distributions.add(distribution);
-				datasets.put(dataset.getID(), dataset);
+				DatasetDB dataset  = addDataset(datasetURI, false, datasetTitle, datasetTitle, getParserName());
 				
 				
-				dataset.update();
+				DistributionDB distribution = addDistribution(url, false, url, "nt", downloadURL, dataset.getID(), dataset.getTitle(), getParserName(), repositoryAddress);
+
+				addDistribution(distribution);
+				addDataset(dataset);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -149,53 +113,6 @@ public class CLODFileParser implements DescriptionFileParserInterface {
 			}
 		}
 
-		new SubsetHelper().rearrangeSubsets(distributions, datasets);
+		new SubsetHelper().rearrangeSubsets(getDistributions().values(), getDatasets());
 	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.descriptionfileparser.DescriptionFileParserInterface#
-	 * getDistributions()
-	 */
-	@Override
-	public List<DistributionDB> getDistributions() {
-		return distributions;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.descriptionfileparser.DescriptionFileParserInterface#
-	 * getDatasets()
-	 */
-	@Override
-	public List<DatasetDB> getDatasets() {
-		return new ArrayList<DatasetDB>(datasets.values());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * lodVader.parsers.interfaces.DescriptionFileParserInterface#getParserName(
-	 * )
-	 */
-	@Override
-	public String getParserName() {
-		return "CLOD_METADATA_PARSER";
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see lodVader.parsers.interfaces.DescriptionFileParserInterface#getRepositoryAddress()
-	 */
-	@Override
-	public String getRepositoryAddress() {
-		return repositoryAddress;
-	}
-
 }

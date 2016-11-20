@@ -1,19 +1,21 @@
 /**
  * 
  */
-package lodVader.services.mongodb.dataset;
+package lodVader.services.mongodb;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import com.hp.hpl.jena.query.Dataset;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DatasetDB;
+import lodVader.mongodb.queries.GeneralQueriesHelper;
 
 /**
  * @author Ciro Baron Neto
@@ -26,7 +28,7 @@ public class DatasetServices {
 	 * Save all datasets into the MongoDB database
 	 * @param datasets
 	 */
-	public void saveAllDatasets(List<DatasetDB> datasets){
+	public void saveAllDatasets(Collection<DatasetDB> datasets){
 		datasets.forEach((dataset)->{
 			try {
 				dataset.update();
@@ -73,8 +75,56 @@ public class DatasetServices {
 				DatasetDB.COLLECTION_NAME);
 		collection.remove(new BasicDBObject(DatasetDB.ID, datasetID));
 		
-		return true;
+		return true;	
+	}
+	
+	
+	/**
+	 * Add a new dataset in the list. The method will save it and return an respective ID
+	 * @param uri the dataset uri
+	 * @param isVocab represents if the dataset is a vocabulary or a ontology
+	 * @param title the dataset title
+	 * @param labelthe dataset label
+	 * @param provenance whe the dataset came from
+	 * @return the dataset ID
+	 */
+	public DatasetDB saveDataset(String uri, boolean isVocab, String title, String label, String provenance){
 		
+		DatasetDB datasetDB  = null;
+		
+		/**
+		 * Check if the dataset already exists in database. 
+		 */
+		ArrayList<DBObject> d = new GeneralQueriesHelper().getObjects(DatasetDB.COLLECTION_NAME, DatasetDB.URI, uri);
+		if(d.size()>0){
+			datasetDB = new DatasetDB(d.iterator().next());
+		}
+		
+		/**
+		 * Create case do not exists
+		 */
+		else{
+			datasetDB = new DatasetDB(uri);
+			datasetDB.setIsVocabulary(isVocab);
+			datasetDB.setTitle(title);
+			datasetDB.setLabel(label);
+		}
+
+		/**
+		 * Add provenance 
+		 */
+		datasetDB.addProvenance(provenance);	
+		
+		/**
+		 * Update object adding the provenance
+		 */
+		try {
+			datasetDB.update();
+		} catch (LODVaderMissingPropertiesException e) {
+			e.printStackTrace();
+		}
+		
+		return datasetDB;
 	}
 
 }

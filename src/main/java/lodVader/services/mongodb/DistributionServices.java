@@ -1,20 +1,24 @@
 /**
  * 
  */
-package lodVader.services.mongodb.distribution;
+package lodVader.services.mongodb;
 
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
+import lodVader.utils.FormatsUtils;
 
 /**
  * Some useful methods to handle distributions on MongoDB database.
@@ -31,21 +35,62 @@ public class DistributionServices {
 	 * 
 	 * @param distributions
 	 *            The list of distributions
-	 * @param repository
-	 *            The repository that the distributions came from
-	 * @param datasource
-	 *            The datasource that the distributions came from
 	 */
-	public void saveAllDistributions(List<DistributionDB> distributions, String repository, String datasource) {
+	public void saveAllDistributions(Collection<DistributionDB> distributions) {
 		distributions.forEach((distribution) -> {
 			try {
-				distribution.addDatasource(datasource);
-				distribution.addRepository(repository);
 				distribution.update();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
+	}
+	
+	public DistributionDB saveDistribution(String uri, boolean isVocab, String title, String format, String downloadURL, 
+			String topDataset, String topDatasetTitle, String dataSource, String repository){
+		
+		DistributionDB distributionDB;
+		
+		/**
+		 * Check if the distribution already exists in database. 
+		 */
+		ArrayList<DBObject> d = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL, downloadURL);
+		if(d.size()>0){
+			distributionDB = new DistributionDB(d.iterator().next());
+		}
+		
+		/**
+		 * If not, create a new one
+		 */
+		else{
+			distributionDB = new DistributionDB();
+			distributionDB.setUri(uri);			
+			distributionDB.setTitle(title);
+			try {
+				distributionDB.setDownloadUrl(downloadURL);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
+			distributionDB.setTopDataset(topDataset);
+			distributionDB.setTopDatasetTitle(topDatasetTitle);
+			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);	
+			distributionDB.setIsVocabulary(isVocab);
+		}
+
+		distributionDB.addDatasource(dataSource);
+		distributionDB.addRepository(repository);
+		distributionDB.addDefaultDatasets(topDataset);
+		
+		/**
+		 * Add/update the distribution and return the oject
+		 */
+		try {
+			distributionDB.update();
+		} catch (LODVaderMissingPropertiesException e) {
+			e.printStackTrace();
+		}
+		return distributionDB;
 	}
 
 	/**

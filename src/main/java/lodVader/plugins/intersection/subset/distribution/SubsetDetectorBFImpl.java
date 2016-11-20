@@ -16,14 +16,14 @@ import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.collections.datasetBF.BucketService;
 import lodVader.plugins.LODVaderPlugin;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
-import lodVader.services.mongodb.resourceRelation.GeneralResourceRelationServices;
+import lodVader.services.mongodb.GeneralResourceRelationServices;
 
 /**
  * @author Ciro Baron Neto
  * 
  *         Oct 11, 2016
  */
-public class SubsetDistributionDetectorBFImpl2 extends LODVaderIntersectionPlugin {
+public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin {
 
 	public static String PLUGIN_NAME = "SUBSET_BLOOM_FILTER_DETECTOR";
 
@@ -38,7 +38,7 @@ public class SubsetDistributionDetectorBFImpl2 extends LODVaderIntersectionPlugi
 	 * 
 	 * @param pluginName
 	 */
-	public SubsetDistributionDetectorBFImpl2() {
+	public SubsetDetectorBFImpl() {
 		super(PLUGIN_NAME);
 	}
 
@@ -47,8 +47,8 @@ public class SubsetDistributionDetectorBFImpl2 extends LODVaderIntersectionPlugi
 		// make all threads hold on for their time
 		Object lock = new Object();
 		synchronized (lock) {
-			if (SubsetDistributionDetectorBFImpl2.loading.get()) {
-				SubsetDistributionDetectorBFImpl2.threadList.add(this);
+			if (SubsetDetectorBFImpl.loading.get()) {
+				SubsetDetectorBFImpl.threadList.add(this);
 				try {
 					synchronized (this) {
 						this.wait();
@@ -58,7 +58,7 @@ public class SubsetDistributionDetectorBFImpl2 extends LODVaderIntersectionPlugi
 				}
 			}
 			else{
-				SubsetDistributionDetectorBFImpl2.loading.set(true);				
+				SubsetDetectorBFImpl.loading.set(true);				
 			}
 		}
 		
