@@ -130,8 +130,8 @@ public class LODVader {
 	}
 	
 	public void countUniqPerDatasource(){
-		new DatasourcesUniqTriples(new LOVParser()).count();
-		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
+//		new DatasourcesUniqTriples(new LOVParser()).count();
+//		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
 		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
 		new DatasourcesUniqTriples(new LinghubParser(null)).count();
 		new DatasourcesUniqTriples(new DataIDParser(null)).count();
