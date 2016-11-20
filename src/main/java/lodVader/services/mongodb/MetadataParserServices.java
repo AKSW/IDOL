@@ -6,16 +6,12 @@ package lodVader.services.mongodb;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.MetadataParserDB;
-import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.MetadataParser;
 import lodVader.utils.FileStatement;
@@ -26,6 +22,17 @@ import lodVader.utils.FileStatement;
  *         Oct 11, 2016
  */
 public class MetadataParserServices {
+	
+	public void saveParser(MetadataParser parser){
+		MetadataParserDB m = new MetadataParserDB(parser);
+		try {
+			m.update();
+		} catch (LODVaderMissingPropertiesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	public List<FileStatement> getFilesFromParser(String parserName) {
 

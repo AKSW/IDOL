@@ -30,11 +30,11 @@ public class CKANRepositoriesBatchProcessor {
 	final int numberOfConcurrentRepositories = 1;
 
 
-	public void loadAllRepositories(List<String> ckanRepositories) {
+	public void loadAllRepositories(List<String> ckanRepositories, CKANParserIMPL parserImpl) {
 
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfConcurrentRepositories);
 		ckanRepositories.forEach((repo) -> {
-			executor.execute(new HttpRepositoryRequestThread(repo));
+			executor.execute(new HttpRepositoryRequestThread(repo, parserImpl));
 		});
 
 		executor.shutdown();
@@ -49,7 +49,7 @@ public class CKANRepositoriesBatchProcessor {
 	}
 
 	/**
-	 * Load many CKAN repositories concurrently
+	 * Load CKAN repositories concurrently
 	 * 
 	 * @author Ciro Baron Neto
 	 * 
@@ -57,15 +57,12 @@ public class CKANRepositoriesBatchProcessor {
 	 */
 	class HttpRepositoryRequestThread implements Runnable {
 
-		String repository;
-
 		CKANParserIMPL ckanParser;
 
 		// CkanClient client;
 
-		public HttpRepositoryRequestThread(String repository) {
-			this.repository = repository;
-			ckanParser = new CKANParserIMPL(repository, numberOfConcurrentRequests);
+		public HttpRepositoryRequestThread(String repository, CKANParserIMPL parserImpl) {
+			this.ckanParser = parserImpl;
 		}
 
 		/*

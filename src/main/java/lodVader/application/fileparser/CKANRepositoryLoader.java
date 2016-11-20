@@ -19,6 +19,7 @@ import lodVader.mongodb.collections.ckanparser.adapters.CkanDatasetDBAdapter;
 import lodVader.parsers.ckanparser.CkanDatasetList;
 import lodVader.parsers.ckanparser.CkanParser;
 import lodVader.parsers.ckanparser.models.CkanDataset;
+import lodVader.parsers.descriptionFileParser.Impl.CKANParserIMPL;
 
 /**
  * @author Ciro Baron Neto
@@ -26,6 +27,7 @@ import lodVader.parsers.ckanparser.models.CkanDataset;
  *         Oct 1, 2016
  */
 public class CKANRepositoryLoader {
+	
 
 	final static Logger logger = LoggerFactory.getLogger(CKANRepositoryLoader.class);
 

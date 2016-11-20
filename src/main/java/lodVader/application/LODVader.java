@@ -17,6 +17,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
 
+import fix.Fix;
 import lodVader.application.fileparser.CKANRepositoryLoader;
 import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -28,8 +29,8 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.CLODFileParser;
-import lodVader.parsers.descriptionFileParser.Impl.DataIDFileParser;
+import lodVader.parsers.descriptionFileParser.Impl.CLODParser;
+import lodVader.parsers.descriptionFileParser.Impl.DataIDParser;
 import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
@@ -65,16 +66,16 @@ public class LODVader {
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = true;
-	boolean streamFromInternet = true;
-	boolean createDumpOnDisk = true;
+	boolean streamDistribution = false;
+	boolean streamFromInternet = false;
+	boolean createDumpOnDisk = false;
 	boolean processStatisticalData = false;
 	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
 	 */
-	boolean parseLOV = true;
+	boolean parseLOV = false;
 	boolean parseDBpedia = false;
 	boolean parseLaundromat = false;
 	boolean parseLODCloud = false;
@@ -93,6 +94,8 @@ public class LODVader {
 	 */
 	public void Manager() {
 
+		new Fix().fix1();
+		
 		/**
 		 * Load properties file, create MondoDB indexes, etc
 		 */
@@ -131,7 +134,7 @@ public class LODVader {
 		 * Parsing DBpedia DataID file
 		 */
 		if (parseDBpedia) {
-			loader.load(new DataIDFileParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+			loader.load(new DataIDParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
 			loader.parse();
 		}
 
@@ -139,7 +142,7 @@ public class LODVader {
 		 * Parsing LODLaundromat
 		 */
 		if (parseLaundromat) {
-			loader.load(new CLODFileParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+			loader.load(new CLODParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 			loader.parse();
 		}
 

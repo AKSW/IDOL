@@ -26,9 +26,9 @@ import lodVader.utils.FormatsUtils;
  * 
  *         Sep 27, 2016
  */
-public class DataIDFileParser extends MetadataParser {
+public class DataIDParser extends MetadataParser {
 
-	final static Logger logger = LoggerFactory.getLogger(DataIDFileParser.class);
+	final static Logger logger = LoggerFactory.getLogger(DataIDParser.class);
 
 	DataIDHelper dataidHelper = new DataIDHelper();
 
@@ -37,7 +37,7 @@ public class DataIDFileParser extends MetadataParser {
 	/**
 	 * Constructor for Class DataIDFileParser2
 	 */
-	public DataIDFileParser(String dcatFile) {
+	public DataIDParser(String dcatFile) {
 		super("DATAID_PARSER");
 		this.repositoryAddress = dcatFile;
 	}

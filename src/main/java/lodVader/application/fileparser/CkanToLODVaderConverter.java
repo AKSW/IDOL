@@ -19,6 +19,7 @@ import lodVader.mongodb.collections.adapters.DistributionDBAdapter;
 import lodVader.mongodb.collections.ckanparser.CkanDatasetDB;
 import lodVader.mongodb.collections.ckanparser.CkanResourceDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
+import lodVader.parsers.descriptionFileParser.Impl.CKANParserIMPL;
 import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.utils.FormatsUtils;
 

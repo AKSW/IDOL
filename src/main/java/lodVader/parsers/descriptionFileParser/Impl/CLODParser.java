@@ -28,11 +28,11 @@ import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.utils.FormatsUtils;
 import lodVader.utils.NSUtils;
 
-public class CLODFileParser extends MetadataParser {
+public class CLODParser extends MetadataParser {
 	
 	String parserName = "CLOD_METADATA_PARSER";
 
-	final static Logger logger = LoggerFactory.getLogger(CLODFileParser.class);
+	final static Logger logger = LoggerFactory.getLogger(CLODParser.class);
 
 	private Model inModel = ModelFactory.createDefaultModel();
 
@@ -46,7 +46,7 @@ public class CLODFileParser extends MetadataParser {
 	/**
 	 * Constructor for Class CLODFileParser 
 	 */
-	public CLODFileParser(String repositoryAddress, String format) {
+	public CLODParser(String repositoryAddress, String format) {
 		super("CLOD_METADATA_PARSER");
 		this.format = format;
 		this.repositoryAddress = repositoryAddress;

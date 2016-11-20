@@ -3,18 +3,14 @@
  */
 package fix;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-
-import lodVader.exceptions.LODVaderMissingPropertiesException;
-import lodVader.mongodb.DBSuperClass;
-import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.queries.GeneralQueriesHelper;
-import lodVader.services.mongodb.DistributionServices;
+import lodVader.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
+import lodVader.parsers.descriptionFileParser.Impl.CLODParser;
+import lodVader.parsers.descriptionFileParser.Impl.DataIDParser;
+import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
+import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
+import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
+import lodVader.parsers.descriptionFileParser.Impl.RE3RepositoriesParser;
+import lodVader.services.mongodb.MetadataParserServices;
 
 /**
  * @author Ciro Baron Neto
@@ -23,161 +19,17 @@ import lodVader.services.mongodb.DistributionServices;
  */
 public class Fix {
 
-	// ExecutorService ex = Executors.newFixedThreadPool(3);
-	/**
-	 * Constructor for Class Fix
-	 */
-	public Fix() {
-	}
 
 	public void fix1() {
-
-		List<DBObject> distributions = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
-				new BasicDBObject());
-
-		for (DBObject dist : distributions) {
-			DistributionDB distribution = new DistributionDB(dist);
-			if (distribution.getDownloadUrl().contains(".xls") || distribution.getDownloadUrl().contains(".xlsx")
-					|| distribution.getDownloadUrl().contains(".doc") || distribution.getDownloadUrl().contains(".docx")
-					|| distribution.getDownloadUrl().contains(".csv")) {
-				System.out.println(distribution.getDownloadUrl());
-				new DistributionServices().removeDistribution(distribution, true);
-			}
-		}
-
+		MetadataParserServices service = new MetadataParserServices();
+		service.saveParser(new LODCloudParser());
+		service.saveParser(new LOVParser());
+		service.saveParser(new DataIDParser(null));
+		service.saveParser(new RE3RepositoriesParser(null, 0));
+		service.saveParser(new CLODParser(null, null));
+		service.saveParser(new LinghubParser(null));
+		service.saveParser(new CKANRepositoriesParser());
 	}
 
-	// refine serialization format
-	public void fix3() {
-
-		List<DBObject> distributions = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
-				new BasicDBObject());
-
-		for (DBObject dist : distributions) {
-			DistributionDB distribution = new DistributionDB(dist);
-			if (distribution.getDownloadUrl().endsWith(".ttl")) {
-				if (!distribution.getFormat().equals("ttl")) {
-					System.out.println(distribution.getDownloadUrl());
-					distribution.setFormat("ttl");
-					try {
-						distribution.update();
-					} catch (LODVaderMissingPropertiesException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			else if (distribution.getDownloadUrl().endsWith(".nt")) {
-				if (!distribution.getFormat().equals("nt")) {
-					System.out.println(distribution.getDownloadUrl());
-					distribution.setFormat("nt");
-					try {
-						distribution.update();
-					} catch (LODVaderMissingPropertiesException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			
-		}
-
-	}
-
-	public void fix2() {
-		System.out.println("Fixing...");
-		// List<String> catalogs = new ArrayList<>(
-		// Arrays.asList("http://data.bris.ac.uk/data/",
-		// "http://open.canada.ca/data/en/",
-		// "http://catalog.data.gov/", "http://data.gov.au/",
-		// "https://datastore.landcareresearch.co.nz/",
-		// "https://datahub.io/", "https://iatiregistry.org/",
-		// "http://data.london.gov.uk/"));
-
-		// for (String catalog : catalogs) {
-		//
-		// System.out.println(catalog);
-		// for (DBObject obj : new
-		// GeneralQueriesHelper().getObjects(CkanResourceDB.COLLECTION_NAME,
-		// CkanResourceDB.CKAN_CATALOG, catalog)) {
-		// System.out.println(new CkanResourceDB(obj).getCatalog());
-		// }
-		// }
-
-		int updated = 0;
-		int searched = 0;
-		for (DBObject obj : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
-				new BasicDBObject())) {
-			DistributionDB ckanResource = new DistributionDB(obj);
-
-			HashSet<String> repositories = new HashSet<>(ckanResource.getRepositories());
-			HashSet<String> repositoriesDelete = new HashSet<>();
-
-			for (String repository : repositories) {
-				if (!repository.endsWith("/")) {
-					repositories.add(repository + "/");
-					repositoriesDelete.add(repository);
-				}
-			}
-
-			for (String repository : repositoriesDelete) {
-				repositories.remove(repository);
-			}
-
-			try {
-				ckanResource.update();
-			} catch (LODVaderMissingPropertiesException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			if (searched++ % 100000 == 0)
-				System.out.println("searched " + searched);
-
-		}
-
-	}
-
-	// public static void main(String[] args) {
-	// new Fix().fix2();
-	//
-	// }
-
-	public void removeObjects(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection,
-			String relation_collection) {
-		System.out.println("removing relations...");
-		new DBSuperClass(relation_collection).bulkRemove(relationIDs);
-		relationIDs = new ArrayList<>();
-		System.out.println("removing resources...");
-
-		new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
-		resourceIDs = new ArrayList<>();
-	}
-
-	class Remove implements Runnable {
-
-		List<DBObject> relationIDs;
-		List<DBObject> resourceIDs;
-		String resource_collection;
-		String relation_collection;
-
-		/**
-		 * Constructor for Class Fix.Remove
-		 */
-		public Remove(List<DBObject> relationIDs, List<DBObject> resourceIDs, String resource_collection,
-				String relation_collection) {
-			this.relation_collection = relation_collection;
-			this.resource_collection = resource_collection;
-			this.relationIDs = relationIDs;
-			this.resourceIDs = resourceIDs;
-		}
-
-		public void run() {
-			new DBSuperClass(relation_collection).bulkRemove(relationIDs);
-			relationIDs = new ArrayList<>();
-			new DBSuperClass(resource_collection).bulkRemove(resourceIDs);
-			resourceIDs = new ArrayList<>();
-		}
-	}
 
 }

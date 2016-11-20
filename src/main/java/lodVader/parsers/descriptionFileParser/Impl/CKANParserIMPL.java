@@ -26,12 +26,10 @@ import lodVader.utils.FormatsUtils;
  * 
  *         Sep 27, 2016
  */
-public class CKANParserIMPL extends MetadataParser {
+public abstract class CKANParserIMPL extends MetadataParser {
 
 	final static Logger logger = LoggerFactory.getLogger(CKANParserIMPL.class);
 	
-	String parserName = "CKAN_PARSER";
-
 	String repositoryAddress;
 
 	int numberOfConcurrentRequests;
@@ -39,8 +37,8 @@ public class CKANParserIMPL extends MetadataParser {
 	/**
 	 * Constructor for Class CKANHelper
 	 */
-	public CKANParserIMPL(String repositoryAddress, int numberOfConcurrentRequests) {
-		super("CKAN_PARSER");
+	public CKANParserIMPL(String parserName, String repositoryAddress, int numberOfConcurrentRequests) {
+		super(parserName);
 		this.repositoryAddress = repositoryAddress;
 		this.numberOfConcurrentRequests = numberOfConcurrentRequests;
 	}

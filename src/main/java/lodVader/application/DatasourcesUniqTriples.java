@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lodVader.parsers.descriptionFileParser.MetadataParser;
-import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.services.mongodb.MetadataParserServices;
 import lodVader.utils.BloomFilterCache;
 import lodVader.utils.FileStatement;
@@ -25,11 +24,11 @@ public class DatasourcesUniqTriples {
 
 	final static Logger logger = LoggerFactory.getLogger(DatasourcesUniqTriples.class);
 
-	MetadataParser parser = new LOVParser();
+	MetadataParser parser= null;
 
-	int bfSize = 300_000;
+	int bfSize = 2_000_000_000;
 
-	long limit = 500_000;
+	long limit = 4000000000L;
 	
 	boolean keepProcessing = false;
 
@@ -54,6 +53,13 @@ public class DatasourcesUniqTriples {
 	int msgInterval = 50000;
 	
 	DecimalFormat formatter = new DecimalFormat("#,###,###,###,###");
+	
+	/**
+	 * Constructor for Class DatasourcesUniqTriples
+	 */
+	public DatasourcesUniqTriples(MetadataParser parser) {
+		this.parser = parser;
+	}
 
 	public void count() {
 
@@ -131,10 +137,4 @@ public class DatasourcesUniqTriples {
 		MetadataParserServices services = new MetadataParserServices();
 		services.updateTriples(parser, uniq, total);
 	}
-
-	public static void main(String[] args) {
-
-		new DatasourcesUniqTriples().count();
-	}
-
 }
