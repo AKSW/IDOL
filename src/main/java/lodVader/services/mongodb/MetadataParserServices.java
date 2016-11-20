@@ -22,16 +22,11 @@ import lodVader.utils.FileStatement;
  *         Oct 11, 2016
  */
 public class MetadataParserServices {
-	
-	public void saveParser(MetadataParser parser){
+
+	public void saveParser(MetadataParser parser) {
 		MetadataParserDB m = new MetadataParserDB(parser);
-		try {
-			m.update();
-		} catch (LODVaderMissingPropertiesException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		m.update(true, MetadataParserDB.PARSER_NAME, parser.getParserName());
+
 	}
 
 	public List<FileStatement> getFilesFromParser(String parserName) {
@@ -44,16 +39,16 @@ public class MetadataParserServices {
 					DistributionDB.DATASOURCE, parserName);
 			for (DBObject o : distributions) {
 				DistributionDB dist = new DistributionDB(o);
-				files.add(new FileStatement( LODVaderProperties.BASE_PATH + "/raw_files/" , "__RAW_" + dist.getID()));
+				files.add(new FileStatement(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + dist.getID()));
 			}
 		}
 		return files;
 	}
-	
-	public void updateTriples(MetadataParser parser, long uniq, long total){
+
+	public void updateTriples(MetadataParser parser, long uniq, long total) {
 		ArrayList<DBObject> parsers = new GeneralQueriesHelper().getObjects(MetadataParserDB.COLLECTION_NAME,
 				MetadataParserDB.PARSER_NAME, parser.getParserName());
-		
+
 		if (parsers.size() > 0) {
 			MetadataParserDB m = new MetadataParserDB(parser);
 			m.setUniqTriples(uniq);
@@ -66,8 +61,6 @@ public class MetadataParserServices {
 			}
 		}
 
-			
 	}
-	
 
 }
