@@ -29,11 +29,13 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
+import lodVader.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
 import lodVader.parsers.descriptionFileParser.Impl.CLODParser;
 import lodVader.parsers.descriptionFileParser.Impl.DataIDParser;
 import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
+import lodVader.parsers.descriptionFileParser.Impl.RE3RepositoriesParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
@@ -62,6 +64,11 @@ public class LODVader {
 	 * How many operation to run in parallel.
 	 */
 	int numberOfThreads = 4;
+	
+	/**
+	 * Count unique triples
+	 */
+	boolean uniqPerDatasource = true;
 
 	/**
 	 * Streaming and processing
@@ -94,7 +101,7 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-		new Fix().fix1();
+		
 		
 		/**
 		 * Load properties file, create MondoDB indexes, etc
@@ -102,6 +109,8 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 
+		if(uniqPerDatasource)
+			countUniqPerDatasource();
 		/**
 		 * Start parsing files
 		 */
@@ -117,6 +126,17 @@ public class LODVader {
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
+
+	}
+	
+	public void countUniqPerDatasource(){
+		new DatasourcesUniqTriples(new LOVParser()).count();
+		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
+		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
+		new DatasourcesUniqTriples(new LinghubParser(null)).count();
+		new DatasourcesUniqTriples(new DataIDParser(null)).count();
+		new DatasourcesUniqTriples(new CLODParser(null, null)).count();
+		new DatasourcesUniqTriples(new LODCloudParser()).count();
 
 	}
 
