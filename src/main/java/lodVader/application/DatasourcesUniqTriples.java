@@ -83,6 +83,7 @@ public class DatasourcesUniqTriples {
 					if (totalTriples % msgInterval == 0) {
 						logger.info(formatter.format(totalTriples) + " statements processed.");
 					}
+					f.close();
 				}
 			} catch (Exception e) {
 				// logger.error(e.getMessage());
