@@ -85,8 +85,8 @@ public class LODVader {
 	 */
 	boolean parseSparqles = false;
 	boolean parseLOV = false;
-	 boolean parseDBpedia = false;
-//	boolean parseDBpedia = true;
+	boolean parseDBpedia = false;
+	// boolean parseDBpedia = true;
 	boolean parseLaundromat = false;
 	boolean parseLODCloud = false;
 	boolean parseRE3 = false;
@@ -126,7 +126,8 @@ public class LODVader {
 		 */
 		if (streamDistribution)
 			// streamDistributions(DistributionDB.DistributionStatus.DONE);
-			streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+			// streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+			streamDistributions(null);
 
 		// detectDatasets();
 
@@ -172,7 +173,7 @@ public class LODVader {
 			loader.load(new CLODParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
 			loader.parse();
 		}
-		
+
 		/**
 		 * Parsing Sparqles
 		 */
@@ -237,8 +238,12 @@ public class LODVader {
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
 
 		// load distributions to be analyzed
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
-				status.toString());
+		List<DBObject> distributionObjects = null;
+		if (status != null)
+			distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS,
+					status.toString());
+		else
+			distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
 
 		logger.info("Streaming " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
 				+ " threads.");
