@@ -39,6 +39,7 @@ public class RDFResourcesTags {
 	public static final Resource linkset = resource(NS.VOID_URI, "Linkset");
 	public static final Property triples = property(NS.VOID_URI, "triples");
 	public static final Property rdfValue = property(NS.RDF_URI, "value");
+	public static final Property rdfResource = property(NS.RES_URI, "value");
 
 	
 	public static final Property subset= property(NS.VOID_URI, "subset");	 	
@@ -57,6 +58,9 @@ public class RDFResourcesTags {
 			"distribution");
 	public static final Property dcatDataset = property(NS.DCAT_URI,
 			"dataset");
+	public static final Property dcatRecord = property(NS.DCAT_URI,
+			"record");
+
 	public static final Property dcatAccessURL= property(NS.DCAT_URI,
 			"accessURL");
 	

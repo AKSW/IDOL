@@ -3,6 +3,7 @@
  */
 package lodVader.application;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +18,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
 
-import fix.Fix;
 import lodVader.application.fileparser.CKANRepositoryLoader;
 import lodVader.application.fileparser.CkanToLODVaderConverter;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
@@ -36,16 +36,17 @@ import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.parsers.descriptionFileParser.Impl.RE3RepositoriesParser;
+import lodVader.parsers.descriptionFileParser.Sparqles.Impl.SparqlesMainParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
-import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
+import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.streaming.LODVStreamInternetImpl;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
 import lodVader.tupleManager.processors.BloomFilterProcessor2;
-import lodVader.tupleManager.processors.SaveRawDataProcessor;
+import lodVader.tupleManager.processors.SaveDumpDataProcessor;
 
 /**
  * @author Ciro Baron Neto
@@ -64,26 +65,28 @@ public class LODVader {
 	 * How many operation to run in parallel.
 	 */
 	int numberOfThreads = 4;
-	
+
 	/**
 	 * Count unique triples
 	 */
-	boolean uniqPerDatasource = true;
+	boolean uniqPerDatasource = false;
 
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = false;
-	boolean streamFromInternet = false;
-	boolean createDumpOnDisk = false;
+	boolean streamDistribution = true;
+	boolean streamFromInternet = true;
+	boolean createDumpOnDisk = true;
 	boolean processStatisticalData = false;
 	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
 	 */
+	boolean parseSparqles = false;
 	boolean parseLOV = false;
-	boolean parseDBpedia = false;
+	 boolean parseDBpedia = false;
+//	boolean parseDBpedia = true;
 	boolean parseLaundromat = false;
 	boolean parseLODCloud = false;
 	boolean parseRE3 = false;
@@ -101,16 +104,18 @@ public class LODVader {
 	 */
 	public void Manager() {
 
-		
-		
 		/**
 		 * Load properties file, create MondoDB indexes, etc
 		 */
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 
-		if(uniqPerDatasource)
+		if (uniqPerDatasource)
 			countUniqPerDatasource();
+
+		// new MetadataParserServices().removeDistributions(new
+		// DataIDParser(null));
+
 		/**
 		 * Start parsing files
 		 */
@@ -120,18 +125,18 @@ public class LODVader {
 		 * Stream and process distributions
 		 */
 		if (streamDistribution)
-//			streamDistributions(DistributionDB.DistributionStatus.DONE);
-		streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+			// streamDistributions(DistributionDB.DistributionStatus.DONE);
+			streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
 
 		// detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
 
 	}
-	
-	public void countUniqPerDatasource(){
-//		new DatasourcesUniqTriples(new LOVParser()).count();
-//		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
+
+	public void countUniqPerDatasource() {
+		new DatasourcesUniqTriples(new LOVParser()).count();
+		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
 		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
 		new DatasourcesUniqTriples(new LinghubParser(null)).count();
 		new DatasourcesUniqTriples(new DataIDParser(null)).count();
@@ -155,6 +160,8 @@ public class LODVader {
 		 */
 		if (parseDBpedia) {
 			loader.load(new DataIDParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+			// loader.load(new
+			// DataIDParser("http://downloads.dbpedia.org/2016-04/2016-04_dataid_catalog.ttl"));
 			loader.parse();
 		}
 
@@ -163,6 +170,14 @@ public class LODVader {
 		 */
 		if (parseLaundromat) {
 			loader.load(new CLODParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+			loader.parse();
+		}
+		
+		/**
+		 * Parsing Sparqles
+		 */
+		if (parseSparqles) {
+			loader.load(new SparqlesMainParser("http://sparqles.ai.wu.ac.at/api/endpoint/list"));
 			loader.parse();
 		}
 
@@ -359,13 +374,15 @@ public class LODVader {
 			}
 
 			/**
-			 * Registering raw data processor
+			 * Registering raw data processor if there already is a file named
+			 * with the same id, do not stream again
 			 */
-			SaveRawDataProcessor rawDataProcessor = null;
-			if (createDumpOnDisk) {
-				rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
-				coreStream.getPipelineProcessor().registerProcessor(rawDataProcessor);
-			}
+			SaveDumpDataProcessor saveDumpDataProcessor = null;
+			if (!new File(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + distribution.getID()).exists())
+				if (createDumpOnDisk) {
+					saveDumpDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
+					coreStream.getPipelineProcessor().registerProcessor(saveDumpDataProcessor);
+				}
 
 			/**
 			 * Registering bloom filter processor
@@ -389,7 +406,7 @@ public class LODVader {
 					basicStatisticalProcessor.saveStatisticalData();
 
 				if (createDumpOnDisk)
-					rawDataProcessor.closeFile();
+					saveDumpDataProcessor.closeFile();
 
 				if (createBloomFilter)
 					bfProcessor.saveFilters();
@@ -401,7 +418,7 @@ public class LODVader {
 				// case get an exception, finalize the processors (save
 				// data, etc etc).
 				if (createDumpOnDisk)
-					rawDataProcessor.closeFile();
+					saveDumpDataProcessor.closeFile();
 
 				if (processStatisticalData)
 					basicStatisticalProcessor.saveStatisticalData();

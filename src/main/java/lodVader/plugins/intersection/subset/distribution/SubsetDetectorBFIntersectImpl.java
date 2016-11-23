@@ -13,9 +13,9 @@ import lodVader.bloomfilters.BloomFilterI;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
-import lodVader.mongodb.collections.datasetBF.BucketService;
 import lodVader.plugins.LODVaderPlugin;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
+import lodVader.services.mongodb.BucketService;
 import lodVader.services.mongodb.GeneralResourceRelationServices;
 
 /**

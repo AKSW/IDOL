@@ -102,7 +102,7 @@ public class DCATHelper {
 		List<String> datasets = new ArrayList<String>();
 
 		StmtIterator stmtDatasets = dcatModel.listStatements(dcatModel.createResource(catalog),
-				RDFResourcesTags.dcatDataset, (RDFNode) null);
+				RDFResourcesTags.dcatRecord, (RDFNode) null);
 
 		while (stmtDatasets.hasNext()) {
 			datasets.add(stmtDatasets.next().getObject().toString());

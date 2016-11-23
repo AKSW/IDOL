@@ -15,8 +15,8 @@ import com.mongodb.DBObject;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
-import lodVader.mongodb.collections.datasetBF.BucketService;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
+import lodVader.services.mongodb.BucketService;
 
 /**
  * Model which represents the streaming process status.

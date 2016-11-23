@@ -3,6 +3,7 @@
  */
 package lodVader.services.mongodb;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,10 +14,13 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import lodVader.exceptions.LODVaderMissingPropertiesException;
+import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
+import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
+import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.utils.FormatsUtils;
 
@@ -45,26 +49,27 @@ public class DistributionServices {
 			}
 		});
 	}
-	
-	public DistributionDB saveDistribution(String uri, boolean isVocab, String title, String format, String downloadURL, 
-			String topDataset, String topDatasetTitle, String dataSource, String repository){
-		
+
+	public DistributionDB saveDistribution(String uri, boolean isVocab, String title, String format, String downloadURL,
+			String topDataset, String topDatasetTitle, String dataSource, String repository) {
+
 		DistributionDB distributionDB;
-		
+
 		/**
-		 * Check if the distribution already exists in database. 
+		 * Check if the distribution already exists in database.
 		 */
-		ArrayList<DBObject> d = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL, downloadURL);
-		if(d.size()>0){
+		ArrayList<DBObject> d = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				DistributionDB.DOWNLOAD_URL, downloadURL);
+		if (d.size() > 0) {
 			distributionDB = new DistributionDB(d.iterator().next());
 		}
-		
+
 		/**
 		 * If not, create a new one
 		 */
-		else{
+		else {
 			distributionDB = new DistributionDB();
-			distributionDB.setUri(uri);			
+			distributionDB.setUri(uri);
 			distributionDB.setTitle(title);
 			try {
 				distributionDB.setDownloadUrl(downloadURL);
@@ -74,14 +79,14 @@ public class DistributionServices {
 			distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
 			distributionDB.setTopDataset(topDataset);
 			distributionDB.setTopDatasetTitle(topDatasetTitle);
-			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);	
+			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 			distributionDB.setIsVocabulary(isVocab);
 		}
 
 		distributionDB.addDatasource(dataSource);
 		distributionDB.addRepository(repository);
 		distributionDB.addDefaultDatasets(topDataset);
-		
+
 		/**
 		 * Add/update the distribution and return the oject
 		 */
@@ -138,6 +143,33 @@ public class DistributionServices {
 			}
 
 		}
+
+		// remove buckets
+		BucketService bucketService = new BucketService();
+		bucketService.removeBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_OBJECTS, distributionDB.getID());
+		bucketService.removeBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_SUBJECTS, distributionDB.getID());
+		bucketService.removeBucket(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionDB.getID());
+
+		// remove files
+		new File(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + distributionDB.getID()).delete();
+
+		// remove namespaces relation
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_SUBCLASS.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
+		DBSuperClass.getCollection(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0.toString())
+				.remove(new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distributionDB.getID()));
 
 	}
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -116,6 +117,8 @@ public class DataIDHelper {
 	public List<String> getDistributions(String dataset) {
 
 		List<String> distributions = new ArrayList<String>();
+		
+		HashSet<String> distributionsTmp = new HashSet<>();
 
 		StmtIterator stmtDistributions = model.listStatements(model.createResource(dataset),
 				RDFResourcesTags.dcatDistribution, (RDFNode) null);
@@ -127,7 +130,11 @@ public class DataIDHelper {
 			// check if it's not a sparql endpoint
 			if (model.listStatements(object.asResource(), RDFResourcesTags.type,
 					RDFResourcesTags.dataIDSingleFile).hasNext()) {
-				distributions.add(object.toString());
+				
+				if(!distributionsTmp.contains(object.toString().replace(".bz2", "").replace(".ttl", "").replace(".tql", "").replace(".nt", ""))){
+					distributions.add(object.toString());		
+					distributionsTmp.add(object.toString().replace(".bz2", "").replace(".ttl", "").replace(".tql", "").replace(".nt", ""));
+				}	
 			}
 
 		}

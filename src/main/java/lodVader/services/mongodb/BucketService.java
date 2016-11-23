@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.mongodb.collections.datasetBF;
+package lodVader.services.mongodb;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -20,6 +20,8 @@ import com.mongodb.gridfs.GridFSInputFile;
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
 import lodVader.mongodb.DBSuperClass;
+import lodVader.mongodb.collections.datasetBF.BucketDB;
+import lodVader.mongodb.collections.datasetBF.BucketDB.COLLECTIONS;
 
 /**
  * Some services for managing buckets

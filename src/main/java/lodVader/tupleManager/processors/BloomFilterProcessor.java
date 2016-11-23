@@ -25,7 +25,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
-import lodVader.mongodb.collections.datasetBF.BucketService;
+import lodVader.services.mongodb.BucketService;
 import lodVader.utils.FileUtils;
 import lodVader.utils.NSUtils;
 

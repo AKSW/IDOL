@@ -348,6 +348,10 @@ public class DistributionDB extends DBSuperClass {
 	public ArrayList<String> getDatasources() {
 		return (ArrayList<String>) getField(DATASOURCE);
 	}
+	
+	public void setDatasource(ArrayList<String> d){
+		addField(DATASOURCE, d);
+	}
 
 	public ArrayList<Integer> getDefaultDatasets() {
 		return (ArrayList<Integer>) getField(DEFAULT_DATASETS);

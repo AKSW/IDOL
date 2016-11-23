@@ -20,7 +20,7 @@ import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.streaming.LODVStreamInternetImpl;
-import lodVader.tupleManager.processors.SaveRawDataProcessor;
+import lodVader.tupleManager.processors.SaveDumpDataProcessor;
 
 /**
  * @author Ciro Baron Neto
@@ -61,7 +61,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 		if (sourceSet == null) {
 			LODVStreamInternetImpl stream = new LODVStreamInternetImpl();
 
-			SaveRawDataProcessor processor = new SaveRawDataProcessor(sourceDistribution, fileName);
+			SaveDumpDataProcessor processor = new SaveDumpDataProcessor(sourceDistribution, fileName);
 
 			stream.getPipelineProcessor().registerProcessor(processor);
 
@@ -86,7 +86,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 			if (targetSet == null) {
 				LODVStreamInternetImpl stream = new LODVStreamInternetImpl();
 
-				SaveRawDataProcessor processor = new SaveRawDataProcessor(targetDistribution,
+				SaveDumpDataProcessor processor = new SaveDumpDataProcessor(targetDistribution,
 						targetDistributionFileName);
 
 				stream.getPipelineProcessor().registerProcessor(processor);

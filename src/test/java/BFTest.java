@@ -16,17 +16,17 @@ import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
-import lodVader.mongodb.collections.datasetBF.BucketService;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
+import lodVader.services.mongodb.BucketService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.tupleManager.processors.BasicProcessorInterface;
 import lodVader.tupleManager.processors.BloomFilterProcessor2;
-import lodVader.tupleManager.processors.SaveRawDataProcessor;
+import lodVader.tupleManager.processors.SaveDumpDataProcessor;
 import lodVader.utils.NSUtils;
 import lodVader.utils.StatementUtils;
 import orestes.bloomfilter.json.BloomFilterConverter;
@@ -91,7 +91,7 @@ public class BFTest {
 	}
 
 	private void processDist(List<Statement> statements, DistributionDB distribution) {
-		SaveRawDataProcessor rawDataProcessor = new SaveRawDataProcessor(distribution, distribution.getID());
+		SaveDumpDataProcessor rawDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
 
 		for (Statement st : statements)
 			rawDataProcessor.process(st);

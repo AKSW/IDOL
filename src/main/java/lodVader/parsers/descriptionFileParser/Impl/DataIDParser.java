@@ -3,8 +3,6 @@
  */
 package lodVader.parsers.descriptionFileParser.Impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,12 +11,9 @@ import org.slf4j.LoggerFactory;
 import lodVader.exceptions.LODVaderMissingPropertiesException;
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.parsers.descriptionFileParser.MetadataParser;
-import lodVader.parsers.descriptionFileParser.MetadataParserI;
 import lodVader.parsers.descriptionFileParser.helpers.DCATHelper;
 import lodVader.parsers.descriptionFileParser.helpers.DataIDHelper;
-import lodVader.parsers.descriptionFileParser.helpers.SubsetHelper;
 import lodVader.utils.FormatsUtils;
 
 /**
@@ -85,6 +80,8 @@ public class DataIDParser extends MetadataParser {
 		String topDataset = dataset.getID();
 		String topDatasetTitle = dataset.getTitle();
 		String format = dataidHelper.getFormat(distribution);
+		if(format.equals(""))
+			format=FormatsUtils.getEquivalentFormat(downloadURL);
 		
 		return addDistribution(uri, false, title, format, downloadURL, topDataset, topDatasetTitle, getParserName(), repositoryAddress);
 	}

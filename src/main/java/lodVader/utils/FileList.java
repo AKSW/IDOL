@@ -55,6 +55,11 @@ public class FileList<T> extends AbstractList<T> implements Iterator<T> {
 
 		this.path = path;
 		this.fileName = fileName;
+		try {
+			new File(getFullPath()).createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*

@@ -2,6 +2,9 @@ package lodVader.utils;
 
 import java.util.ArrayList;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.el.stream.StreamELResolverImpl;
+
 public class FormatsUtils {
 
 	public static final String DEFAULT_TURTLE = "ttl";
@@ -27,6 +30,47 @@ public class FormatsUtils {
 	public static String getEquivalentFormat(String str) {
 		if(str.length() > 20)
 		str = str.substring(str.length() - 10);
+		String soriginal = str;
+
+		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
+			return DEFAULT_TURTLE;
+		else if (NTRIPLES_FORMATS.contains(str))
+			return DEFAULT_NTRIPLES;
+		else if (RDFXML_FORMATS.contains(str) || str.contains("rdf") || str.contains("RDF"))
+			return DEFAULT_RDFXML;
+		else if (NQUADS_FORMATS.contains(str)|| str.contains("nq"))
+			return DEFAULT_NQUADS;
+		else if (SPARQL_FORMATS.contains(str)|| str.contains("sparql"))
+			return DEFAULT_SPARQL;
+		else if (N3_FORMATS.contains(str)|| str.contains("n3"))
+			return DEFAULT_N3;
+		else if (JSONLD_FORMATS.contains(str))
+			return DEFAULT_JSONLD;
+		else if (TQL_FORMATS.contains(str))
+			return DEFAULT_TQL;
+		
+		str = FilenameUtils.getExtension(str);
+		
+		
+		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
+			return DEFAULT_TURTLE;
+		else if (NTRIPLES_FORMATS.contains(str))
+			return DEFAULT_NTRIPLES;
+		else if (RDFXML_FORMATS.contains(str) || str.contains("rdf") || str.contains("RDF"))
+			return DEFAULT_RDFXML;
+		else if (NQUADS_FORMATS.contains(str)|| str.contains("nq"))
+			return DEFAULT_NQUADS;
+		else if (SPARQL_FORMATS.contains(str)|| str.contains("sparql"))
+			return DEFAULT_SPARQL;
+		else if (N3_FORMATS.contains(str)|| str.contains("n3"))
+			return DEFAULT_N3;
+		else if (JSONLD_FORMATS.contains(str))
+			return DEFAULT_JSONLD;
+		else if (TQL_FORMATS.contains(str))
+			return DEFAULT_TQL;
+		
+		str = FilenameUtils.getExtension(soriginal.replace("."+str, ""));
+		
 		
 		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
 			return DEFAULT_TURTLE;
@@ -48,6 +92,7 @@ public class FormatsUtils {
 			return "";
 		}
 	}
+	
 
 	private static final ArrayList<String> N3_FORMATS = new ArrayList<String>() {
 		{
@@ -144,6 +189,7 @@ public class FormatsUtils {
 			add("rdf+xml ");
 			add("rdf xml");
 			add("rdfxml");
+			add("xml");
 		}
 	};
 
