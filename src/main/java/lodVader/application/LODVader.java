@@ -64,7 +64,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 8;
+	int numberOfThreads = 20;
 
 	/**
 	 * Count unique triples
