@@ -94,8 +94,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 	}
 
 	@Override
-	public void startParsing(DistributionDB distributionMongoDBObj)
-			throws Exception {
+	public void startParsing(DistributionDB distributionMongoDBObj) throws Exception {
 		this.distribution = distributionMongoDBObj;
 		startParsing(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
 	}
@@ -115,6 +114,38 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 				rdfFormat = FormatsUtils.getEquivalentFormat(downloadUrl);
 
 			startStream(inputStream, compressionFormat, rdfFormat);
+		} catch (RDFParseException | RDFHandlerException e) {
+			// Maybe we did not the the correct serialization format;
+			// Try with TTL
+
+			try {
+				inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
+				inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
+				rdfFormat = FormatsUtils.getEquivalentFormat("ttl");
+
+				startStream(inputStream, compressionFormat, rdfFormat);
+
+			} catch (RDFParseException | RDFHandlerException e2) {
+				
+				try {
+					// try with RDF
+					inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
+					inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
+					rdfFormat = FormatsUtils.getEquivalentFormat("rdf");
+
+					startStream(inputStream, compressionFormat, rdfFormat);
+
+				} catch (RDFParseException | RDFHandlerException e3) {
+					
+					// try with RDF
+					inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
+					inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
+					rdfFormat = FormatsUtils.getEquivalentFormat("nt");
+
+					startStream(inputStream, compressionFormat, rdfFormat);
+				}
+			}
+
 		} finally {
 			inputStream.close();
 		}
@@ -286,7 +317,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 
 			} catch (LODVaderFormatNotAcceptedException e) {
 				e.printStackTrace();
-			} 
+			}
 		}
 
 		// } catch (RDFHandlerException | IOException | RDFParseException e) {
@@ -354,7 +385,6 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 		httpConn.setConnectTimeout(5000);
 		int responseCode = httpConn.getResponseCode();
 
-		
 		logger.info("We received the following HTTP response code: " + responseCode);
 
 		// check HTTP response code
