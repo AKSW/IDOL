@@ -29,9 +29,9 @@ public class DatasourcesUniqTriples {
 
 	MetadataParser parser = null;
 
-	int bfSize = 900_000_000;
+	int bfSize = 900_000_000 * 2;
 
-	long limit = 900_000_000;
+	long limit = 900_000_000 * 2;
 
 	boolean keepProcessing = false;
 

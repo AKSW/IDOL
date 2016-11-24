@@ -68,14 +68,14 @@ public class LODVader {
 	/**
 	 * Count unique triples
 	 */
-	boolean uniqPerDatasource = false;
+	boolean uniqPerDatasource = true;
 
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = true;
-	boolean streamFromInternet = true;
-	boolean createDumpOnDisk = true;
+	boolean streamDistribution = false;
+	boolean streamFromInternet = false;
+	boolean createDumpOnDisk = false;
 	boolean processStatisticalData = false;
 	boolean createBloomFilter = false;
 
@@ -140,11 +140,11 @@ public class LODVader {
 	public void countUniqPerDatasource() {
 		new DatasourcesUniqTriples(new LOVParser()).count();
 		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
-		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
 		new DatasourcesUniqTriples(new LinghubParser(null)).count();
 		new DatasourcesUniqTriples(new DataIDParser(null)).count();
 		new DatasourcesUniqTriples(new CLODParser(null, null)).count();
 		new DatasourcesUniqTriples(new LODCloudParser()).count();
+		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
 
 	}
 
