@@ -29,9 +29,9 @@ public class DatasourcesUniqTriples {
 
 	MetadataParser parser = null;
 
-	int bfSize = 800_000_000 * 2;
+	int bfSize = 750_000_000 * 2;
 
-	long limit = 800_000_000 * 2;
+	long limit = 750_000_000 * 2;
 
 	boolean keepProcessing = false;
 
@@ -41,7 +41,7 @@ public class DatasourcesUniqTriples {
 
 	FileStatement fileStatement2 = null;
 
-	BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_01);
+	BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_001);
 
 	long uniq = 0;
 
