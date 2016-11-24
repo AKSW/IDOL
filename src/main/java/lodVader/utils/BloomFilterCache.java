@@ -35,6 +35,8 @@ public class BloomFilterCache {
 		BloomFilterI bf = BloomFilterFactory.newBloomFilter();
 		bf.create(initialSize, bfFpp);
 		caches.add(bf);
+		logger.info("New BF created! ");
+
 	}
 
 	/**
