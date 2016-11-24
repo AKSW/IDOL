@@ -4,6 +4,7 @@
 package lodVader.tupleManager.processors;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
@@ -40,6 +41,12 @@ public class SaveDumpDataProcessor implements BasicProcessorInterface {
 		triplesTmpFilePath = LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + fileName;
 		FileUtils.createFolder(LODVaderProperties.BASE_PATH + "/raw_files/");
 		new File(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + fileName).delete();
+		try {
+			new File(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + fileName).createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		file = new FileStatement(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + fileName);
 	}
 
