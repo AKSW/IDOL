@@ -94,7 +94,7 @@ public abstract class CKANParserIMPL extends MetadataParser {
 	public DistributionDB saveDistribution(CkanResource resource, DatasetDB datasetDB) {
 
 		return addDistribution(resource.getUrl(), false, resource.getTitle(), resource.getFormat(), resource.getUrl(),
-				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress, null);
+				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress, null, null);
 
 	}
 

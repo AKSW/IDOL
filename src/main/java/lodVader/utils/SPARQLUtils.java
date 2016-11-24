@@ -35,8 +35,20 @@ public class SPARQLUtils {
 		return baseUrl + "query=" + URLEncoder.encode(toEncode);
 	}
 
+	/**
+	 * Creates a triplecount query.
+	 * @param uri
+	 * @param graph
+	 * @return
+	 */
 	public String makeCountQuery(String uri, String graph) {
 
+		uri = refineSparqlEndpointLink(uri);
+
+		return uri + "SELECT (COUNT(*) as ?count) FROM <" + graph + "> WHERE { ?s ?p ?o . }";
+	}
+	
+	private String refineSparqlEndpointLink(String uri){
 		if (uri.endsWith("/")) {
 			uri = uri.replace(uri.substring(uri.length() - 1), "");
 		}
@@ -44,10 +56,15 @@ public class SPARQLUtils {
 		if (!uri.endsWith("?query=")) {
 			uri = uri + "?query=";
 		}
-
-		return uri + "SELECT (COUNT(*) as ?count) FROM <" + graph + "> WHERE { ?s ?p ?o . }";
+		return uri;
 	}
 
+	
+	/**
+	 * Parses the result of a count query.
+	 * @param counterResult
+	 * @return the number of triples
+	 */
 	public long parseCounterResult(InputStream counterResult) {
 		Model m = ModelFactory.createDefaultModel();
 		m.read(counterResult, null, "TTL");
@@ -76,10 +93,12 @@ public class SPARQLUtils {
 	 *            the limit value
 	 * @return the URI with " ORDER BY (?s) OFFSET offset LIMIT limit"
 	 */
-	public String addSparqlPagination(String uri, int offset, int limit) {
-		return uri + " LIMIT " + limit + " OFFSET " + offset;
-		// return uri + " ORDER BY (?s) "+ " LIMIT "+limit + " OFFSET " + offset
-		// ;
+	public String createSparqlPaginationRequest(String sparqlEndpoint, String graph, int limit, int offset) {
+		sparqlEndpoint = refineSparqlEndpointLink(sparqlEndpoint);
+		
+		String queryPart = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + graph + "> { ?s ?p ?o } }";
+
+		return sparqlEndpoint + queryPart +  " LIMIT " + limit + " OFFSET " + offset;
 	}
 
 }

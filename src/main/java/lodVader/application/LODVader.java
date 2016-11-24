@@ -3,7 +3,6 @@
  */
 package lodVader.application;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,7 +63,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 18;
+	int numberOfThreads = 1;
 
 	/**
 	 * Count unique triples
@@ -125,8 +124,8 @@ public class LODVader {
 		 * Stream and process distributions
 		 */
 		if (streamDistribution)
-			 streamDistributions(DistributionDB.DistributionStatus.ERROR);
-			// streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+//			 streamDistributions(DistributionDB.DistributionStatus.ERROR);
+			 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
 //			streamDistributions(null);
 
 		// detectDatasets();
@@ -423,6 +422,8 @@ public class LODVader {
 				distribution.setStatus(DistributionStatus.DONE);
 
 			} catch (Exception e) {
+				
+//				e.printStackTrace();
 
 				// case get an exception, finalize the processors (save
 				// data, etc etc).

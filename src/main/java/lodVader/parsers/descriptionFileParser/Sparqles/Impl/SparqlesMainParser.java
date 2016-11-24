@@ -57,10 +57,10 @@ public class SparqlesMainParser extends MetadataParser {
 	 *            CkanResource
 	 * @return the DistributionDB instance
 	 */
-	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB, String sparqlGraph) {
+	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB, String sparqlGraph, String sparqlEndpoint) {
 
 		return addDistribution(url, false, title, format, url, datasetDB.getID(), datasetDB.getTitle(), getParserName(),
-				repositoryAddress, sparqlGraph);
+				repositoryAddress, sparqlGraph, sparqlEndpoint);
 
 	}
 
@@ -97,12 +97,12 @@ public class SparqlesMainParser extends MetadataParser {
 								+ queryPart;
 						// URLEncoder.encode(
 						if(!uri.contains("openlink"))
-							saveDistribution(uri, uri, "sparql", dataset,graph );
+							saveDistribution(uri, uri, "sparql", dataset, graph, e.uri);
 					}
 				}
 
 			} catch (IOException e1) {
-				saveDistribution(e.uri, e.uri, "sparql", dataset, null);
+				saveDistribution(e.uri, e.uri, "sparql", dataset, null, e.uri);
 				System.out.println("Error: " + e1.getMessage());
 			}
 

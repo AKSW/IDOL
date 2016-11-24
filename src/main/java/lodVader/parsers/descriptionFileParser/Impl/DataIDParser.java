@@ -83,7 +83,7 @@ public class DataIDParser extends MetadataParser {
 		if(format.equals(""))
 			format=FormatsUtils.getEquivalentFormat(downloadURL);
 		
-		return addDistribution(uri, false, title, format, downloadURL, topDataset, topDatasetTitle, getParserName(), repositoryAddress, null);
+		return addDistribution(uri, false, title, format, downloadURL, topDataset, topDatasetTitle, getParserName(), repositoryAddress, null, null);
 	}
 
 	public void iterateDatasets(String dataset, DatasetDB parentDataset) {

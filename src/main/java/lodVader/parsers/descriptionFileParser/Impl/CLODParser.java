@@ -103,7 +103,7 @@ public class CLODParser extends MetadataParser {
 				
 				
 				DistributionDB distribution = addDistribution(url, false, url, "nt", downloadURL, dataset.getID(),
-						dataset.getTitle(), getParserName(), repositoryAddress, null);
+						dataset.getTitle(), getParserName(), repositoryAddress, null, null);
 
 				addDistribution(distribution);
 				addDataset(dataset);

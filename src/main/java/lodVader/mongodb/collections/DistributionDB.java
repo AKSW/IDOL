@@ -89,6 +89,8 @@ public class DistributionDB extends DBSuperClass {
 	
 	public static final String SPARQL_COUNT = "sparqlCount";
 	
+	public static final String SPARQL_ENDPOINT = "sparqlEndpoint";
+	
 	
 
 	public enum DistributionStatus {
@@ -138,6 +140,16 @@ public class DistributionDB extends DBSuperClass {
 
 	public String getUri() {
 		return getField(URI).toString();
+	}
+	
+	public String getSparqlEndpoint(){
+		if(getField(SPARQL_ENDPOINT) == null)
+			return null;
+		return getField(SPARQL_ENDPOINT).toString();
+	}
+	
+	public void setSparqlEndpoint(String endpoint){
+		addField(SPARQL_ENDPOINT, endpoint);
 	}
 
 	public void setNumberOfBlankNodes(Integer blankNodes) {
@@ -223,10 +235,14 @@ public class DistributionDB extends DBSuperClass {
 	}
 	
 	public int getSparqlCount(){
+		if(getField(SPARQL_COUNT) == null)
+			return 0;
 		return ((Number) getField(SPARQL_COUNT)).intValue();
 	}
 	
 	public String getSparqlGraph(){
+		if(getField(SPARQL_GRAPH) == null)
+			return null;
 		return getField(SPARQL_GRAPH).toString();
 	}
 	

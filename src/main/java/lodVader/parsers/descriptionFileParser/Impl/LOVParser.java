@@ -79,7 +79,7 @@ public class LOVParser extends MetadataParser{
 				+ URLEncoder.encode("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + url + "> { ?s ?p ?o } }");
 		
 		return addDistribution(downloadURL, true, title, "ttl", downloadURL,
-				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress, null);
+				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress, null, null);
 
 	}
 

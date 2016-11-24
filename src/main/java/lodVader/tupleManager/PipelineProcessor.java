@@ -32,6 +32,13 @@ public class PipelineProcessor extends RDFHandlerBase {
 		processors.add(processor);
 	}
 	
+	/**
+	 * @return the triplesProcessed
+	 */
+	public int getTriplesProcessed() {
+		return triplesProcessed;
+	}
+	
 
 	@Override
 	public void handleStatement(Statement st) {
