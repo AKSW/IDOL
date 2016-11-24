@@ -94,7 +94,7 @@ public abstract class CKANParserIMPL extends MetadataParser {
 	public DistributionDB saveDistribution(CkanResource resource, DatasetDB datasetDB) {
 
 		return addDistribution(resource.getUrl(), false, resource.getTitle(), resource.getFormat(), resource.getUrl(),
-				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress);
+				datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress, null);
 
 	}
 
@@ -102,7 +102,7 @@ public abstract class CKANParserIMPL extends MetadataParser {
 	 * Class which will make the dataset requests for the CKAN repositories
 	 * 
 	 * @author Ciro Baron Neto
-	 * 
+	 *  
 	 *         Sep 29, 2016
 	 */
 	class HTTPDatasetRequestThread implements Runnable {

@@ -91,7 +91,7 @@ public class LODCloudParser extends MetadataParser {
 	 */
 	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB) {
 		
-		return addDistribution(url, false, title, format, url, datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress);
+		return addDistribution(url, false, title, format, url, datasetDB.getID(), datasetDB.getTitle(), getParserName(), repositoryAddress, null);
 
 	}
 
