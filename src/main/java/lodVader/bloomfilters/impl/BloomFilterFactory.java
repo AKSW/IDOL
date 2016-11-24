@@ -13,8 +13,8 @@ import lodVader.bloomfilters.BloomFilterI;
 public class BloomFilterFactory {
 	
 	public static BloomFilterI newBloomFilter(){ 
-//		return new BloomFilterGoogleImpl();
-		return new BloomFilterOrestesImpl();
+		return new BloomFilterGoogleImpl();
+//		return new BloomFilterOrestesImpl();
 	}
 
 }

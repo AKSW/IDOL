@@ -6,6 +6,7 @@ package lodVader.application;
 import java.io.File;
 import java.text.DecimalFormat;
 
+import org.apache.tomcat.jni.Time;
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import lodVader.parsers.descriptionFileParser.MetadataParser;
 import lodVader.services.mongodb.MetadataParserServices;
 import lodVader.utils.BloomFilterCache;
 import lodVader.utils.FileStatement;
+import lodVader.utils.Timer;
 
 /**
  * @author Ciro Baron Neto
@@ -27,9 +29,9 @@ public class DatasourcesUniqTriples {
 
 	MetadataParser parser = null;
 
-	int bfSize = 2_000_000_000;
+	int bfSize = 900_000_000;
 
-	long limit = 4000000000L;
+	long limit = 900_000_000;
 
 	boolean keepProcessing = false;
 
@@ -39,7 +41,7 @@ public class DatasourcesUniqTriples {
 
 	FileStatement fileStatement2 = null;
 
-	BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_000_1);
+	BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_01);
 
 	long uniq = 0;
 
@@ -93,7 +95,7 @@ public class DatasourcesUniqTriples {
 		while (keepProcessing) {
 			logger.info("Reading file: " + "/home/ciro/lodvaderdata/" + fileName + 1);
 			logger.info("Triples on file: " + formatter.format(triplesInFile));
-			bf = new BloomFilterCache(bfSize, 0.0000001);
+			bf = new BloomFilterCache(bfSize, 0.000_01);
 			triplesInFile = 0;
 			uniq = 0;
 			total = 0;
@@ -136,8 +138,6 @@ public class DatasourcesUniqTriples {
 			} else {
 				bf.add(triple);
 				uniq++;
-				if (uniq % bfSize/100 == 0)
-					updateCounter(totalUniq, totalTriples);
 				keepProcessing = false;
 				totalUniq++;
 			}
@@ -148,4 +148,21 @@ public class DatasourcesUniqTriples {
 		MetadataParserServices services = new MetadataParserServices();
 		services.updateTriples(parser, uniq, total);
 	}
+	
+	
+	
+	public static void main(String[] args) {
+		Timer t = new Timer();
+		t.startTimer();
+		for (int i=0;i<10_000_000; i++){
+			String s = 1 + "asad " + " sadasdasdasd " + i + "fdffdfdf.";
+			if(i%100==0){
+				String g = "ls";
+			}
+			
+		}
+		System.out.println(t.stopTimer());
+	}
+	
+	
 }

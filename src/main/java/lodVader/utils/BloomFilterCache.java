@@ -15,22 +15,20 @@ import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
 /**
  * @author Ciro Baron Neto
  * 
- * Jul 7, 2016
+ *         Jul 7, 2016
  */
 public class BloomFilterCache {
-	
+
 	final static Logger logger = LoggerFactory.getLogger(BloomFilterCache.class);
 
-
 	// default bloom filter size
-	private int initialSize = 2_147_483_647;
+	private int initialSize;
 
 	// default bloom filter fpp
-	private double fpp = 0.000_000_1;
+	private double fpp;
 
 	private ArrayList<BloomFilterI> caches = new ArrayList<BloomFilterI>();
 
-	
 	public BloomFilterCache(int initialSize, double bfFpp) {
 		this.initialSize = initialSize;
 		this.fpp = bfFpp;
@@ -40,7 +38,7 @@ public class BloomFilterCache {
 	}
 
 	/**
-	 * Query 
+	 * Query
 	 * 
 	 * @param query
 	 * @return true case the query element was found
@@ -71,11 +69,15 @@ public class BloomFilterCache {
 
 		// case all caches are full, create a new one and add the
 		// list
-		BloomFilterI cache = BloomFilterFactory.newBloomFilter(); 
-		cache.create(initialSize, fpp);
-		cache.add(resource);
-		caches.add(cache); 
-		logger.info("New BF created! ");
+		try {
+			BloomFilterI cache = BloomFilterFactory.newBloomFilter();
+			cache.create(initialSize, fpp);
+			cache.add(resource);
+			caches.add(cache);
+			logger.info("New BF created! ");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -85,5 +87,5 @@ public class BloomFilterCache {
 	public void empty() {
 		caches = null;
 	}
-	
+
 }

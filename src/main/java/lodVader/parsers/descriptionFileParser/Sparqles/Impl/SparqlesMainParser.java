@@ -4,7 +4,6 @@
 package lodVader.parsers.descriptionFileParser.Sparqles.Impl;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -58,10 +57,10 @@ public class SparqlesMainParser extends MetadataParser {
 	 *            CkanResource
 	 * @return the DistributionDB instance
 	 */
-	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB) {
+	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB, String sparqlGraph) {
 
 		return addDistribution(url, false, title, format, url, datasetDB.getID(), datasetDB.getTitle(), getParserName(),
-				repositoryAddress);
+				repositoryAddress, sparqlGraph);
 
 	}
 
@@ -92,16 +91,18 @@ public class SparqlesMainParser extends MetadataParser {
 				// if (go)
 				if (distributions.size() > 0) {
 
-					for (String s : distributions) {
+					for (String graph : distributions) {
+						String queryPart = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + graph + "> { ?s ?p ?o } }";
 						String uri = e.uri + "?query="
-								+ URLEncoder.encode("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + s + "> { ?s ?p ?o } }");
+								+ queryPart;
+						// URLEncoder.encode(
 						if(!uri.contains("openlink"))
-							saveDistribution(uri, uri, "sparql", dataset);
+							saveDistribution(uri, uri, "sparql", dataset,graph );
 					}
 				}
 
 			} catch (IOException e1) {
-				saveDistribution(e.uri, e.uri, "sparql", dataset);
+				saveDistribution(e.uri, e.uri, "sparql", dataset, null);
 				System.out.println("Error: " + e1.getMessage());
 			}
 

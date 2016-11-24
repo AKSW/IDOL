@@ -84,6 +84,12 @@ public class DistributionDB extends DBSuperClass {
 	public static final String NUMBER_OF_TRIPLES = "numberOfTriples";
 
 	public static final String NUMBER_OF_LITERALS = "numberOfLiterals";
+	
+	public static final String SPARQL_GRAPH = "sparqlGraph";
+	
+	public static final String SPARQL_COUNT = "sparqlCount";
+	
+	
 
 	public enum DistributionStatus {
 
@@ -204,9 +210,26 @@ public class DistributionDB extends DBSuperClass {
 		return getField(FORMAT).toString();
 	}
 
+	public void setSparqlCount(int count) {
+		addField(SPARQL_COUNT, count);
+	}
+	
+	public void setSparqlGraph(String graph) {
+		addField(SPARQL_GRAPH, graph);
+	}	
+	
 	public void setFormat(String format) {
 		addField(FORMAT, format);
 	}
+	
+	public int getSparqlCount(){
+		return ((Number) getField(SPARQL_COUNT)).intValue();
+	}
+	
+	public String getSparqlGraph(){
+		return getField(SPARQL_GRAPH).toString();
+	}
+	
 
 	public String getLastMsg() {
 

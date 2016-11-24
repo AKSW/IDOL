@@ -11,6 +11,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lodVader.utils.ConnectionUtils;
+import lodVader.utils.SPARQLUtils;
+import lodVader.utils.URLUtils;
+
 /**
  * @author Ciro Baron Neto
  * 
@@ -27,16 +31,18 @@ public class SparqlesHelper {
 	 * @throws IOException
 	 */
 	public Collection<String> getDistributions(String endpointAddress) throws IOException {
+		
+		SPARQLUtils sparqlUtils = new SPARQLUtils();
 
 		String downloadURL = endpointAddress + "?query="
-				+ URLEncoder.encode("select distinct ?g where { graph ?g {?s ?p ?o} }");
+				+ URLEncoder.encode(sparqlUtils.getGraphQuery());
 
 		logger.info("Loading distribution within endpoint: " + endpointAddress);
 		List<String> distributions = null;
 		
-		SparqlesConnection conn = new SparqlesConnection();
+		ConnectionUtils conn = new ConnectionUtils();
 
-		SparqlesDistributionParser parser = new SparqlesRDFParser(conn.getStream(downloadURL, SparqlesConnection.TTL_HEADER));
+		SparqlesDistributionParser parser = new SparqlesRDFParser(conn.getStream(downloadURL, ConnectionUtils.TTL_HEADER));
 		/**
 		 * Try to parse RDF
 		 */

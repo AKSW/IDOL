@@ -51,7 +51,7 @@ public class DistributionServices {
 	}
 
 	public DistributionDB saveDistribution(String uri, boolean isVocab, String title, String format, String downloadURL,
-			String topDataset, String topDatasetTitle, String dataSource, String repository) {
+			String topDataset, String topDatasetTitle, String dataSource, String repository, String sparqlGraph) {
 
 		DistributionDB distributionDB;
 
@@ -74,10 +74,11 @@ public class DistributionServices {
 			try {
 				distributionDB.setDownloadUrl(downloadURL);
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				e.printStackTrace(); 
 			}
 			distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
 			distributionDB.setTopDataset(topDataset);
+			distributionDB.setSparqlGraph(sparqlGraph);
 			distributionDB.setTopDatasetTitle(topDatasetTitle);
 			distributionDB.setStatus(DistributionStatus.WAITING_TO_STREAM);
 			distributionDB.setIsVocabulary(isVocab);

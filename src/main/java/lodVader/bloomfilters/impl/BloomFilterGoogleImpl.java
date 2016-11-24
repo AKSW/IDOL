@@ -1,5 +1,6 @@
 package lodVader.bloomfilters.impl;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,7 +40,7 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 	 */
 	public boolean create(int initialSize, double fpp) {
 		if (fpp > 1)
-			fpp = 0.000000001;
+			fpp = 0.000_000_1;
 
 		if (filter == null)
 			filter = BloomFilter.create(funnel, initialSize, fpp);
@@ -111,7 +112,7 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 	 * @see bloomfilter.BloomFilterI#writeTo(java.io.OutputStream)
 	 */
 	public void writeTo(OutputStream out) throws IOException {
-		filter.writeTo(out);
+		filter.writeTo(new BufferedOutputStream(out));
 	}
 
 	/* (non-Javadoc)

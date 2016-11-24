@@ -9,16 +9,12 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import arq.sparql;
+import lodVader.utils.ConnectionUtils;
 
 /**
  * @author Ciro Baron Neto
@@ -28,7 +24,7 @@ import arq.sparql;
 public class SparqlesXMLParser implements SparqlesDistributionParser {
 	final static Logger logger = LoggerFactory.getLogger(SparqlesXMLParser.class);
 
-	SparqlesConnection conn = new SparqlesConnection();
+	ConnectionUtils conn = new ConnectionUtils();
 	
 	/*
 	 * (non-Javadoc)

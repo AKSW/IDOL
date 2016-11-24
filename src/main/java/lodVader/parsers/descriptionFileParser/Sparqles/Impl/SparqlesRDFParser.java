@@ -48,7 +48,7 @@ public class SparqlesRDFParser implements SparqlesDistributionParser {
 			Model m = ModelFactory.createDefaultModel();
 			m.read(stream, null, "TTL");
 
-			StmtIterator stmti = m.listStatements(null, RDFResourcesTags.rdfResource, (RDFNode) null);
+			StmtIterator stmti = m.listStatements(null, RDFResourcesTags.resValue, (RDFNode) null);
 			while (stmti.hasNext()) {
 				r.add(stmti.next().getObject().toString());
 			}

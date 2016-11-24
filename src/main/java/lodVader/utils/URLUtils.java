@@ -1,6 +1,7 @@
 package lodVader.utils;
 
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 
 public class URLUtils {
 	
@@ -8,4 +9,8 @@ public class URLUtils {
 		if (!url.startsWith("http"))
 			throw new MalformedURLException("Bad URL: " + url);
 	}
+	
+	
+
+	
 } 

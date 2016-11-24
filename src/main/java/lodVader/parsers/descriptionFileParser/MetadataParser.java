@@ -80,14 +80,13 @@ public abstract class MetadataParser {
 	 * @param repository the repository which holds the distribution
 	 * @return the distribution 
 	 */
-	public DistributionDB addDistribution(String uri, boolean isVocab, String title, String format, String downloadURL, String topDataset, String topDatasetTitle, String datasource, String repository){
+	public DistributionDB addDistribution(String uri, boolean isVocab, String title, String format, String downloadURL,
+			String topDataset, String topDatasetTitle, String datasource, String repository, String sparqlGraph){
 		DistributionDB d = distributionServices.saveDistribution(uri, isVocab, title, format, downloadURL,
-				topDataset, topDatasetTitle, datasource, repository);
+				topDataset, topDatasetTitle, datasource, repository, sparqlGraph);
 		addDistribution(d);
 		return d;
-	}
-	
-	
+	}	
 	
 	
 	

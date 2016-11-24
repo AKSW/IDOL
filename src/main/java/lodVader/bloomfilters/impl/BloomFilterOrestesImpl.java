@@ -38,7 +38,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 	public boolean create(int initialSize, double fpp) {
 
 		if (fpp > 1)
-			fpp = 0.0000001;
+			fpp = 0.000_000_1;
 		if (initialSize < 500)
 			initialSize = 500;
 		
@@ -46,7 +46,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 		// carter
 
 		if (bf == null)
-			bf = new FilterBuilder(initialSize, 0.0000001)
+			bf = new FilterBuilder(initialSize, fpp)
 //					bf = new FilterBuilder()
 //					.expectedElements(initialSize)
 //					.size(820000*8)

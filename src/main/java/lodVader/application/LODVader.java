@@ -64,7 +64,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 25;
+	int numberOfThreads = 8;
 
 	/**
 	 * Count unique triples
@@ -74,16 +74,16 @@ public class LODVader {
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = true;
-	boolean streamFromInternet = true;
-	boolean createDumpOnDisk = true;
+	boolean streamDistribution = false;
+	boolean streamFromInternet = false;
+	boolean createDumpOnDisk = false;
 	boolean processStatisticalData = false;
 	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
 	 */
-	boolean parseSparqles = false;
+	boolean parseSparqles = true;
 	boolean parseLOV = false;
 	boolean parseDBpedia = false;
 	// boolean parseDBpedia = true;
@@ -125,9 +125,9 @@ public class LODVader {
 		 * Stream and process distributions
 		 */
 		if (streamDistribution)
-			// streamDistributions(DistributionDB.DistributionStatus.DONE);
+			 streamDistributions(DistributionDB.DistributionStatus.ERROR);
 			// streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
-			streamDistributions(null);
+//			streamDistributions(null);
 
 		// detectDatasets();
 
@@ -135,6 +135,9 @@ public class LODVader {
 
 	}
 
+	/**
+	 * Count unique triples per datasource
+	 */
 	public void countUniqPerDatasource() {
 		new DatasourcesUniqTriples(new LOVParser()).count();
 		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
@@ -178,7 +181,8 @@ public class LODVader {
 		 * Parsing Sparqles
 		 */
 		if (parseSparqles) {
-			loader.load(new SparqlesMainParser("http://sparqles.ai.wu.ac.at/api/endpoint/list"));
+//			loader.load(new SparqlesMainParser("http://sparqles.ai.wu.ac.at/api/endpoint/list"));
+			loader.load(new SparqlesMainParser("http://localhost/dbpedia/sparqllist.json"));
 			loader.parse();
 		}
 

@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.AbstractList;
 import java.util.Iterator;
 
-import com.fasterxml.jackson.core.base.GeneratorBase;
-
 /**
  * This class uses a file to store and manage a list
  * 
@@ -151,7 +149,7 @@ public class FileList<T> extends AbstractList<T> implements Iterator<T> {
 	private void openBufferedReader() {
 		if (br == null) {
 			try {
-				br = new BufferedReader(new FileReader(new File(path + fileName)));
+				br = new BufferedReader(new FileReader(new File(path + fileName)), 1024*8*32);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
