@@ -189,7 +189,7 @@ public class FormatsUtils {
 			add("rdf+xml ");
 			add("rdf xml");
 			add("rdfxml");
-			add("xml");
+//			add("xml");
 		}
 	};
 
