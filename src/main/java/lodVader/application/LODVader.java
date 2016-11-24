@@ -74,16 +74,16 @@ public class LODVader {
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = false;
-	boolean streamFromInternet = false;
-	boolean createDumpOnDisk = false;
+	boolean streamDistribution = true;
+	boolean streamFromInternet = true;
+	boolean createDumpOnDisk = true;
 	boolean processStatisticalData = false;
 	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
 	 */
-	boolean parseSparqles = true;
+	boolean parseSparqles = false;
 	boolean parseLOV = false;
 	boolean parseDBpedia = false;
 	// boolean parseDBpedia = true;
