@@ -150,19 +150,4 @@ public class DatasourcesUniqTriples {
 	}
 	
 	
-	
-	public static void main(String[] args) {
-		Timer t = new Timer();
-		t.startTimer();
-		for (int i=0;i<10_000_000; i++){
-			String s = 1 + "asad " + " sadasdasdasd " + i + "fdffdfdf.";
-			if(i%100==0){
-				String g = "ls";
-			}
-			
-		}
-		System.out.println(t.stopTimer());
-	}
-	
-	
 }
