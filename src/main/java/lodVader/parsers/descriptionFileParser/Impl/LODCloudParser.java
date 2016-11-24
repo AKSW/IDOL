@@ -165,7 +165,7 @@ public class LODCloudParser extends MetadataParser {
 			// streamProcessor.setExtension(FilenameUtils.getExtension(streamProcessor.getFileName()));
 			// }
 
-		} catch (IOException | LODVaderLODGeneralException e) {
+		} catch (IOException  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
