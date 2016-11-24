@@ -387,7 +387,7 @@ public class LODVader {
 			 * with the same id, do not stream again
 			 */
 			SaveDumpDataProcessor saveDumpDataProcessor = null;
-			if (!new File(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + distribution.getID()).exists())
+//			if (!new File(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + distribution.getID()).exists())
 				if (createDumpOnDisk) {
 					saveDumpDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
 					coreStream.getPipelineProcessor().registerProcessor(saveDumpDataProcessor);
