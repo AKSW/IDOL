@@ -119,6 +119,8 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 			// Try with TTL
 
 			try {
+				logger.info("Maybe we've got the wrong format.. trying TTL");
+
 				inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 				inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
 				rdfFormat = FormatsUtils.getEquivalentFormat("ttl");
@@ -128,6 +130,8 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 			} catch (RDFParseException | RDFHandlerException e2) {
 				
 				try {
+					logger.info("Maybe we've got the wrong format.. trying RDF");
+
 					// try with RDF
 					inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 					inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
@@ -137,7 +141,9 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 
 				} catch (RDFParseException | RDFHandlerException e3) {
 					
-					// try with RDF
+					logger.info("Maybe we've got the wrong format.. trying NT");
+
+					// try with NT
 					inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 					inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
 					rdfFormat = FormatsUtils.getEquivalentFormat("nt");
