@@ -29,9 +29,9 @@ public class DatasourcesUniqTriples {
 
 	MetadataParser parser = null;
 
-	int bfSize = 750_000_000 ;
+	int bfSize = 75_000 ;
 
-	long limit = 750_000_000 ;
+	long limit = 75_000 ;
 
 	boolean keepProcessing = false;
 
@@ -91,12 +91,12 @@ public class DatasourcesUniqTriples {
 				}
 				f.close();
 			} catch (Exception e) {
-				// logger.error(e.getMessage());
+				 logger.error(e.getMessage());
 			}
 		}
 
 		while (keepProcessing) {
-			logger.info("Reading file: " + "/home/ciro/lodvaderdata/" + fileName + 1);
+			logger.info("Reading file: " + LODVaderProperties.TMP_FOLDER + fileName + 1);
 			logger.info("Triples on file: " + formatter.format(triplesInFile));
 //			bf = new BloomFilterCache(bfSize, 0.000_01);
 			bf = BloomFilterFactory.newBloomFilter();
@@ -112,9 +112,11 @@ public class DatasourcesUniqTriples {
 			fileStatement2.close();
 			fileStatement1.close();
 
-			new File("/home/ciro/lodvaderdata/" + fileName + 2)
-					.renameTo(new File("/home/ciro/lodvaderdata/" + fileName + 1));
-			fileStatement2 = new FileStatement("/home/ciro/lodvaderdata/", fileName + 2);
+			new File( LODVaderProperties.TMP_FOLDER + fileName + 2)
+					.renameTo(new File( LODVaderProperties.TMP_FOLDER + fileName + 1));
+			fileStatement2.clear();
+
+			fileStatement2 = new FileStatement( LODVaderProperties.TMP_FOLDER, fileName + 2);
 
 		}
 

@@ -63,7 +63,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 18;
+	int numberOfThreads = 8;
 
 	/**
 	 * Count unique triples
@@ -85,7 +85,7 @@ public class LODVader {
 	boolean parseSparqles = false;
 	boolean parseLOV = false;
 	boolean parseDBpedia = false;
-	// boolean parseDBpedia = true;
+//	 boolean parseDBpedia = true;
 	boolean parseLaundromat = false;
 	boolean parseLODCloud = false;
 	boolean parseRE3 = false;
