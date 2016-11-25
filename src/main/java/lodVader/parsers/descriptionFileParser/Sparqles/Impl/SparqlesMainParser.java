@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +32,8 @@ public class SparqlesMainParser extends MetadataParser {
 	final static Logger logger = LoggerFactory.getLogger(SparqlesMainParser.class);
 
 	String repositoryAddress;
+	
+	int threads = 20;
 
 	/**
 	 * Constructor for Class LodCloudParser
@@ -57,7 +63,8 @@ public class SparqlesMainParser extends MetadataParser {
 	 *            CkanResource
 	 * @return the DistributionDB instance
 	 */
-	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB, String sparqlGraph, String sparqlEndpoint) {
+	public DistributionDB saveDistribution(String url, String title, String format, DatasetDB datasetDB,
+			String sparqlGraph, String sparqlEndpoint) {
 
 		return addDistribution(url, false, title, format, url, datasetDB.getID(), datasetDB.getTitle(), getParserName(),
 				repositoryAddress, sparqlGraph, sparqlEndpoint);
@@ -74,42 +81,52 @@ public class SparqlesMainParser extends MetadataParser {
 
 		Collection<SparqlesAPIEndpoint> list = new JsonSparqlesAPIConverter(repositoryAddress).getList();
 
-		// boolean go = false;
+		ExecutorService ex = Executors.newFixedThreadPool(threads);
 
 		for (SparqlesAPIEndpoint e : list) {
 
-			// if (e.uri.equals("http://aemet.linkeddata.es/sparql"))
-			// go = true;
+			Runnable r = () -> {
 
-			logger.info("* * * * * " + e.uri + " * * * * ");
-			List<Dataset> datasets = new ArrayList<>(e.datasets);
+				logger.info("* * * * * " + e.uri + " * * * * ");
+				List<Dataset> datasets = new ArrayList<>(e.datasets);
 
-			DatasetDB dataset = null;
-			try {
-				dataset = saveDataset(e.uri, e.uri);
-				List<String> distributions = new ArrayList<>(new SparqlesHelper().getDistributions(e.uri));
-				// if (go)
-				if (distributions.size() > 0) {
+				DatasetDB dataset = null;
+				try {
+					dataset = saveDataset(e.uri, e.uri);
+					List<String> distributions = new ArrayList<>(new SparqlesHelper().getDistributions(e.uri));
+					// if (go)
+					if (distributions.size() > 0) {
 
-					for (String graph : distributions) {
-						String queryPart = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + graph + "> { ?s ?p ?o } }";
-						String uri = e.uri + "?query="
-								+ queryPart;
-						// URLEncoder.encode(
-						if(!uri.contains("openlink"))
-							saveDistribution(uri, uri, "sparql", dataset, graph, e.uri);
+						for (String graph : distributions) {
+							String queryPart = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + graph + "> { ?s ?p ?o } }";
+							String uri = e.uri + "?query=" + queryPart;
+							// URLEncoder.encode(
+							if (!uri.contains("openlink"))
+								saveDistribution(uri, uri, "sparql", dataset, graph, e.uri);
+						}
 					}
+
+				} catch (IOException e1) {
+					saveDistribution(e.uri, e.uri, "sparql", dataset, null, e.uri);
+					System.out.println("Error: " + e1.getMessage());
 				}
 
-			} catch (IOException e1) {
-				saveDistribution(e.uri, e.uri, "sparql", dataset, null, e.uri);
-				System.out.println("Error: " + e1.getMessage());
-			}
+				catch (NullPointerException e2) {
+					// TODO: handle exception
+				}
 
-			catch (NullPointerException e2) {
-				// TODO: handle exception
-			}
-
+			};
+			
+			ex.execute(r);
+		}
+		
+		ex.shutdown();
+		
+		try {
+			ex.awaitTermination(10, TimeUnit.DAYS);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 

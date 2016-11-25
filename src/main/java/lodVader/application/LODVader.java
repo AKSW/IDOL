@@ -61,20 +61,20 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 8;
+	int numberOfThreads = 2;
 
 	/**
 	 * Count unique triples
 	 */
-	boolean uniqPerDatasource = true;
+	boolean uniqPerDatasource = false;
 
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = false;
-	boolean streamFromInternet = false;
-	boolean createDumpOnDisk = false;
-	boolean processStatisticalData = false;
+	boolean streamDistribution = true;
+	boolean streamFromInternet = true;
+	boolean createDumpOnDisk = true;
+	boolean processStatisticalData = true;
 	boolean createBloomFilter = false;
 
 	/**
