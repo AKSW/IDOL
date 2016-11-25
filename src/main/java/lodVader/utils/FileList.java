@@ -139,7 +139,7 @@ public class FileList<T> extends AbstractList<T> implements Iterator<T> {
 	private void openBufferedWriter() {
 		if (bw == null) {
 			try {
-				bw = new BufferedWriter(new FileWriter(new File(path + fileName)));
+				bw = new BufferedWriter(new FileWriter(new File(path + fileName)), 1024*8*32);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

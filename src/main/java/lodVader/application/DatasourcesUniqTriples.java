@@ -6,17 +6,17 @@ package lodVader.application;
 import java.io.File;
 import java.text.DecimalFormat;
 
-import org.apache.tomcat.jni.Time;
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lodVader.bloomfilters.BloomFilterI;
+import lodVader.bloomfilters.impl.BloomFilterFactory;
 import lodVader.loader.LODVaderProperties;
 import lodVader.parsers.descriptionFileParser.MetadataParser;
 import lodVader.services.mongodb.MetadataParserServices;
 import lodVader.utils.BloomFilterCache;
 import lodVader.utils.FileStatement;
-import lodVader.utils.Timer;
 
 /**
  * @author Ciro Baron Neto
@@ -29,9 +29,9 @@ public class DatasourcesUniqTriples {
 
 	MetadataParser parser = null;
 
-	int bfSize = 750_000_000 * 2;
+	int bfSize = 750_000_000 ;
 
-	long limit = 750_000_000 * 2;
+	long limit = 750_000_000 ;
 
 	boolean keepProcessing = false;
 
@@ -41,7 +41,9 @@ public class DatasourcesUniqTriples {
 
 	FileStatement fileStatement2 = null;
 
-	BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_001);
+//	BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_001);
+	BloomFilterI bf = BloomFilterFactory.newBloomFilter();
+	
 
 	long uniq = 0;
 
@@ -63,6 +65,7 @@ public class DatasourcesUniqTriples {
 	public DatasourcesUniqTriples(MetadataParser parser) {
 		this.parser = parser;
 
+		bf.create(bfSize, 0.000_001);
 		fileName = "uniqExccess";
 		
 		new File(LODVaderProperties.TMP_FOLDER, fileName + 1).delete();
@@ -95,7 +98,9 @@ public class DatasourcesUniqTriples {
 		while (keepProcessing) {
 			logger.info("Reading file: " + "/home/ciro/lodvaderdata/" + fileName + 1);
 			logger.info("Triples on file: " + formatter.format(triplesInFile));
-			bf = new BloomFilterCache(bfSize, 0.000_01);
+//			bf = new BloomFilterCache(bfSize, 0.000_01);
+			bf = BloomFilterFactory.newBloomFilter();
+			bf.create(bfSize, 0.000_001);
 			triplesInFile = 0;
 			uniq = 0;
 			total = 0;
