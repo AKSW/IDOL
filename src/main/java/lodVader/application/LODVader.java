@@ -28,13 +28,11 @@ import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
-import lodVader.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
 import lodVader.parsers.descriptionFileParser.Impl.CLODParser;
 import lodVader.parsers.descriptionFileParser.Impl.DataIDParser;
 import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
-import lodVader.parsers.descriptionFileParser.Impl.RE3RepositoriesParser;
 import lodVader.parsers.descriptionFileParser.Sparqles.Impl.SparqlesMainParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
@@ -138,13 +136,13 @@ public class LODVader {
 	 * Count unique triples per datasource
 	 */
 	public void countUniqPerDatasource() {
-		new DatasourcesUniqTriples(new LOVParser()).count();
-		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
-		new DatasourcesUniqTriples(new LinghubParser(null)).count();
-		new DatasourcesUniqTriples(new DataIDParser(null)).count();
-		new DatasourcesUniqTriples(new CLODParser(null, null)).count();
-		new DatasourcesUniqTriples(new LODCloudParser()).count();
-		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
+//		new DatasourcesUniqTriples(new CLODParser(null, null)).count();
+//		new DatasourcesUniqTriples(new LOVParser()).count();
+//		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
+//		new DatasourcesUniqTriples(new LinghubParser(null)).count();
+//		new DatasourcesUniqTriples(new DataIDParser(null)).count();
+//		new DatasourcesUniqTriples(new LODCloudParser()).count();
+//		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
 
 	}
 
