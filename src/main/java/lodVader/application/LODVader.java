@@ -61,7 +61,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 2;
+	int numberOfThreads = 18;
 
 	/**
 	 * Count unique triples
@@ -74,13 +74,13 @@ public class LODVader {
 	boolean streamDistribution = true;
 	boolean streamFromInternet = true;
 	boolean createDumpOnDisk = true;
-	boolean processStatisticalData = true;
+	boolean processStatisticalData = false;
 	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
 	 */
-	boolean parseSparqles = false;
+	boolean parseSparqles = true;
 	boolean parseLOV = false;
 	boolean parseDBpedia = false;
 //	 boolean parseDBpedia = true;
@@ -178,8 +178,8 @@ public class LODVader {
 		 * Parsing Sparqles
 		 */
 		if (parseSparqles) {
-//			loader.load(new SparqlesMainParser("http://sparqles.ai.wu.ac.at/api/endpoint/list"));
-			loader.load(new SparqlesMainParser("http://localhost/dbpedia/sparqllist.json"));
+			loader.load(new SparqlesMainParser("http://sparqles.ai.wu.ac.at/api/endpoint/list"));
+//			loader.load(new SparqlesMainParser("http://localhost/dbpedia/sparqllist.json"));
 			loader.parse();
 		}
 
