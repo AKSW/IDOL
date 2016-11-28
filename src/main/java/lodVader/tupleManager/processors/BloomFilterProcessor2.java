@@ -117,12 +117,11 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 			collection = BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES;
 		}
 
-		
 		/**
 		 * Creating a bloom filter
 		 */
 		BloomFilterI bloomFilter = BloomFilterFactory.newBloomFilter();
-		bloomFilter.create(list.size(), 0.0000001);
+		bloomFilter.create(list.size(), 0.000_01);
 
 		String line;
 		NSUtils nsUtils = new NSUtils();
@@ -177,14 +176,14 @@ public class BloomFilterProcessor2 implements BasicProcessorInterface {
 			// GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
 		}
 
-		
 		/**
-		 * Saving the bucket
+		 * Saving buckets
 		 */
-		BucketDB bucket = new BucketDB(collection, bloomFilter, distribution.getID(), 0, null, null);
-		new BucketService().removeBucket(collection, distribution.getID());
-		new BucketService().saveBucket(bucket);
-				
+		if (type == TYPE_OF_FILE.SUBJECT || type == TYPE_OF_FILE.TRIPLES) {
+			BucketDB bucket = new BucketDB(collection, bloomFilter, distribution.getID(), 0, null, null);
+			new BucketService().removeBucket(collection, distribution.getID());
+			new BucketService().saveBucket(bucket);
+		}
 		list.close();
 
 		return resources;

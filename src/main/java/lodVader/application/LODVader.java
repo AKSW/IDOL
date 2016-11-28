@@ -61,7 +61,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 18;
+	int numberOfThreads = 6;
 
 	/**
 	 * Count unique triples
@@ -72,15 +72,15 @@ public class LODVader {
 	 * Streaming and processing
 	 */
 	boolean streamDistribution = true;
-	boolean streamFromInternet = true;
-	boolean createDumpOnDisk = true;
+	boolean streamFromInternet = false;
+	boolean createDumpOnDisk = false;
 	boolean processStatisticalData = false;
-	boolean createBloomFilter = false;
+	boolean createBloomFilter = true;
 
 	/**
 	 * Parsing options
 	 */
-	boolean parseSparqles = true;
+	boolean parseSparqles = false;
 	boolean parseLOV = false;
 	boolean parseDBpedia = false;
 //	 boolean parseDBpedia = true;
@@ -123,7 +123,8 @@ public class LODVader {
 		 */
 		if (streamDistribution)
 //			 streamDistributions(DistributionDB.DistributionStatus.ERROR);
-			 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+//		 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+			 streamDistributions(DistributionDB.DistributionStatus.DONE);
 //			streamDistributions(null);
 
 		// detectDatasets();
@@ -232,6 +233,7 @@ public class LODVader {
 		}
 
 	}
+	
 
 	public void streamDistributions(DistributionDB.DistributionStatus status) {
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
