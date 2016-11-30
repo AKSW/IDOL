@@ -57,7 +57,7 @@ public class LinksetDetectorBFImpl extends LODVaderIntersectionPlugin{
 	/* (non-Javadoc)
 	 * @see lodVader.application.subsetdetection.SubsetDetectionI#detectSubsets()
 	 */
-	@Override
+//	@Override
 	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution, List<String> targetDistributionsIDs) {
 		
 		HashMap<String, Double> returnMap = new HashMap<String, Double>();
