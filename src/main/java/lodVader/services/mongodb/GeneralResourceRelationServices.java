@@ -58,7 +58,8 @@ public class GeneralResourceRelationServices {
 
 		BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distriutionID);
 		GeneralResourceRelationDB.getCollection(collection.toString()).find(query).forEach((object) -> {
-			resourcesIDs.add(object.get(GeneralResourceRelationDB.PREDICATE_ID).toString());
+			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() >= 500)
+				resourcesIDs.add(object.get(GeneralResourceRelationDB.PREDICATE_ID).toString());
 		});
 
 		return resourcesIDs;
