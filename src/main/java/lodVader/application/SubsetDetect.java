@@ -105,9 +105,11 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 			logger.info("0 distriutions overlaps namespaces with " + distribution.getTitle());
 			return;
 		} else
-			logger.info("Another " + targetDistributionsNamespaces.size() + " distriutions overlaps namespaces with "
+			logger.info("Another " + targetDistributionsNamespaces.size() + " distriution(s) overlap namespaces with "
 					+ distribution.getTitle());
-
+		logger.info("Distribution size: "+distribution.getNumberOfTriples());
+		
+		
 		/**
 		 * Get filters for target distributions
 		 */
