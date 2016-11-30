@@ -247,27 +247,5 @@ public class FileList<T> extends AbstractList<T> implements Iterator<T> {
 		return super.iterator();
 	}
 
-//	public static void main(String[] args) {
-//		FileList<Integer> f = new FileList<>("/tmp", "oiii");
-//
-//		f.add(234);
-//		f.add(234444);
-//		f.add(2324);
-//		f.add(234);
-//
-//		f.close();
-//		
-//
-//
-//		for (Integer s : f) {
-//			System.out.println(f.next());
-//		}
-//		for (Integer s : f) {
-//			System.out.println(f.next());
-//		}
-//		System.out.println(f.size());
-//		f.clear();
-//
-//	}
 
 }

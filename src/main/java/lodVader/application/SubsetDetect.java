@@ -256,7 +256,8 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 				if (bf.compare(resource))
 					r++;
 			}
-			resources  = new HashSet<>();
+			resources  = null;
+			resources = new HashSet<>();
 		}
 
 	}
