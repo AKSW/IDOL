@@ -202,6 +202,8 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 				distribution.getID()).iterator().hasNext()) {
 			return false;
 		}
+		if(distribution.getNumberOfTriples() < 1000)
+			return false;
 
 		return true;
 	}

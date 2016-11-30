@@ -53,49 +53,7 @@ public class CachedBucketService  {
 	 * @return a hashmap where the key if the distributionID and the values are
 	 *         bloom filters
 	 */
-//	public HashMap<String, BloomFilterI> getDistributionFilters(Collection<String> distributionsIDs) {
-//
-//		HashSet<String> distributionsIDsSet = new HashSet<>(distributionsIDs);
-//		HashSet<String> distributionsToBeRemoved = new HashSet<>();
-//		HashSet<String> distributionsToBeLoaded = new HashSet<>();
-//
-//		// if the cache is not required, reduce the ttl
-//		for (String cache : bfCache.keySet()) {
-//			if (!distributionsIDsSet.contains(cache)) {
-//				bfCache.get(cache).ttl--;
-//				if (bfCache.get(cache).ttl == 0) {
-//					distributionsToBeRemoved.add(cache);
-//				}
-//			} else {
-//				distributionsToBeLoaded.add(cache);
-//			}
-//		}
-//
-//		// remove the distributions that are not being used frequently
-//		for (String s : distributionsToBeRemoved) {
-//			bfCache.remove(s);
-//		}
-//
-//		// load the distributions which are not cached
-//		HashMap<String, List<BloomFilterI>> newFilters = bucketService.getDistributionFilters(collection,
-//				distributionsToBeLoaded);
-//		newFilters.forEach((String s, List<BloomFilterI> l) -> {
-//			BFCache cache = new BFCache();
-//			cache.distributionId = s;
-//			cache.bf = l.iterator().next();
-//			bfCache.put(s, cache);
-//		});
-//
-//		// return the required filters
-//		HashMap<String, BloomFilterI> r = new HashMap<>();
-//		for(String s : distributionsIDs){
-//			r.put(s, bfCache.get(s).bf);
-//		}
-//		
-//		logger.info(1- distributionsToBeLoaded.size()/distributionsIDs.size() + "% of filters already cached.");
-//
-//		return r;
-//	}
+
 	
 	public void clear(){
 		bfCache = null;
