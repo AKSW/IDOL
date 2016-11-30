@@ -105,7 +105,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 		} else
 			logger.info("Another " + targetDistributionsNamespaces.size() + " distriution(s) overlap namespaces with "
 					+ distribution.getTitle());
-		logger.info("Distribution size: "+distribution.getNumberOfTriples());
+		logger.info("Distribution size: "+formatter.format(distribution.getNumberOfTriples()));
 		
 		
 		/**
@@ -147,6 +147,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 		 */
 		FileStatement triples = new FileStatement(LODVaderProperties.RAW_FILE_PATH + distribution.getID());
 		int count = 0;
+		int countTotal = 0;
 
 		while (triples.hasNext()) {
 			Statement st = triples.getStatement();
@@ -156,6 +157,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 
 			// for each resource, get the namespace
 			String ns = nsUtils.getNS0(resource);
+			countTotal++;
 
 			if (!ns.equals("")) {
 
@@ -173,7 +175,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 
 				// run extractors every 20.000 iterations
 				if (++count % runExtractor == 0) {
-					logger.info("Running extractors... (" + formatter.format(count) + ") triples.");
+					logger.info("Running extractors... (" + formatter.format(count) + ") triples, "+ formatter.format((countTotal-distribution.getNumberOfTriples())) + " remaining.");
 
 					runExtractor();
 				}
