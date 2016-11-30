@@ -206,6 +206,8 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 		}
 		if(distribution.getNumberOfTriples() < 1000)
 			return false;
+		if(distribution.getDownloadUrl().contains("dbpedia"))
+			return false;
 
 		return true;
 	}
