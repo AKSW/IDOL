@@ -15,9 +15,6 @@ import java.util.concurrent.TimeUnit;
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.xml.PluggableSchemaResolver;
-
-import com.mongodb.BasicDBObject;
 
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.loader.LODVaderProperties;
@@ -30,6 +27,7 @@ import lodVader.services.mongodb.GeneralResourceRelationServices;
 import lodVader.services.mongodb.GeneralResourceServices;
 import lodVader.utils.FileStatement;
 import lodVader.utils.NSUtils;
+import lodVader.utils.Timer;
 
 /**
  * @author Ciro Baron Neto
@@ -212,6 +210,8 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 
 	private void runExtractor() {
 
+		Timer t = new Timer();
+		t.startTimer();
 		ex = Executors.newFixedThreadPool(8);
 		for (String dist : extractorSet.keySet()) {
 			ex.submit(extractorSet.get(dist));
@@ -224,6 +224,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		logger.info("Extractor timer: "+t.stopTimer());
 
 	}
 
