@@ -89,8 +89,7 @@ public class DistributionDB extends DBSuperClass {
 	
 	public static final String SPARQL_COUNT = "sparqlCount";
 	
-	public static final String SPARQL_ENDPOINT = "sparqlEndpoint";
-	
+	public static final String SPARQL_ENDPOINT = "sparqlEndpoint";	
 	
 
 	public enum DistributionStatus {

@@ -84,7 +84,7 @@ public class GeneralResourceRelationServices {
 			String ns = object.get(GeneralResourceRelationDB.PREDICATE_ID).toString();
 
 			// filter distributions which contains at least 50 resources
-			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() > 50)
+			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() >= 500)
 				if (distributionsIDs.get(dist) == null) {
 					List<String> namespaces = new ArrayList<>();
 					namespaces.add(ns);

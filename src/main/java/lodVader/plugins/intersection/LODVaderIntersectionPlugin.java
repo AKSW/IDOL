@@ -10,6 +10,7 @@ import java.util.List;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.mongodb.collections.DistributionDB;
 import lodVader.plugins.LODVaderPlugin;
 
 /**
@@ -87,7 +88,17 @@ public abstract class LODVaderIntersectionPlugin extends LODVaderPlugin {
 			object.put(LODVaderIntersectionPlugin.IMPLEMENTATION, implementationName);
 			list.add(object);
 		}
+		
+		DBObject object = new BasicDBObject();
+		object.put(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION, sourceDistribution);
+		object.put(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION, sourceDistribution);
+		object.put(LODVaderIntersectionPlugin.VALUE, -1);
+		object.put(LODVaderIntersectionPlugin.IMPLEMENTATION, implementationName);
+		list.add(object);
+		
 		getDB().bulkSave2(list);
+		
+		
 	}
 	
 

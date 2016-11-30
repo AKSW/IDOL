@@ -133,13 +133,15 @@ public class CachedBucketService  {
 		// make query
 		HashMap<String, List<BloomFilterI>> queryResult = new BucketService()
 				.getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionsQuery);
+		
+		logger.info(queryResult.size()+ " filter loaded from database. Total in cache: "+bfCache.size());
 
 		// update cache list
 		for (String id : queryResult.keySet()) {
 			BFCache c = new BFCache();
 			c.bf = queryResult.get(id).iterator().next();
 			c.distributionId = id;
-			c.ttl = 10;
+			c.ttl = 100;
 			bfCache.put(id, c);
 		}
 		
@@ -160,9 +162,22 @@ public class CachedBucketService  {
 		HashMap<String, BloomFilterI> r = new HashMap<>();
 		for(String s : distributions){
 			r.put(s, bfCache.get(s).bf);
+			 bfCache.get(s).ttl++;
 		}
 		
-//		logger.info(1- distributionsToBeLoaded.size()/distributionsIDs.size() + "% of filters already cached.");
+		// remove filters which were not used over the last 100 requests
+		List<String> removeFilters = new ArrayList<>();
+		for(String s : distributions){
+			 bfCache.get(s).ttl--;
+			 if(bfCache.get(s).ttl == 0)
+				 removeFilters.add(s);
+		}
+		for(String s : removeFilters){
+			bfCache.remove(s);
+		}
+		if(removeFilters.size()>0)
+			logger.info(removeFilters.size()+ " filters were removed from the cache because they were not longer being used anymore");
+		
 		
 		return r;
 

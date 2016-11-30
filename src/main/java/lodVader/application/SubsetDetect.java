@@ -3,6 +3,7 @@
  */
 package lodVader.application;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,11 +15,15 @@ import java.util.concurrent.TimeUnit;
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.xml.PluggableSchemaResolver;
+
+import com.mongodb.BasicDBObject;
 
 import lodVader.bloomfilters.BloomFilterI;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
+import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.services.mongodb.CachedBucketService;
 import lodVader.services.mongodb.GeneralResourceRelationServices;
@@ -48,11 +53,13 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 	// map of distributionID -> subsetExtractor
 	HashMap<String, SubsetExtractor> extractorSet = new HashMap<>();
 
-	// run extractor every 5k iterations
-	int runExtractor = 20000;
+	// run extractor every 20k iterations
+	int runExtractor = 20_000;
 
 	// executor service which will run the exctractors
 	ExecutorService ex = null;
+
+	DecimalFormat formatter = new DecimalFormat("###,###,###,###,###");
 
 	/**
 	 * Constructor for Class LODVader.DetectSubsets
@@ -65,8 +72,10 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 	@Override
 	public void run() {
 		logger.info("Datasets to be processed: " + LODVader.distributionsBeingProcessed.decrementAndGet());
+		if (!shouldProcess())
+			return;
 
-		logger.info("Discovering subset for " + distribution.getTitle());
+		logger.info("Discovering subset for " + distribution.getDownloadUrl());
 
 		/**
 		 * Get all namespaces described by this distribution
@@ -148,22 +157,26 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 			// for each resource, get the namespace
 			String ns = nsUtils.getNS0(resource);
 
-			if (!ns.equals(""))
+			if (!ns.equals("")) {
 
 				// check all distribution which describe this particular
 				// namespace
 				if (namespaceDistributionMap.get(ns) != null) {
-				for (String dist : namespaceDistributionMap.get(ns)) {
+					for (String dist : namespaceDistributionMap.get(ns)) {
+						// add the resource to the correct distribution
+						// extractor
 
-				// add the resource to the correct distribution extractor
-				extractorSet.get(dist).addResource(triple);
+						extractorSet.get(dist).addResource(triple);
 
+					}
 				}
-				}
 
-			// run extractors every 5.000 iterations
-			if (++count % runExtractor == 0) {
-				runExtractor();
+				// run extractors every 20.000 iterations
+				if (++count % runExtractor == 0) {
+					logger.info("Running extractors... (" + formatter.format(count) + ") triples.");
+
+					runExtractor();
+				}
 			}
 
 		}
@@ -175,18 +188,27 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 
 		HashMap<String, Long> r = new HashMap<>();
 		for (String dist : extractorSet.keySet()) {
-			if (extractorSet.get(dist).r > 50)
+			if (extractorSet.get(dist).r > 500)
 				r.put(dist, extractorSet.get(dist).r);
 		}
 		save(r, distribution.getID());
 
 	}
 
-	public void runExtractor() {
+	private boolean shouldProcess() {
 
-		logger.info("Running extractors...");
+		GeneralQueriesHelper q = new GeneralQueriesHelper();
+		if (q.getObjects("PLUGIN_" + getPluginName(), LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION,
+				distribution.getID()).iterator().hasNext()) {
+			return false;
+		}
 
-		ex = Executors.newCachedThreadPool();
+		return true;
+	}
+
+	private void runExtractor() {
+
+		ex = Executors.newFixedThreadPool(8);
 		for (String dist : extractorSet.keySet()) {
 			ex.submit(extractorSet.get(dist));
 		}
