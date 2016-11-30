@@ -175,7 +175,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 
 				// run extractors every 20.000 iterations
 				if (++count % runExtractor == 0) {
-					logger.info("Running extractors... (" + formatter.format(count) + ") triples, "+ formatter.format((countTotal-distribution.getNumberOfTriples())) + " remaining.");
+					logger.info("Running extractors... (" + formatter.format(count) + ") triples, "+ formatter.format((distribution.getNumberOfTriples()-countTotal)) + " remaining.");
 
 					runExtractor();
 				}
