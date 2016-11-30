@@ -315,6 +315,7 @@ public class LODVader {
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 
 		for (DBObject object : distributionObjects) {
+			logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());
 			DistributionDB distribution = new DistributionDB(object);
 			executor.execute(new SubsetDetect(distribution));
 		}
