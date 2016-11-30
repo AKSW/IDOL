@@ -303,8 +303,9 @@ public class LODVader {
 //		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
 		andList.add(new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
 
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
-				new BasicDBObject("$and", andList), null, DistributionDB.URI, 1);
+//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
+//				new BasicDBObject("$and", andList), null, DistributionDB.URI, 1);
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
 
 		distributionsBeingProcessed.set(distributionObjects.size());
 		
