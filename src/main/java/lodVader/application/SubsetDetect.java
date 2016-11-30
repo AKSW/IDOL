@@ -64,6 +64,8 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 
 	@Override
 	public void run() {
+		logger.info("Datasets to be processed: " + LODVader.distributionsBeingProcessed.decrementAndGet());
+
 		logger.info("Discovering subset for " + distribution.getTitle());
 
 		/**
