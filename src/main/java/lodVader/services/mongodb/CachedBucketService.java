@@ -99,7 +99,7 @@ public class CachedBucketService  {
 			BFCache c = new BFCache();
 			c.bf = queryResult.get(id).iterator().next();
 			c.distributionId = id;
-			c.ttl = 100;
+			c.ttl = 20;
 			bfCache.put(id, c);
 		}
 		
