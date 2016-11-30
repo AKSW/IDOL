@@ -167,7 +167,7 @@ public class CachedBucketService  {
 		
 		// remove filters which were not used over the last 100 requests
 		List<String> removeFilters = new ArrayList<>();
-		for(String s : distributions){
+		for(String s : bfCache.keySet()){
 			 bfCache.get(s).ttl--;
 			 if(bfCache.get(s).ttl == 0)
 				 removeFilters.add(s);
