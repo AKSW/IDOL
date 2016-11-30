@@ -52,7 +52,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 	HashMap<String, SubsetExtractor> extractorSet = new HashMap<>();
 
 	// run extractor every 20k iterations
-	int runExtractor = 20_000;
+	int runExtractor = 5_000;
 
 	// executor service which will run the exctractors
 	ExecutorService ex = null;
