@@ -47,10 +47,10 @@ public class ConnectionUtils {
 	
 	
 	/**
-	 * Open a connection and return the stream
-	 * @param URL
-	 * @param accept
-	 * @return
+	 * Open a connection and return the response string
+	 * @param URL the URL to be opened
+	 * @param accept the accept header
+	 * @return the response
 	 * @throws IOException
 	 */
 	public String getResponseString(String URL, String accept) throws IOException {
@@ -68,11 +68,10 @@ public class ConnectionUtils {
 
 		StringBuilder builder = new StringBuilder();
 		 try {
-		   builder.append(IOUtils.toString( in ) );
+		   builder.append(IOUtils.toString( in ));
 		 } finally {
 		   IOUtils.closeQuietly(in);
 		 }
-		 
 		return builder.toString();
 	}
 	

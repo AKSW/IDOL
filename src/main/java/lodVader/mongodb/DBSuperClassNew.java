@@ -435,7 +435,7 @@ public class DBSuperClassNew <T> {
 	}
 	
 	/**
-	 * @param collection name 
+	 * @param relationCollection name 
 	 * Set the collection name value.
 	 */
 	public void setCollectionName(String collectionName) {

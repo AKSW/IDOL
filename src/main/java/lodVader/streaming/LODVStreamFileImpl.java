@@ -45,7 +45,7 @@ public class LODVStreamFileImpl implements LODVStreamInterface {
 
 		try {
 			logger.info("Loading: " + path + distribution.getID());
-			fileTriple = new FileStatement(path, "__RAW_" + distribution.getID());
+			fileTriple = new FileStatement(path+ distribution.getID());
 			int triples= 0;
 			while(fileTriple.hasNext()){
 				pipelineProcessor.handleStatement(fileTriple.getStatement());

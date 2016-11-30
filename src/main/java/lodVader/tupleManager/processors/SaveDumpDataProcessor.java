@@ -38,11 +38,11 @@ public class SaveDumpDataProcessor implements BasicProcessorInterface {
 	 */
 	public SaveDumpDataProcessor(DistributionDB distribution, String fileName) {
 		this.distribution = distribution;
-		triplesTmpFilePath = LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + fileName;
+		triplesTmpFilePath = LODVaderProperties.RAW_FILE_PATH + fileName;
 		FileUtils.createFolder(LODVaderProperties.BASE_PATH + "/raw_files/");
-		new File(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + fileName).delete();
+		new File(LODVaderProperties.RAW_FILE_PATH  + fileName).delete();
 		try {
-			new File(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + fileName).createNewFile();
+			new File(LODVaderProperties.RAW_FILE_PATH  + fileName).createNewFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

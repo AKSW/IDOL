@@ -8,11 +8,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
@@ -21,7 +21,6 @@ import lodVader.bloomfilters.BloomFilterI;
 import lodVader.bloomfilters.impl.BloomFilterFactory;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
-import lodVader.mongodb.collections.datasetBF.BucketDB.COLLECTIONS;
 
 /**
  * Some services for managing buckets
@@ -43,7 +42,7 @@ public class BucketService {
 	 *         bloom filters
 	 */
 	public HashMap<String, List<BloomFilterI>> getDistributionFilters(BucketDB.COLLECTIONS collection,
-			List<String> distributionsIDs) {
+			Collection<String> distributionsIDs) {
 
 		// get all distributions within the dataset
 

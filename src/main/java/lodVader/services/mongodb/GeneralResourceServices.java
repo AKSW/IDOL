@@ -4,6 +4,8 @@
 package lodVader.services.mongodb;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -52,6 +54,34 @@ public class GeneralResourceServices {
 				});
 
 		return resourcesURLs;
+	}
+	
+	/**
+	 * Get a map having namespace ID and namespace URL
+	 * @param resourcesIDs
+	 * @param collection
+	 * @return
+	 */
+	public HashMap<String, String> getSetOfResourcesInstances(List<String> resourcesIDs, GeneralResourceDB.COLLECTIONS collection) {
+
+		 HashMap<String, String>resourcesURLs = new HashMap<>();
+
+		BasicDBObject query = new BasicDBObject(GeneralResourceDB.ID,
+				new BasicDBObject("$in", transformIDsToObjectIDs(resourcesIDs)));
+		GeneralResourceDB.getCollection(collection.toString())
+				.find(query).forEach((object) -> {
+					GeneralResourceDB r = new GeneralResourceDB(collection, object);
+					resourcesURLs.put(r.getID(), r.getUri());
+				});
+
+		return resourcesURLs;
+	}
+	
+	private List<ObjectId> transformIDsToObjectIDs(List<String> ids){
+		List<ObjectId> r = new ArrayList<>();
+		for(String id : ids)
+			r.add(new ObjectId(id));
+		return r;
 	}
 	
 	

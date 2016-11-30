@@ -2,6 +2,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,6 +13,7 @@ import org.openrdf.model.Statement;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import lodVader.application.SubsetDetect;
 import lodVader.loader.LODVaderConfigurator;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.DBSuperClass;
@@ -64,6 +68,8 @@ public class BFTest {
 		for (int i = 0; i < 1_000; i++) {
 			Statement st = stmtUtils.createStatement("http://ns0.org/" + generateString(), "http://predicate.org",
 					"http://object.org/" + generateString());
+			d1stmt.add(st); st = stmtUtils.createStatement("http://ns02.org/" + generateString(), "http://predicate.org",
+					"http://object.org/" + generateString());
 			d1stmt.add(st);
 			if (i % 2 == 0)
 				d2stmt.add(st);
@@ -74,9 +80,31 @@ public class BFTest {
 
 		// intersection plugin
 
-		LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorBFIntersectImpl();
-		SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution1);
-		subsetService.saveSubsets();
+		
+		/**
+		 * detect subsets 2
+		 */
+//		LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorBFIntersectImpl();
+//		SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution1);
+//		subsetService.saveSubsets();
+		
+		
+		
+		/**
+		 * detect subsets 2
+		 */
+		
+		ExecutorService executor = Executors.newCachedThreadPool();
+		executor.execute(new SubsetDetect(distribution1));
+
+
+		executor.shutdown();
+		try {
+			executor.awaitTermination(20, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 
@@ -86,8 +114,8 @@ public class BFTest {
 		 * Remove files
 		 */
 
-		new File(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + distribution1.getID()).delete();
-		new File(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + distribution2.getID()).delete();
+		new File(LODVaderProperties.RAW_FILE_PATH + distribution1.getID()).delete();
+		new File(LODVaderProperties.RAW_FILE_PATH + distribution2.getID()).delete();
 	}
 
 	private void processDist(List<Statement> statements, DistributionDB distribution) {
@@ -99,7 +127,7 @@ public class BFTest {
 		rawDataProcessor.closeFile();
 
 		BloomFilterProcessor2 processor = new BloomFilterProcessor2(distribution);
-		LODVStreamInterface streamer = new LODVStreamFileImpl(LODVaderProperties.BASE_PATH + "/raw_files/");
+		LODVStreamInterface streamer = new LODVStreamFileImpl(LODVaderProperties.RAW_FILE_PATH);
 
 		streamer.getPipelineProcessor().registerProcessor(processor);
 		try {

@@ -23,6 +23,10 @@ public class FileStatement extends FileList<String> {
 	public FileStatement(String path, String fileName) {
 		super(path, fileName);
 	}
+	
+	public FileStatement(String fullPath) {
+		super(fullPath.split("__RAW_")[0],"__RAW_" + fullPath.split("__RAW_") [1]);
+	}
 
 	public void writeStatement(Statement st) {
 		add("<statement>");

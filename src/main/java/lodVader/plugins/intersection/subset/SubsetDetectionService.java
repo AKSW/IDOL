@@ -42,7 +42,8 @@ public abstract class SubsetDetectionService {
 	 */
 	public HashMap<String, Double> runDetector() {
 		loadTargetDatasetsIds();
-		return subsetDetector.runDetection(distribution, datasetsIDs);
+//		return subsetDetector.runDetection(distribution, datasetsIDs);
+		return null;
 	}
 
 	public abstract List<String> loadTargetDatasetsIds();
@@ -51,7 +52,8 @@ public abstract class SubsetDetectionService {
 		if (datasetsIDs == null) 
 			datasetsIDs = loadTargetDatasetsIds();
 
-		HashMap<String, Double> results = subsetDetector.runDetection(distribution, datasetsIDs);
+		HashMap<String, Double> results = null;
+//				subsetDetector.runDetection(distribution, datasetsIDs);
 
 		List<DBObject> list = new ArrayList<>();
 
@@ -60,7 +62,7 @@ public abstract class SubsetDetectionService {
 			object.put(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION, distribution.getID());
 			object.put(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION, result);
 			object.put(LODVaderIntersectionPlugin.VALUE, results.get(result).intValue());
-			object.put(LODVaderIntersectionPlugin.IMPLEMENTATION, subsetDetector.implementationName);
+//			object.put(LODVaderIntersectionPlugin.IMPLEMENTATION, subsetDetector.implementationName);
 			list.add(object);
 		}
 		subsetDetector.getDB().bulkSave2(list);

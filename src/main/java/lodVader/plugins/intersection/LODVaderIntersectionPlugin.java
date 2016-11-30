@@ -3,7 +3,13 @@
  */
 package lodVader.plugins.intersection;
 
-import lodVader.mongodb.collections.DistributionDB;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+
 import lodVader.plugins.LODVaderPlugin;
 
 /**
@@ -11,7 +17,7 @@ import lodVader.plugins.LODVaderPlugin;
  * 
  * Oct 13, 2016
  */
-public abstract class LODVaderIntersectionPlugin extends LODVaderPlugin implements LODVaderIntersectionAlgorithmI {
+public abstract class LODVaderIntersectionPlugin extends LODVaderPlugin {
 	
 	public String implementationName;
 
@@ -33,12 +39,12 @@ public abstract class LODVaderIntersectionPlugin extends LODVaderPlugin implemen
 	public static final String SOURCE_DISTRIBUTION = "sourceDistribution";
 	
 	public static final String TARGET_DISTRIBUTION = "targetDistribution";
-	
+
 	public static final String IMPLEMENTATION = "implementation";
+
 	
 	
 	public void setVariables() {
-		getDB().addMandatoryField(IMPLEMENTATION);
 		getDB().addMandatoryField(SOURCE_DISTRIBUTION);
 		getDB().addMandatoryField(TARGET_DISTRIBUTION);
 	}
@@ -51,13 +57,6 @@ public abstract class LODVaderIntersectionPlugin extends LODVaderPlugin implemen
 		return ((Number) getDB().getField(VALUE)).intValue();
 	}
 	
-	public void setSourceDistribution(DistributionDB sourceDistribution){
-		if(sourceDistribution.getID() == null){
-			sourceDistribution.find(true, DistributionDB.DOWNLOAD_URL, sourceDistribution.getDownloadUrl());
-			getDB().addField(IMPLEMENTATION, implementationName);
-		}
-		getDB().addField(SOURCE_DISTRIBUTION, sourceDistribution.getID());
-	}
 
 	public void setSourceDistribution(String sourceDistribution){
 		getDB().addField(SOURCE_DISTRIBUTION, sourceDistribution);
@@ -76,6 +75,20 @@ public abstract class LODVaderIntersectionPlugin extends LODVaderPlugin implemen
 		return getDB().getField(SOURCE_DISTRIBUTION).toString();
 	}
 	
+	public void save(HashMap<String, Long> results, String sourceDistribution){
+
+		List<DBObject> list = new ArrayList<>();
+
+		for (String result : results.keySet()) {
+			DBObject object = new BasicDBObject();
+			object.put(LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION, sourceDistribution);
+			object.put(LODVaderIntersectionPlugin.TARGET_DISTRIBUTION, result);
+			object.put(LODVaderIntersectionPlugin.VALUE, results.get(result).intValue());
+			object.put(LODVaderIntersectionPlugin.IMPLEMENTATION, implementationName);
+			list.add(object);
+		}
+		getDB().bulkSave2(list);
+	}
 	
 
 }

@@ -4,6 +4,7 @@
 package lodVader.services.mongodb;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -68,18 +69,29 @@ public class GeneralResourceRelationServices {
 	 * 
 	 * @param resourcesID
 	 * @param collection
-	 * @return a list of distributionIDs
+	 * @return a map with distributionIDs as key and namespaces as values
 	 */
-	public List<String> getCommonDistributionsByResourceID(List<String> resourcesID,
+	public HashMap<String, List<String>> getCommonDistributionsByResourceID(List<String> resourcesID,
 			GeneralResourceRelationDB.COLLECTIONS collection) {
 
-		List<String> distributionsIDs = new ArrayList<>();
+		HashMap<String, List<String>> distributionsIDs = new HashMap<>();
 
 		// get datasets which describe common namespaces (target datasets)
 		BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.PREDICATE_ID,
 				new BasicDBObject("$in", resourcesID));
 		GeneralResourceRelationDB.getCollection(collection.toString()).find(query).forEach((object) -> {
-			distributionsIDs.add(object.get(GeneralResourceRelationDB.DISTRIBUTION_ID).toString());
+			String dist = object.get(GeneralResourceRelationDB.DISTRIBUTION_ID).toString();
+			String ns = object.get(GeneralResourceRelationDB.PREDICATE_ID).toString();
+
+			// filter distributions which contains at least 50 resources
+			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() > 50)
+				if (distributionsIDs.get(dist) == null) {
+					List<String> namespaces = new ArrayList<>();
+					namespaces.add(ns);
+					distributionsIDs.put(dist, namespaces);
+				} else {
+					distributionsIDs.get(dist).add(ns);
+				}
 		});
 
 		return distributionsIDs;

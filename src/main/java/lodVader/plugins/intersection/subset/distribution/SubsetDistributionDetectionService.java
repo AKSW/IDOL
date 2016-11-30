@@ -44,8 +44,11 @@ public class SubsetDistributionDetectionService extends SubsetDetectionService {
 		List<String> sourceNamespacesIDs = new GeneralResourceRelationServices()
 				.getSetOfResourcesIDAsString(distribution.getID(), COLLECTIONS.RELATION_SUBJECT_NS0);
 		
-		return new GeneralResourceRelationServices().getCommonDistributionsByResourceID(sourceNamespacesIDs,
-				COLLECTIONS.RELATION_SUBJECT_NS0);
+		//TODO Fix here
+//		return (List<String>) new GeneralResourceRelationServices().getCommonDistributionsByResourceID(sourceNamespacesIDs,
+//				COLLECTIONS.RELATION_SUBJECT_NS0);
+		
+		return null;
 	}
 
 }

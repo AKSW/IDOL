@@ -103,7 +103,7 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin {
 	 * @see
 	 * lodVader.application.subsetdetection.SubsetDetectionI#detectSubsets()
 	 */
-	@Override
+//	@Override
 	public HashMap<String, Double> runDetection(DistributionDB sourceDistribution,
 			List<String> targetDistributionsIDs) {
 

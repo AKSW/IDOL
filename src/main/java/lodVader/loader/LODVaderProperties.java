@@ -67,6 +67,8 @@ public class LODVaderProperties {
 			SUBJECT_FILE_LOV_PATH = FILTER_PATH + "lov_subject";
 			FILTER_FILE_LOV_PATH = FILTER_PATH + "lov_filter";
 			
+			RAW_FILE_PATH = BASE_PATH + "/raw_files/" + "__RAW_";
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -113,6 +115,9 @@ public class LODVaderProperties {
 	public static boolean RESUME;
 
 	public static boolean RESUME_ERRORS;
+	
+	// Path to save raw distribution files
+	public static String RAW_FILE_PATH;
 
 	// defining file names for distributions after separate subject and object
 	public static String SUBJECT_FILE_DISTRIBUTION_PATH;

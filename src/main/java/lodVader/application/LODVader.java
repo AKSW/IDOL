@@ -61,7 +61,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 6;
+	int numberOfThreads = 1;
 
 	/**
 	 * Count unique triples
@@ -71,11 +71,11 @@ public class LODVader {
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = true;
+	boolean streamDistribution = false;
 	boolean streamFromInternet = false;
 	boolean createDumpOnDisk = false;
 	boolean processStatisticalData = false;
-	boolean createBloomFilter = true;
+	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
@@ -95,6 +95,12 @@ public class LODVader {
 	 */
 	// check if there already is a BF created for the distribution
 	boolean ignoreCreatedBF = true;
+	
+	/**
+	 * Detect overlapping datasets
+	 */
+	boolean detectOverlappingDatasets = true;
+	
 
 	/**
 	 * Main method
@@ -123,15 +129,18 @@ public class LODVader {
 		 */
 		if (streamDistribution)
 //			 streamDistributions(DistributionDB.DistributionStatus.ERROR);
-//		 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
-			 streamDistributions(DistributionDB.DistributionStatus.DONE);
+		 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+//			 streamDistributions(DistributionDB.DistributionStatus.DONE);
 //			streamDistributions(null);
 
-		// detectDatasets();
+		
+		if(detectOverlappingDatasets)
+			detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
 
 	}
+	
 
 	/**
 	 * Count unique triples per datasource
@@ -291,52 +300,33 @@ public class LODVader {
 		distributionsBeingProcessed.set(0);
 
 		BasicDBList andList = new BasicDBList();
-		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
+//		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
 		andList.add(new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
 
 		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject("$and", andList), null, DistributionDB.URI, 1);
 
 		distributionsBeingProcessed.set(distributionObjects.size());
+		
+		logger.info("Discovering subsets for " + distributionObjects.size() +  " distributions.");
+
 
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			executor.execute(new DetectSubsets(distribution));
+			executor.execute(new SubsetDetect(distribution));
 		}
-
+		
 		executor.shutdown();
 		try {
-			executor.awaitTermination(20, TimeUnit.DAYS);
+			executor.awaitTermination(201, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		logger.info("And we are done discovering subsets!");
-	}
-
-	class DetectSubsets implements Runnable {
-
-		DistributionDB distribution;
-
-		/**
-		 * Constructor for Class LODVader.DetectSubsets
-		 */
-		public DetectSubsets(DistributionDB distribution) {
-			this.distribution = distribution;
-		}
-
-		@Override
-		public void run() {
-			logger.info("Discovering subset for " + distribution.getTitle() + "(" + distribution.getID() + "). "
-					+ distributionsBeingProcessed.getAndDecrement() + " to go.");
-
-			LODVaderIntersectionPlugin subsetDetector = new SubsetDetectorBFIntersectImpl();
-			SubsetDetectionService subsetService = new SubsetDistributionDetectionService(subsetDetector, distribution);
-			subsetService.saveSubsets();
-		}
 	}
 
 	/**
