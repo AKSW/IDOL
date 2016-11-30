@@ -105,9 +105,11 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 		} else
 			logger.info("Another " + targetDistributionsNamespaces.size() + " distriution(s) overlap namespaces with "
 					+ distribution.getTitle());
-		logger.info("Distribution size: "+formatter.format(distribution.getNumberOfTriples()));
-		
-		
+		logger.info("Distribution size: " + formatter.format(distribution.getNumberOfTriples()));
+
+		if (targetDistributionsNamespaces.size() > 1000)
+			return;
+
 		/**
 		 * Get filters for target distributions
 		 */
@@ -175,7 +177,8 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 
 				// run extractors every 20.000 iterations
 				if (++count % runExtractor == 0) {
-					logger.info("Running extractors... (" + formatter.format(count) + ") triples, "+ formatter.format((distribution.getNumberOfTriples()-countTotal)) + " remaining.");
+					logger.info("Running extractors... (" + formatter.format(count) + ") triples, "
+							+ formatter.format((distribution.getNumberOfTriples() - countTotal)) + " remaining.");
 
 					runExtractor();
 				}
@@ -204,9 +207,9 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 				distribution.getID()).iterator().hasNext()) {
 			return false;
 		}
-		if(distribution.getNumberOfTriples() < 1000)
+		if (distribution.getNumberOfTriples() < 1000)
 			return false;
-		if(distribution.getDownloadUrl().contains("dbpedia"))
+		if (distribution.getDownloadUrl().contains("dbpedia"))
 			return false;
 
 		return true;
@@ -228,7 +231,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		logger.info("Extractor timer: "+t.stopTimer());
+		logger.info("Extractor timer: " + t.stopTimer());
 
 	}
 
@@ -256,7 +259,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 				if (bf.compare(resource))
 					r++;
 			}
-			resources  = null;
+			resources = null;
 			resources = new HashSet<>();
 		}
 
