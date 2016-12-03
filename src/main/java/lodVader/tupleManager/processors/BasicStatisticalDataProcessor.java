@@ -45,11 +45,11 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	 */
 	public BasicStatisticalDataProcessor(DistributionDB distribution) {
 		this.distribution = distribution;
-		allPredicatesFileName = LODVaderProperties.TMP_FOLDER + "tmpPredicates_" + distribution.getID();
-		rdfTypeObjectsFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfTypeObjects_" + distribution.getID();
-		owlClassesFileName = LODVaderProperties.TMP_FOLDER + "tmpOwlClasses_" + distribution.getID();
-		rdfSubClassOfFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfSubClassOf_" + distribution.getID();
-		initializeWriters();
+//		allPredicatesFileName = LODVaderProperties.TMP_FOLDER + "tmpPredicates_" + distribution.getID();
+//		rdfTypeObjectsFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfTypeObjects_" + distribution.getID();
+//		owlClassesFileName = LODVaderProperties.TMP_FOLDER + "tmpOwlClasses_" + distribution.getID();
+//		rdfSubClassOfFileName = LODVaderProperties.TMP_FOLDER + "tmpRdfSubClassOf_" + distribution.getID();
+//		initializeWriters();
 	}
 
 	// total number of triples
@@ -130,7 +130,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		
 		// collects all predicates
 		// addToMap(allPredicates, st.getPredicate().stringValue());
-		writeToFile(st.getPredicate().stringValue(), allPredicatesWriter);
+//		writeToFile(st.getPredicate().stringValue(), allPredicatesWriter);
 
 		numberOfTriples++;
 
@@ -138,7 +138,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 		if (st.getSubject().stringValue().startsWith("http")) {
 			if (st.getObject().stringValue().equals("http://www.w3.org/2002/07/owl#Class")) {
 				// addToMap(owlClasses, st.getSubject().stringValue());
-				writeToFile(st.getSubject().stringValue(), owlClassesWriter);
+//				writeToFile(st.getSubject().stringValue(), owlClassesWriter);
 			}
 
 		} else
@@ -148,14 +148,14 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 			numberOfLiterals ++;
 		}
 
-		if (st.getPredicate().stringValue().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
-			// addToMap(rdfSubClassOf, st.getObject().stringValue());
-			writeToFile(st.getObject().stringValue(), rdfSubClassOfWriter);
-
-		} else if (st.getPredicate().stringValue().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
-			// addToMap(rdfTypeObjects, st.getObject().stringValue());
-			writeToFile(st.getObject().stringValue(), rdfTypeObjectsWriter);
-		}
+//		if (st.getPredicate().stringValue().equals("http://www.w3.org/2000/01/rdf-schema#subClassOf")) {
+//			// addToMap(rdfSubClassOf, st.getObject().stringValue());
+//			writeToFile(st.getObject().stringValue(), rdfSubClassOfWriter);
+//
+//		} else if (st.getPredicate().stringValue().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")) {
+//			// addToMap(rdfTypeObjects, st.getObject().stringValue());
+//			writeToFile(st.getObject().stringValue(), rdfTypeObjectsWriter);
+//		}
 	}
 
 	private void saveResources(String file, GeneralResourceDB.COLLECTIONS resourceCollection,
@@ -213,33 +213,33 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 	}
 
 	public void saveStatisticalData() {
-		FileUtils fileUtils = new FileUtils();
-
-		closeWriters();
-		
-		fileUtils.sortFile(allPredicatesFileName);
-		fileUtils.sortFile(owlClassesFileName);
-		fileUtils.sortFile(rdfSubClassOfFileName);
-		fileUtils.sortFile(rdfTypeObjectsFileName);
-
-		logger.info("Saving predicates...");
-		saveResources(allPredicatesFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES, GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES);
-		fileUtils.removeFile(allPredicatesFileName);
-		
-		logger.info("Saving rdf:type objects...");
-		saveResources(rdfTypeObjectsFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_TYPE, GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE);
-		fileUtils.removeFile(rdfTypeObjectsFileName);
-				
-		logger.info("Saving rdfs:subclass objects...");
-		saveResources(rdfSubClassOfFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_SUBCLASS, GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_SUBCLASS);
-		fileUtils.removeFile(rdfSubClassOfFileName);
-				
-		logger.info("Saving owl:Class objects...");
-		saveResources(owlClassesFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_OWL_CLASS, GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS);
-		fileUtils.removeFile(owlClassesFileName);
+//		FileUtils fileUtils = new FileUtils();
+//
+//		closeWriters();
+//		
+//		fileUtils.sortFile(allPredicatesFileName);
+//		fileUtils.sortFile(owlClassesFileName);
+//		fileUtils.sortFile(rdfSubClassOfFileName);
+//		fileUtils.sortFile(rdfTypeObjectsFileName);
+//
+//		logger.info("Saving predicates...");
+//		saveResources(allPredicatesFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_ALL_PREDICATES, GeneralResourceRelationDB.COLLECTIONS.RELATION_ALL_PREDICATES);
+//		fileUtils.removeFile(allPredicatesFileName);
+//		
+//		logger.info("Saving rdf:type objects...");
+//		saveResources(rdfTypeObjectsFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_TYPE, GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_TYPE);
+//		fileUtils.removeFile(rdfTypeObjectsFileName);
+//				
+//		logger.info("Saving rdfs:subclass objects...");
+//		saveResources(rdfSubClassOfFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_RDF_SUBCLASS, GeneralResourceRelationDB.COLLECTIONS.RELATION_RDF_SUBCLASS);
+//		fileUtils.removeFile(rdfSubClassOfFileName);
+//				
+//		logger.info("Saving owl:Class objects...");
+//		saveResources(owlClassesFileName, GeneralResourceDB.COLLECTIONS.RESOURCES_OWL_CLASS, GeneralResourceRelationDB.COLLECTIONS.RELATION_OWL_CLASS);
+//		fileUtils.removeFile(owlClassesFileName);
 				
 		distribution.setNumberOfLiterals(numberOfLiterals);
-		distribution.setNumberOfTriples(numberOfTriples);
+//		distribution.setNumberOfTriples(numberOfTriples);
 		distribution.setNumberOfBlankNodes(numberOfBlankNodes);
 
 		try {

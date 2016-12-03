@@ -51,6 +51,8 @@ public class DataIDHelper {
 		try {
 			URLConnection = (HttpURLConnection) new URL(URL).openConnection();
 			URLConnection.setRequestProperty("Accept", "application/rdf+xml");
+			model = null;
+			model =  ModelFactory.createDefaultModel();
 			model.read(URLConnection.getInputStream(), null, format);
 
 		} catch (IOException e) {
@@ -75,7 +77,7 @@ public class DataIDHelper {
 			return datasetsStmt.next().getObject().toString();
 		return null;
 	}
-	
+
 	/**
 	 * Get format from a distribution
 	 * 
@@ -117,24 +119,31 @@ public class DataIDHelper {
 	public List<String> getDistributions(String dataset) {
 
 		List<String> distributions = new ArrayList<String>();
-		
+
 		HashSet<String> distributionsTmp = new HashSet<>();
 
-		StmtIterator stmtDistributions = model.listStatements(model.createResource(dataset),
-				RDFResourcesTags.dcatDistribution, (RDFNode) null);
+//		StmtIterator stmtDistributions = model.listStatements(model.createResource(dataset),
+//				RDFResourcesTags.dcatDistribution, (RDFNode) null);
+		StmtIterator stmtDistributions = model.listStatements(null ,
+				RDFResourcesTags.dcatDownloadURL, (RDFNode) null);
 
 		while (stmtDistributions.hasNext()) {
-			
-			RDFNode object = stmtDistributions.next().getObject(); 
+
+			RDFNode object = stmtDistributions.next().getObject();
 
 			// check if it's not a sparql endpoint
-			if (model.listStatements(object.asResource(), RDFResourcesTags.type,
-					RDFResourcesTags.dataIDSingleFile).hasNext()) {
-				
-				if(!distributionsTmp.contains(object.toString().replace(".bz2", "").replace(".ttl", "").replace(".tql", "").replace(".nt", ""))){
-					distributions.add(object.toString());		
-					distributionsTmp.add(object.toString().replace(".bz2", "").replace(".ttl", "").replace(".tql", "").replace(".nt", ""));
-				}	
+			// if (model.listStatements(object.asResource(),
+			// RDFResourcesTags.type,
+			// RDFResourcesTags.dataIDSingleFile).hasNext()) {
+//			if (model.listStatements(null, RDFResourcesTags.dcatDownloadURL, (RDFNode) null)
+//					.hasNext()) {
+
+				if (!distributionsTmp.contains(object.toString().replace(".bz2", "").replace(".ttl", "")
+						.replace(".tql", "").replace(".nt", ""))) {
+					distributions.add(object.toString());
+					distributionsTmp.add(object.toString().replace(".bz2", "").replace(".ttl", "").replace(".tql", "")
+							.replace(".nt", ""));
+//				}
 			}
 
 		}

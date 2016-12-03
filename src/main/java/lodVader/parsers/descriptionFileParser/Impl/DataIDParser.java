@@ -55,9 +55,7 @@ public class DataIDParser extends MetadataParser {
 					logger.error("We couldn't load the DataID file.");
 
 				else {
-
 					String dataset = dataidHelper.getPrimaryTopic();
-
 					DatasetDB mainDataset = saveDataset(dataset, "");
 					iterateDatasets(dataset, mainDataset);
 					try {
@@ -74,7 +72,7 @@ public class DataIDParser extends MetadataParser {
 
 	public DistributionDB saveDistribution(String distribution, DatasetDB dataset) {
 		
-		String downloadURL = dataidHelper.getDownloadURL(distribution);
+		String downloadURL = (distribution);
 		String uri = distribution;
 		String title = dataidHelper.getTitle(distribution);
 		String topDataset = dataset.getID();
@@ -88,21 +86,22 @@ public class DataIDParser extends MetadataParser {
 
 	public void iterateDatasets(String dataset, DatasetDB parentDataset) {
 		// get all subsets
-		for (String subset : dataidHelper.getSubsets(dataset)) {
-			iterateDatasets(subset, parentDataset);
-		}
+//		for (String subset : dataidHelper.getSubsets(dataset)) {
+//			iterateDatasets(subset, parentDataset);
+//		}
 
 		DatasetDB datasetDB = saveDataset(dataset, parentDataset.getID());
-		if (!dataset.equals(parentDataset.getID())) {
-			parentDataset.addSubsetID(datasetDB.getID());
-		}
+//		if (!dataset.equals(parentDataset.getID())) {
+//			parentDataset.addSubsetID(datasetDB.getID());
+//		}
 
 		List<String> distributions = dataidHelper.getDistributions(dataset);
+		System.out.println(distributions.size());
 		for (String distribution : distributions) {
 			DistributionDB distributionDB = saveDistribution(distribution, datasetDB);
+			System.out.println(distributionDB.getDownloadUrl());
 			datasetDB.addDistributionID(distributionDB.getID());
 			parentDataset.addDistributionID(distributionDB.getID());
-
 		}
 
 	}

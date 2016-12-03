@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lodVader.parsers.descriptionFileParser.Sparqles.Impl;
+package lodVader.parsers.descriptionFileParser.Impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,14 +11,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.parsers.descriptionFileParser.MetadataParser;
+import lodVader.parsers.descriptionFileParser.Sparqles.Impl.JsonSparqlesAPIConverter;
+import lodVader.parsers.descriptionFileParser.Sparqles.Impl.SparqlesAPIEndpoint;
 import lodVader.parsers.descriptionFileParser.Sparqles.Impl.SparqlesAPIEndpoint.Dataset;
+import lodVader.parsers.descriptionFileParser.Sparqles.Impl.SparqlesHelper;
 
 /**
  * Linghub parser
@@ -87,8 +89,8 @@ public class SparqlesMainParser extends MetadataParser {
 
 			Runnable r = () -> {
 
-				logger.info("* * * * * " + e.uri + " * * * * ");
-				List<Dataset> datasets = new ArrayList<>(e.datasets);
+				logger.info("* * * * * " + e.uri + " * * * * ");  
+				List<Dataset> datasets = new ArrayList<>(e.datasets);  
 
 				DatasetDB dataset = null;
 				try {
@@ -99,7 +101,7 @@ public class SparqlesMainParser extends MetadataParser {
 
 						for (String graph : distributions) {
 							String queryPart = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <" + graph + "> { ?s ?p ?o } }";
-							String uri = e.uri + "?query=" + queryPart;
+							String uri = e.uri + "?query=" + queryPart; 
 							// URLEncoder.encode(
 							if (!uri.contains("openlink"))
 								saveDistribution(uri, uri, "sparql", dataset, graph, e.uri);

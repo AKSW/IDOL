@@ -28,8 +28,8 @@ public class FormatsUtils {
 
 
 	public static String getEquivalentFormat(String str) {
-		if(str.length() > 20)
-		str = str.substring(str.length() - 10);
+		if(str.length() > 30)
+		str = str.substring(str.length() - 30);
 		String soriginal = str;
 
 		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))

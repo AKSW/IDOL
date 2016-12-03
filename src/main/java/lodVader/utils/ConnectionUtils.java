@@ -35,8 +35,8 @@ public class ConnectionUtils {
 	public InputStream getStream(String downloadURL, String accept) throws IOException {
 		HttpURLConnection httpConn;
 		httpConn = (HttpURLConnection) new URL(downloadURL).openConnection();
-		httpConn.setReadTimeout(14000);
-		httpConn.setConnectTimeout(14000);
+		httpConn.setReadTimeout(114000);
+		httpConn.setConnectTimeout(114000);
 		if (accept != null)
 			httpConn.setRequestProperty("Accept", accept);
 		else

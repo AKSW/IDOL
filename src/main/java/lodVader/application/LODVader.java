@@ -33,7 +33,8 @@ import lodVader.parsers.descriptionFileParser.Impl.DataIDParser;
 import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
 import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
-import lodVader.parsers.descriptionFileParser.Sparqles.Impl.SparqlesMainParser;
+import lodVader.parsers.descriptionFileParser.Impl.LodStatsMainParser;
+import lodVader.parsers.descriptionFileParser.Impl.SparqlesMainParser;
 import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
 import lodVader.plugins.intersection.subset.SubsetDetectionService;
 import lodVader.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
@@ -61,7 +62,7 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 1;
+	int numberOfThreads = 4;
 
 	/**
 	 * Count unique triples
@@ -71,10 +72,10 @@ public class LODVader {
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = false;
-	boolean streamFromInternet = false;
-	boolean createDumpOnDisk = false;
-	boolean processStatisticalData = false;
+	boolean streamDistribution = true;
+	boolean streamFromInternet = true;
+	boolean createDumpOnDisk = true;
+	boolean processStatisticalData = true;
 	boolean createBloomFilter = false;
 
 	/**
@@ -83,12 +84,12 @@ public class LODVader {
 	boolean parseSparqles = false;
 	boolean parseLOV = false;
 	boolean parseDBpedia = false;
-//	 boolean parseDBpedia = true;
 	boolean parseLaundromat = false;
 	boolean parseLODCloud = false;
 	boolean parseRE3 = false;
 	boolean parseCKANRepositories = false;
 	boolean parseLinghub = false;
+	boolean parseLodStats = true;
 
 	/**
 	 * BF options.
@@ -170,7 +171,7 @@ public class LODVader {
 		 * Parsing DBpedia DataID file
 		 */
 		if (parseDBpedia) {
-			loader.load(new DataIDParser("http://downloads.dbpedia.org/2015-10/2015-10_dataid_catalog.ttl"));
+			loader.load(new DataIDParser("http://downloads.dbpedia.org/2016-04/2016-04_dataid_catalog.ttl"));
 			// loader.load(new
 			// DataIDParser("http://downloads.dbpedia.org/2016-04/2016-04_dataid_catalog.ttl"));
 			loader.parse();
@@ -198,6 +199,15 @@ public class LODVader {
 		 */
 		if (parseLOV) {
 			loader.load(new LOVParser());
+			loader.parse();
+		}
+
+		
+		/**
+		 * Parsing LodStats
+		 */
+		if (parseLodStats) {
+			loader.load(new LodStatsMainParser());
 			loader.parse();
 		}
 
@@ -244,7 +254,9 @@ public class LODVader {
 	}
 	
 
-	public void streamDistributions(DistributionDB.DistributionStatus status) {
+	public void streamDistributions(DistributionDB.DistributionStatus status) {			
+		
+		
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();

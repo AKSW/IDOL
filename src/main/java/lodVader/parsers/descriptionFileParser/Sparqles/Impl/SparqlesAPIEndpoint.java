@@ -15,11 +15,11 @@ import java.util.Collection;
  */
 public class SparqlesAPIEndpoint {
 
-	String uri;
+	public String uri;
 
-	Collection<Dataset> datasets;	
+	public Collection<Dataset> datasets;	
 	
-	class Dataset {
+	public class Dataset {
 		String uri;
 		String label;
 	}
