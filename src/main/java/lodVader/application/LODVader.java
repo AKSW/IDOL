@@ -73,10 +73,10 @@ public class LODVader {
 	 * Streaming and processing
 	 */
 	boolean streamDistribution = true;
-	boolean streamFromInternet = true;
-	boolean createDumpOnDisk = true;
+	boolean streamFromInternet = false;
+	boolean createDumpOnDisk = false;
 	boolean processStatisticalData = true;
-	boolean createBloomFilter = false;
+	boolean createBloomFilter = true;
 
 	/**
 	 * Parsing options
@@ -89,7 +89,7 @@ public class LODVader {
 	boolean parseRE3 = false;
 	boolean parseCKANRepositories = false;
 	boolean parseLinghub = false;
-	boolean parseLodStats = true;
+	boolean parseLodStats = false;
 
 	/**
 	 * BF options.
@@ -268,7 +268,8 @@ public class LODVader {
 		else
 			distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
 		
-		distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.DATASOURCE, LodStatsMainParser.getParserName()));
+		distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, 
+				new BasicDBObject(DistributionDB.DATASOURCE, new LodStatsMainParser().getParserName()));
 		
 
 		logger.info("Streaming " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads

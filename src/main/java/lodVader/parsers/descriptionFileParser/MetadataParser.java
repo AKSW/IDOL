@@ -17,7 +17,7 @@ import lodVader.services.mongodb.DistributionServices;
  */
 public abstract class MetadataParser {
 
-	static String parserName;
+	String parserName;
 
 	HashMap<String, DistributionDB> distributions = new HashMap<>();
 
@@ -47,7 +47,7 @@ public abstract class MetadataParser {
 	/**
 	 * @return the parserName
 	 */
-	public static String getParserName() {
+	public String getParserName() {
 		return parserName;
 	}
 
