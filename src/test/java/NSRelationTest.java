@@ -14,7 +14,7 @@ import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
-import lodVader.tupleManager.processors.BloomFilterProcessor2;
+import lodVader.tupleManager.processors.BloomFilterProcessor;
 import lodVader.utils.NSUtils;
 import lodVader.utils.StatementUtils;
 
@@ -53,7 +53,7 @@ public class NSRelationTest {
 		/**
 		 * Process them
 		 */
-		BloomFilterProcessor2 processor = new BloomFilterProcessor2(distribution);
+		BloomFilterProcessor processor = new BloomFilterProcessor(distribution);
 		processor.process(st1);
 		processor.process(st1);
 		processor.process(st1);

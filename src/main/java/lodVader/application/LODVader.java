@@ -43,7 +43,7 @@ import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.streaming.LODVStreamInternetImpl;
 import lodVader.tupleManager.processors.BasicStatisticalDataProcessor;
-import lodVader.tupleManager.processors.BloomFilterProcessor2;
+import lodVader.tupleManager.processors.BloomFilterProcessor;
 import lodVader.tupleManager.processors.SaveDumpDataProcessor;
 
 /**
@@ -130,9 +130,9 @@ public class LODVader {
 		 */
 		if (streamDistribution)
 //			 streamDistributions(DistributionDB.DistributionStatus.ERROR);
-		 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+//		 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
 //			 streamDistributions(DistributionDB.DistributionStatus.DONE);
-//			streamDistributions(null);
+			streamDistributions(null);
 
 		
 		if(detectOverlappingDatasets)
@@ -256,7 +256,6 @@ public class LODVader {
 
 	public void streamDistributions(DistributionDB.DistributionStatus status) {			
 		
-		
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
@@ -268,6 +267,9 @@ public class LODVader {
 					status.toString());
 		else
 			distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
+		
+		distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.DATASOURCE, LodStatsMainParser.getParserName()));
+		
 
 		logger.info("Streaming " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
 				+ " threads.");
@@ -398,9 +400,9 @@ public class LODVader {
 			/**
 			 * Registering bloom filter processor
 			 */
-			BloomFilterProcessor2 bfProcessor = null;
+			BloomFilterProcessor bfProcessor = null;
 			if (createBloomFilter) {
-				bfProcessor = new BloomFilterProcessor2(distribution);
+				bfProcessor = new BloomFilterProcessor(distribution);
 				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
 			}
 

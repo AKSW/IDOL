@@ -3,15 +3,8 @@
  */
 package lodVader.tupleManager.processors;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import org.openrdf.model.Statement;
@@ -26,7 +19,7 @@ import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.services.mongodb.BucketService;
-import lodVader.utils.FileUtils;
+import lodVader.utils.FileList;
 import lodVader.utils.NSUtils;
 
 /**
@@ -40,13 +33,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	DistributionDB distribution;
 
-	String triplesTmpFilePath;
-	String subjectTmpFilePath;
-	String objectTmpFilePath;
-
-	BufferedWriter triplesWriter;
-	BufferedWriter subjectWriter;
-	BufferedWriter objectWriter;
+	FileList<String> triplesWriter;
+	FileList<String> subjectWriter;
+	FileList<String> objectWriter;
 
 	enum TYPE_OF_FILE {
 		OBJECT, SUBJECT, TRIPLES
@@ -57,30 +46,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	 */
 	public BloomFilterProcessor(DistributionDB distribution) {
 		this.distribution = distribution;
-		triplesTmpFilePath = LODVaderProperties.TMP_FOLDER + "tmpTriples_" + distribution.getID();
-		subjectTmpFilePath = LODVaderProperties.TMP_FOLDER + "tmpSubject_" + distribution.getID();
-		objectTmpFilePath = LODVaderProperties.TMP_FOLDER + "tmpObject_" + distribution.getID();
-		openFiles();
-	}
-
-	public void openFiles() {
-		try {
-			triplesWriter = new BufferedWriter(new FileWriter(new File(triplesTmpFilePath)));
-			subjectWriter = new BufferedWriter(new FileWriter(new File(subjectTmpFilePath)));
-			objectWriter = new BufferedWriter(new FileWriter(new File(objectTmpFilePath)));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void closeFiles() {
-		try {
-			triplesWriter.close();
-			objectWriter.close();
-			subjectWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		triplesWriter = new FileList<>(LODVaderProperties.TMP_FOLDER, "tmpTriples_" + distribution.getID());
+		subjectWriter = new FileList<>(LODVaderProperties.TMP_FOLDER, "tmpSubject_" + distribution.getID());
+		objectWriter = new FileList<>(LODVaderProperties.TMP_FOLDER, "tmpObject_" + distribution.getID());
 	}
 
 	/*
@@ -93,26 +61,24 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	@Override
 	public void process(Statement st) {
 
-		String triple = st.getSubject().toString() + " " + st.getPredicate() + " " + st.getObject();
-		String subject = st.getSubject().toString();
-		String object = st.getObject().toString();
+		String triple = st.getSubject().stringValue() + " " + st.getPredicate().stringValue() + " "
+				+ st.getObject().stringValue();
+		String subject = st.getSubject().stringValue();
+		String object = st.getObject().stringValue();
 
-		try {
-			triplesWriter.write(triple + "\n");
-			if (subject.startsWith("http"))
-				subjectWriter.write(subject + "\n");
-			if (!object.startsWith("\""))
-				objectWriter.write(object + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		triplesWriter.add(triple);
+
+		if (subject.startsWith("http"))
+			subjectWriter.add(subject);
+		if (!object.startsWith("\"") && !object.startsWith("\"_"))
+			objectWriter.add(object);
 
 	}
 
 	/**
 	 * Load a file and save its content to the namespace collections
 	 * 
-	 * @param file
+	 * @param list
 	 *            the file which contains the list of namespaces
 	 * @param generalRosourceNS0
 	 *            name of the collection to save namespace level 0
@@ -126,105 +92,21 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	 *            and dataset/distribution
 	 * @return
 	 */
-	private List<String> saveResources(String file, TYPE_OF_FILE type) {
+	private List<String> saveResources(FileList<String> list, TYPE_OF_FILE type) {
 
-		logger.info("Saving resources from file " + file);
+		logger.info("Saving resources from file " + list.getFullPath());
 
 		List<String> resources = new ArrayList<>();
 
+		/**
+		 * Collections which will hold the namespaces
+		 */
 		HashMap<String, Integer> ns0 = new HashMap<>();
-		HashMap<String, Integer> ns = new HashMap<>();
+		// HashMap<String, Integer> ns = new HashMap<>();
 
-		HashSet<String> bfResources = new HashSet<>();
-
-		int lineCounter = 0;
-		int bfCounter = 0;
-
-		try {
-
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-			NSUtils nsUtils = new NSUtils();
-			String lastLine = "";
-			int co = 0;
-			while ((line = br.readLine()) != null) {
-
-				// ignore repeated triples/resources
-				if (!line.equals(lastLine)) {
-					lastLine = line;
-					lineCounter++;
-
-					if (type != TYPE_OF_FILE.TRIPLES) {
-						// extract ns if we are processing objects or subjects
-						addToMap(ns, nsUtils.getNSFromString(line));
-						addToMap(ns0, nsUtils.getNS0(line));
-					}
-
-					bfResources.add(line);
-
-					// save NS into Mongodb each 5k ns
-					if (lineCounter % 5000 == 0) {
-						if (type == TYPE_OF_FILE.OBJECT) {
-							SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
-									GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
-							SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
-									GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
-						} else if (type == TYPE_OF_FILE.SUBJECT) {
-							SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0,
-									GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
-							SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
-									GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
-						}
-						ns0 = new HashMap<>();
-						ns = new HashMap<>();
-					}
-
-					// save Bloom filters each 200k
-					if (lineCounter % 200000 == 0) {
-						bfCounter++;
-
-						saveBF(bfResources, type, bfCounter);
-
-						bfResources = new HashSet<>();
-
-					}
-				}
-			}
-
-			// if counter is 200.000 save ns and bloom filters
-			if (type == TYPE_OF_FILE.OBJECT) {
-				SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
-						GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
-				SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
-						GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
-			} else if (type == TYPE_OF_FILE.SUBJECT) {
-				SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0,
-						GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
-				SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
-						GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
-			}
-			if (bfResources.size() > 0)
-				saveBF(bfResources, type, bfCounter);
-
-			br.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return resources;
-	}
-
-	private void saveBF(HashSet<String> set, TYPE_OF_FILE type, int bfCounter) {
-
-		BloomFilterI bloomFilter = BloomFilterFactory.newBloomFilter();
-		bloomFilter.create(200000, 0.0000001);
-
-		for (String str : set) {
-			bloomFilter.add(str);
-		}
-
+		/**
+		 * Choosing the right bucket collection
+		 */
 		BucketDB.COLLECTIONS collection;
 
 		if (type == TYPE_OF_FILE.OBJECT) {
@@ -235,15 +117,76 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 			collection = BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES;
 		}
 
-		BucketDB bucket = new BucketDB(collection, bloomFilter, distribution.getID(), bfCounter,
-				new ArrayList<String>(set).get(0), new ArrayList<String>(set).get(set.size() - 1));
+		/**
+		 * Creating a bloom filter
+		 */
+		BloomFilterI bloomFilter = BloomFilterFactory.newBloomFilter();
+		bloomFilter.create(list.size(), 0.000_01);
 
-		// remove buckets
-		new BucketService().removeBucket(bucket.COLLECTION, distribution.getID());
+		String line;
+		NSUtils nsUtils = new NSUtils();
+		String lastLine = "";
 
-		// create a new one
-		new BucketService().saveBucket(bucket);
+		while (list.hasNext()) {
+			line = list.next();
 
+			if (type != TYPE_OF_FILE.TRIPLES) {
+				// extract ns if we are processing objects or subjects
+				// addToMap(ns, nsUtils.getNSFromString(line));
+				addToMap(ns0, nsUtils.getNS0(line));
+			}
+
+			// ignore repeated triples/resources
+			if (!line.equals(lastLine)) {
+				lastLine = line;
+
+				bloomFilter.add(line);
+
+				// save NS into Mongodb each 5k ns
+				if (ns0.size() % 5000 == 0) {
+					if (type == TYPE_OF_FILE.OBJECT) {
+						SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
+								GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
+						// SaveNS(ns,
+						// GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
+						// GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
+					} else if (type == TYPE_OF_FILE.SUBJECT) {
+						SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0,
+								GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
+						// SaveNS(ns,
+						// GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
+						// GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
+					}
+					ns0 = new HashMap<>();
+					// ns = new HashMap<>();
+				}
+			}
+		}
+
+		// if counter is 200.000 save ns and bloom filters
+		if (type == TYPE_OF_FILE.OBJECT) {
+			SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0,
+					GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
+			// SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS,
+			// GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS);
+		} else if (type == TYPE_OF_FILE.SUBJECT) {
+			SaveNS(ns0, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0,
+					GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
+			// SaveNS(ns, GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS,
+			// GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS);
+		}
+
+		/**
+		 * Saving buckets
+		 */
+		if (type == TYPE_OF_FILE.SUBJECT || type == TYPE_OF_FILE.TRIPLES) {
+			BucketDB bucket = new BucketDB(collection, bloomFilter, distribution.getID(), 0, null, null);
+			new BucketService().removeBucket(collection, distribution.getID());
+			new BucketService().saveBucket(bucket);
+		}
+		list.close();
+
+		return resources;
 	}
 
 	/**
@@ -274,20 +217,19 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	}
 
 	public void saveFilters() {
-		closeFiles();
+		objectWriter.close();
+		subjectWriter.close();
+		triplesWriter.close();
 
-		FileUtils fileUtils = new FileUtils();
+		saveResources(objectWriter, TYPE_OF_FILE.OBJECT);
+		saveResources(subjectWriter, TYPE_OF_FILE.SUBJECT);
+		saveResources(triplesWriter, TYPE_OF_FILE.TRIPLES);
 
-		fileUtils.sortFile(objectTmpFilePath);
-		fileUtils.sortFile(subjectTmpFilePath);
-		// fileUtils.sortFile(triplesTmpFilePath);
-		saveResources(objectTmpFilePath, TYPE_OF_FILE.OBJECT);
-		fileUtils.removeFile(objectTmpFilePath);
-		saveResources(subjectTmpFilePath, TYPE_OF_FILE.SUBJECT);
-		fileUtils.removeFile(subjectTmpFilePath);
-		saveResources(triplesTmpFilePath, TYPE_OF_FILE.TRIPLES);
-		fileUtils.removeFile(triplesTmpFilePath);
-		logger.info("BFProcessor finished.");
+		objectWriter.clear();
+		subjectWriter.clear();
+		triplesWriter.clear();
+
+		logger.info(getClass().getName() + " finished.");
 	}
 
 }

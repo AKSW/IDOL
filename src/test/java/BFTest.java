@@ -29,7 +29,7 @@ import lodVader.plugins.intersection.subset.distribution.SubsetDetectorBFInterse
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.tupleManager.processors.BasicProcessorInterface;
-import lodVader.tupleManager.processors.BloomFilterProcessor2;
+import lodVader.tupleManager.processors.BloomFilterProcessor;
 import lodVader.tupleManager.processors.SaveDumpDataProcessor;
 import lodVader.utils.NSUtils;
 import lodVader.utils.StatementUtils;
@@ -126,7 +126,7 @@ public class BFTest {
 
 		rawDataProcessor.closeFile();
 
-		BloomFilterProcessor2 processor = new BloomFilterProcessor2(distribution);
+		BloomFilterProcessor processor = new BloomFilterProcessor(distribution);
 		LODVStreamInterface streamer = new LODVStreamFileImpl(LODVaderProperties.RAW_FILE_PATH);
 
 		streamer.getPipelineProcessor().registerProcessor(processor);
