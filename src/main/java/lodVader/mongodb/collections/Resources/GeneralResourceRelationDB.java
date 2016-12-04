@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteException;
 import com.mongodb.BulkWriteOperation;
@@ -22,8 +24,9 @@ public class GeneralResourceRelationDB extends DBSuperClass {
 
 	public static final String PREDICATE_ID = "predicateID";
 
-
 	public static final String DISTRIBUTION_ID = "distributionID";
+
+	public static final String DATASET_ID = "datasetID";
 
 	public static final String AMOUNT = "amount";
 
@@ -40,6 +43,7 @@ public class GeneralResourceRelationDB extends DBSuperClass {
 		super(collection.toString(), obj);
 		setParameters();
 		this.collection = collection;
+		addField(ID, new ObjectId(obj.get(ID).toString()));
 	}
 //
 //	
@@ -64,12 +68,20 @@ public class GeneralResourceRelationDB extends DBSuperClass {
 		addField(PREDICATE_ID, predicateID);
 	}
 
-	public int getDistributionID() {
-		return Integer.parseInt(getField(DISTRIBUTION_ID).toString());
+	public String getDistributionID() {
+		return getField(DISTRIBUTION_ID).toString();
 	}
 
-	public void setDistributionID(int distributionID) {
+	public void setDistributionID(String distributionID) {
 		addField(DISTRIBUTION_ID, distributionID);
+	}
+	
+	public String getDatasetID() {
+		return getField(DATASET_ID).toString();
+	}
+
+	public void setDatasetID(String datasetID) {
+		addField(DATASET_ID, datasetID);
 	}
 
 	public int getAmount() {

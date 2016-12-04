@@ -87,6 +87,10 @@ public class DBSuperClass {
 		mongoDBObject.put(key, val);
 	}
 	
+	public void addField(String key, ObjectId val) {
+		mongoDBObject.put(key, val);
+	}
+	
 	public void addField(String key, long val) {
 		mongoDBObject.put(key, val);
 	}

@@ -4,12 +4,14 @@
 package lodVader.application;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
+import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
 import lodVader.parsers.descriptionFileParser.DescriptionFileParserLoader;
@@ -36,6 +39,7 @@ import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.parsers.descriptionFileParser.Impl.LodStatsMainParser;
 import lodVader.parsers.descriptionFileParser.Impl.SparqlesMainParser;
+import lodVader.services.mongodb.GeneralResourceRelationServices;
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.streaming.LODVStreamInternetImpl;
@@ -100,7 +104,7 @@ public class LODVader {
 	/**
 	 * Detect overlapping datasets
 	 */
-	boolean detectOverlappingDatasets = true;
+	boolean detectOverlappingDatasets = false;
 
 	/**
 	 * Main method
@@ -136,6 +140,10 @@ public class LODVader {
 		if (detectOverlappingDatasets)
 			detectDatasets();
 
+//		detectDBPediaDatasets();
+		addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
+		addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
+		
 		logger.info("LODVader is done with the initial tasks. The API is running.");
 
 	}
@@ -307,8 +315,6 @@ public class LODVader {
 
 	public void detectDatasets() {
 
-		GeneralQueriesHelper queries = new GeneralQueriesHelper();
-
 		distributionsBeingProcessed.set(0);
 
 		BasicDBList andList = new BasicDBList();
@@ -318,7 +324,7 @@ public class LODVader {
 		// List<DBObject> distributionObjects =
 		// queries.getObjects(DistributionDB.COLLECTION_NAME,
 		// new BasicDBObject("$and", andList), null, DistributionDB.URI, 1);
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
+		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
 
 		distributionsBeingProcessed.set(distributionObjects.size());
@@ -341,6 +347,66 @@ public class LODVader {
 		}
 
 		logger.info("And we are done discovering subsets!");
+	}
+
+	public void detectDBPediaDatasets() {
+		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject());
+
+		HashMap<String, Integer> h = new HashMap<>();
+
+		for (DBObject object : distributionObjects) {
+			DistributionDB distribution = new DistributionDB(object);
+
+			// get all object ns of the distribution
+			List<String> nso = new GeneralResourceRelationServices().getSetOfResourcesIDAsString(distribution.getID(),
+					GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
+			HashMap<String, List<String>> distids = new GeneralResourceRelationServices()
+					.getCommonDistributionsByResourceID(nso,
+							GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
+
+			h.put(distribution.getDownloadUrl(), distids.size());
+			System.out.println(distribution.getDownloadUrl() + distids.size());
+
+		}
+	}
+	
+	public void addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS collection){
+		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject());
+		
+
+		HashMap<String, Integer> h = new HashMap<>();
+		int i=0;
+
+		for (DBObject o : distributionObjects) {
+			int j =0;
+			DistributionDB distribution = new DistributionDB(o);
+			BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distribution.getID());
+			GeneralResourceRelationDB.getCollection(collection.toString()).find(query).forEach((object) -> {
+				GeneralResourceRelationDB v = new GeneralResourceRelationDB(collection, object);
+				v.setDatasetID(distribution.getTopDatasetID()); 
+//				System.out.println(new ObjectID(v.getID()));
+				new GeneralResourceRelationDB(collection).
+				getCollection(collection.toString()).update(new BasicDBObject("_id", new ObjectId(v.getID())), v.mongoDBObject, true, false);
+				
+//				System.out.println("l");
+//				try {
+//					v.update();
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					System.out.println(v.getID());
+//					e.printStackTrace();
+//				}
+			
+				
+			});
+			
+			System.out.println("updated " + distribution.getDownloadUrl() );
+			System.out.println("dataset nr: "+i++);
+			
+		}
+		
 	}
 
 	/**
