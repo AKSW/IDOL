@@ -3,6 +3,7 @@
  */
 package lodVader.application;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,10 +36,6 @@ import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.parsers.descriptionFileParser.Impl.LodStatsMainParser;
 import lodVader.parsers.descriptionFileParser.Impl.SparqlesMainParser;
-import lodVader.plugins.intersection.LODVaderIntersectionPlugin;
-import lodVader.plugins.intersection.subset.SubsetDetectionService;
-import lodVader.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
-import lodVader.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.streaming.LODVStreamInternetImpl;
@@ -73,8 +70,11 @@ public class LODVader {
 	 * Streaming and processing
 	 */
 	boolean streamDistribution = true;
-	boolean streamFromInternet = false;
-	boolean createDumpOnDisk = false;
+	boolean streamFromInternet = true;
+
+	boolean createDumpOnDisk = true;
+	boolean overrideDumpOnDisk = false;
+
 	boolean processStatisticalData = true;
 	boolean createBloomFilter = true;
 
@@ -96,12 +96,11 @@ public class LODVader {
 	 */
 	// check if there already is a BF created for the distribution
 	boolean ignoreCreatedBF = true;
-	
+
 	/**
 	 * Detect overlapping datasets
 	 */
-	boolean detectOverlappingDatasets = true;
-	
+	boolean detectOverlappingDatasets = false;
 
 	/**
 	 * Main method
@@ -129,31 +128,31 @@ public class LODVader {
 		 * Stream and process distributions
 		 */
 		if (streamDistribution)
-//			 streamDistributions(DistributionDB.DistributionStatus.ERROR);
-//		 streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
-//			 streamDistributions(DistributionDB.DistributionStatus.DONE);
+			// streamDistributions(DistributionDB.DistributionStatus.ERROR);
+			// streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
+			// streamDistributions(DistributionDB.DistributionStatus.DONE);
 			streamDistributions(null);
 
-		
-		if(detectOverlappingDatasets)
+		if (detectOverlappingDatasets)
 			detectDatasets();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
 
 	}
-	
 
 	/**
 	 * Count unique triples per datasource
 	 */
 	public void countUniqPerDatasource() {
-//		new DatasourcesUniqTriples(new CLODParser(null, null)).count();
-//		new DatasourcesUniqTriples(new LOVParser()).count();
-//		new DatasourcesUniqTriples(new RE3RepositoriesParser(null, 0)).count();
-//		new DatasourcesUniqTriples(new LinghubParser(null)).count();
-//		new DatasourcesUniqTriples(new DataIDParser(null)).count();
-//		new DatasourcesUniqTriples(new LODCloudParser()).count();
-//		new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
+		// new DatasourcesUniqTriples(new CLODParser(null, null)).count();
+		// new DatasourcesUniqTriples(new LOVParser()).count();
+		// new DatasourcesUniqTriples(new RE3RepositoriesParser(null,
+		// 0)).count();
+		// new DatasourcesUniqTriples(new LinghubParser(null)).count();
+		// new DatasourcesUniqTriples(new DataIDParser(null)).count();
+		// new DatasourcesUniqTriples(new LODCloudParser()).count();
+		// new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
+		new DatasourcesUniqTriples(new LodStatsMainParser()).count();
 
 	}
 
@@ -190,7 +189,8 @@ public class LODVader {
 		 */
 		if (parseSparqles) {
 			loader.load(new SparqlesMainParser("http://sparqles.ai.wu.ac.at/api/endpoint/list"));
-//			loader.load(new SparqlesMainParser("http://localhost/dbpedia/sparqllist.json"));
+			// loader.load(new
+			// SparqlesMainParser("http://localhost/dbpedia/sparqllist.json"));
 			loader.parse();
 		}
 
@@ -202,7 +202,6 @@ public class LODVader {
 			loader.parse();
 		}
 
-		
 		/**
 		 * Parsing LodStats
 		 */
@@ -252,10 +251,9 @@ public class LODVader {
 		}
 
 	}
-	
 
-	public void streamDistributions(DistributionDB.DistributionStatus status) {			
-		
+	public void streamDistributions(DistributionDB.DistributionStatus status) {
+
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		// load datasets with the status == waiting to stream
 		GeneralQueriesHelper queries = new GeneralQueriesHelper();
@@ -267,10 +265,9 @@ public class LODVader {
 					status.toString());
 		else
 			distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
-		
-		distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, 
+
+		distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject(DistributionDB.DATASOURCE, new LodStatsMainParser().getParserName()));
-		
 
 		logger.info("Streaming " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
 				+ " threads.");
@@ -315,17 +312,18 @@ public class LODVader {
 		distributionsBeingProcessed.set(0);
 
 		BasicDBList andList = new BasicDBList();
-//		andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
+		// andList.add(new BasicDBObject(DistributionDB.IS_VOCABULARY, false));
 		andList.add(new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
 
-//		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
-//				new BasicDBObject("$and", andList), null, DistributionDB.URI, 1);
-		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
+		// List<DBObject> distributionObjects =
+		// queries.getObjects(DistributionDB.COLLECTION_NAME,
+		// new BasicDBObject("$and", andList), null, DistributionDB.URI, 1);
+		List<DBObject> distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()));
 
 		distributionsBeingProcessed.set(distributionObjects.size());
-		
-		logger.info("Discovering subsets for " + distributionObjects.size() +  " distributions.");
 
+		logger.info("Discovering subsets for " + distributionObjects.size() + " distributions.");
 
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 
@@ -333,7 +331,7 @@ public class LODVader {
 			DistributionDB distribution = new DistributionDB(object);
 			executor.execute(new SubsetDetect(distribution));
 		}
-		
+
 		executor.shutdown();
 		try {
 			executor.awaitTermination(201, TimeUnit.DAYS);
@@ -392,11 +390,15 @@ public class LODVader {
 			 * with the same id, do not stream again
 			 */
 			SaveDumpDataProcessor saveDumpDataProcessor = null;
-//			if (!new File(LODVaderProperties.BASE_PATH + "/raw_files/" + "__RAW_" + distribution.getID()).exists())
-				if (createDumpOnDisk) {
+			if (createDumpOnDisk) {
+				if (overrideDumpOnDisk || !new File(LODVaderProperties.RAW_FILE_PATH + distribution.getID()).exists()) {
 					saveDumpDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
 					coreStream.getPipelineProcessor().registerProcessor(saveDumpDataProcessor);
+				} else {
+					logger.info("File: " + LODVaderProperties.RAW_FILE_PATH + distribution.getID()
+							+ " already exists. We are not overriding it.");
 				}
+			}
 
 			/**
 			 * Registering bloom filter processor
@@ -420,7 +422,8 @@ public class LODVader {
 					basicStatisticalProcessor.saveStatisticalData();
 
 				if (createDumpOnDisk)
-					saveDumpDataProcessor.closeFile();
+					if (saveDumpDataProcessor != null)
+						saveDumpDataProcessor.closeFile();
 
 				if (createBloomFilter)
 					bfProcessor.saveFilters();
@@ -428,13 +431,14 @@ public class LODVader {
 				distribution.setStatus(DistributionStatus.DONE);
 
 			} catch (Exception e) {
-				
-//				e.printStackTrace();
+
+				// e.printStackTrace();
 
 				// case get an exception, finalize the processors (save
 				// data, etc etc).
 				if (createDumpOnDisk)
-					saveDumpDataProcessor.closeFile();
+					if (saveDumpDataProcessor != null)
+						saveDumpDataProcessor.closeFile();
 
 				if (processStatisticalData)
 					basicStatisticalProcessor.saveStatisticalData();
