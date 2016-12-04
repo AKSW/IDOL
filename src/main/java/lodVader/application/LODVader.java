@@ -406,7 +406,7 @@ public class LODVader {
 			
 			
 			
-			System.out.println("updated " + distribution.getDownloadUrl() );
+//			System.out.println("updated " + distribution.getDownloadUrl() );
 			System.out.println("dataset nr: "+i++);
 			
 //		}
