@@ -387,8 +387,12 @@ public class LODVader {
 				GeneralResourceRelationDB v = new GeneralResourceRelationDB(collection, object);
 				v.setDatasetID(distribution.getTopDatasetID()); 
 //				System.out.println(new ObjectID(v.getID()));
-				new GeneralResourceRelationDB(collection).
-				getCollection(collection.toString()).update(new BasicDBObject("_id", new ObjectId(v.getID())), v.mongoDBObject, true, false);
+				if(v.getAmount() < 20)
+					
+					new GeneralResourceRelationDB(collection).
+					getCollection(collection.toString()).remove(new BasicDBObject("_id", new ObjectId(v.getID())));
+//				new GeneralResourceRelationDB(collection).
+//				getCollection(collection.toString()).update(new BasicDBObject("_id", new ObjectId(v.getID())), v.mongoDBObject, true, false);
 				
 //				System.out.println("l");
 //				try {
@@ -397,10 +401,10 @@ public class LODVader {
 //					// TODO Auto-generated catch block
 //					System.out.println(v.getID());
 //					e.printStackTrace();
-//				}
-			
-				
+//				}				
 			});
+			
+			
 			
 			System.out.println("updated " + distribution.getDownloadUrl() );
 			System.out.println("dataset nr: "+i++);
