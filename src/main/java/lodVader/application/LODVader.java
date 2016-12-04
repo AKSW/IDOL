@@ -69,14 +69,14 @@ public class LODVader {
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = true;
-	boolean streamFromInternet = true;
+	boolean streamDistribution = false;
+	boolean streamFromInternet = false;
 
-	boolean createDumpOnDisk = true;
+	boolean createDumpOnDisk = false;
 	boolean overrideDumpOnDisk = false;
 
-	boolean processStatisticalData = true;
-	boolean createBloomFilter = true;
+	boolean processStatisticalData = false;
+	boolean createBloomFilter = false;
 
 	/**
 	 * Parsing options
@@ -100,7 +100,7 @@ public class LODVader {
 	/**
 	 * Detect overlapping datasets
 	 */
-	boolean detectOverlappingDatasets = false;
+	boolean detectOverlappingDatasets = true;
 
 	/**
 	 * Main method
