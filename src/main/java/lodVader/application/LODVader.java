@@ -28,6 +28,7 @@ import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
+import lodVader.mongodb.collections.LinkOutdegree;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
@@ -140,10 +141,10 @@ public class LODVader {
 		if (detectOverlappingDatasets)
 			detectDatasets();
 
-//		detectDBPediaDatasets();
+		// detectDBPediaDatasets();
 		addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
 		addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
-		
+
 		logger.info("LODVader is done with the initial tasks. The API is running.");
 
 	}
@@ -349,12 +350,12 @@ public class LODVader {
 		logger.info("And we are done discovering subsets!");
 	}
 
-	public void detectDBPediaDatasets() {
+	public void detectOutdegree() {
 		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject());
 
 		HashMap<String, Integer> h = new HashMap<>();
-
+		
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
 
@@ -366,51 +367,54 @@ public class LODVader {
 							GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
 
 			h.put(distribution.getDownloadUrl(), distids.size());
-			System.out.println(distribution.getDownloadUrl() + distids.size());
-
+			
+			LinkOutdegree link = new LinkOutdegree();
+			link.setdataset(distribution.getTopDatasetID());
+			link.setAmount(distids.size());
+			try {
+				link.update();
+			} catch (LODVaderMissingPropertiesException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
-	
-	public void addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS collection){
+
+	public void addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS collection) {
 		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject());
-		
 
 		HashMap<String, Integer> h = new HashMap<>();
-		int i=0;
+		int i = 0;
 
-//		for (DBObject o : distributionObjects) {
-			int j =0;
-//			DistributionDB distribution = new DistributionDB(o);
-//			BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distribution.getID());
-			GeneralResourceRelationDB.getCollection(collection.toString()).find().forEach((object) -> {
+		for (DBObject o : distributionObjects) {
+			int j = 0;
+			DistributionDB distribution = new DistributionDB(o);
+			BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distribution.getID());
+			GeneralResourceRelationDB.getCollection(collection.toString()).find(query).forEach((object) -> {
 				GeneralResourceRelationDB v = new GeneralResourceRelationDB(collection, object);
-//				v.setDatasetID(distribution.getTopDatasetID()); 
-//				System.out.println(new ObjectID(v.getID()));
-				if(v.getAmount() < 20)
-					
-					new GeneralResourceRelationDB(collection).
-					getCollection(collection.toString()).remove(new BasicDBObject("_id", new ObjectId(v.getID())));
-//				new GeneralResourceRelationDB(collection).
-//				getCollection(collection.toString()).update(new BasicDBObject("_id", new ObjectId(v.getID())), v.mongoDBObject, true, false);
-				
-//				System.out.println("l");
-//				try {
-//					v.update();
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					System.out.println(v.getID());
-//					e.printStackTrace();
-//				}				
+				v.setDatasetID(distribution.getTopDatasetID());
+				// System.out.println(new ObjectID(v.getID()));
+				if (v.getDatasetID() == null)
+					new GeneralResourceRelationDB(collection).getCollection(collection.toString())
+							.update(new BasicDBObject("_id", new ObjectId(v.getID())), v.mongoDBObject, true, false);
+
+				// System.out.println("l");
+				// try {
+				// v.update();
+				// } catch (Exception e) {
+				// // TODO Auto-generated catch block
+				// System.out.println(v.getID());
+				// e.printStackTrace();
+				// }
+
 			});
-			
-			
-			
-//			System.out.println("updated " + distribution.getDownloadUrl() );
-			System.out.println("dataset nr: "+i++);
-			
-//		}
-		
+
+			System.out.println("updated " + distribution.getDownloadUrl());
+			System.out.println("dataset nr: " + i++);
+
+		}
+
 	}
 
 	/**
