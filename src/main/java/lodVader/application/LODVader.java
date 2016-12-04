@@ -379,13 +379,13 @@ public class LODVader {
 		HashMap<String, Integer> h = new HashMap<>();
 		int i=0;
 
-		for (DBObject o : distributionObjects) {
+//		for (DBObject o : distributionObjects) {
 			int j =0;
-			DistributionDB distribution = new DistributionDB(o);
-			BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distribution.getID());
-			GeneralResourceRelationDB.getCollection(collection.toString()).find(query).forEach((object) -> {
+//			DistributionDB distribution = new DistributionDB(o);
+//			BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.DISTRIBUTION_ID, distribution.getID());
+			GeneralResourceRelationDB.getCollection(collection.toString()).find().forEach((object) -> {
 				GeneralResourceRelationDB v = new GeneralResourceRelationDB(collection, object);
-				v.setDatasetID(distribution.getTopDatasetID()); 
+//				v.setDatasetID(distribution.getTopDatasetID()); 
 //				System.out.println(new ObjectID(v.getID()));
 				if(v.getAmount() < 20)
 					
@@ -409,7 +409,7 @@ public class LODVader {
 			System.out.println("updated " + distribution.getDownloadUrl() );
 			System.out.println("dataset nr: "+i++);
 			
-		}
+//		}
 		
 	}
 
