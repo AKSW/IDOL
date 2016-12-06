@@ -1,0 +1,258 @@
+/* 0 */
+{
+    "_id" : "5811f2563d149b6e25e7cb36",
+    "catalogUrl" : "http://ckan.openumea.se/",
+    "version" : "V3"
+}
+
+/* 1 */
+{
+    "_id" : "5811f2653d149b6e25e7d8af",
+    "catalogUrl" : "https://opingogn.is/",
+    "version" : "V3"
+}
+
+/* 2 */
+{
+    "_id" : "5811f26a3d149b6e25e7dd7f",
+    "catalogUrl" : "http://dados.prefeitura.sp.gov.br",
+    "version" : "V3"
+}
+
+/* 3 */
+{
+    "_id" : "5811f2b53d149b6e25e8259b",
+    "catalogUrl" : "http://www.datos.misiones.gov.ar",
+    "version" : "V3"
+}
+
+/* 4 */
+{
+    "_id" : "5811f2c63d149b6e25e836cc",
+    "catalogUrl" : "http://datospublicos.gob.ar/",
+    "version" : "V3"
+}
+
+/* 5 */
+{
+    "_id" : "5811f2d03d149b6e25e83ea2",
+    "catalogUrl" : "http://opendata.comune.bari.it/",
+    "version" : "V3"
+}
+
+/* 6 */
+{
+    "_id" : "5811f2dd3d149b6e25e8495d",
+    "catalogUrl" : "https://data.qld.gov.au",
+    "version" : "V3"
+}
+
+/* 7 */
+{
+    "_id" : "5811f70d3d149b6e25eb22f6",
+    "catalogUrl" : "http://catalogue.datalocale.fr",
+    "version" : "V3"
+}
+
+/* 8 */
+{
+    "_id" : "5811f70f3d149b6e25eb23c3",
+    "catalogUrl" : "https://www.daten.rlp.de/",
+    "version" : "V3"
+}
+
+/* 9 */
+{
+    "_id" : "5811f7df3d149b6e25ebbb57",
+    "catalogUrl" : "http://rotterdamopendata.nl/",
+    "version" : "V3"
+}
+
+/* 10 */
+{
+    "_id" : "5811f7eb3d149b6e25ebc3cc",
+    "catalogUrl" : "http://donnees.ville.sherbrooke.qc.ca",
+    "version" : "V3"
+}
+
+/* 11 */
+{
+    "_id" : "5811f7f33d149b6e25ebc916",
+    "catalogUrl" : "http://data.sa.gov.au/data",
+    "version" : "V3"
+}
+
+/* 12 */
+{
+    "_id" : "5811f82b3d149b6e25ebe1c2",
+    "catalogUrl" : "https://opendata.swiss/",
+    "version" : "V3"
+}
+
+/* 13 */
+{
+    "_id" : "5811f90f3d149b6e25ec43e3",
+    "catalogUrl" : "http://taijiang.tw",
+    "version" : "V3"
+}
+
+/* 14 */
+{
+    "_id" : "5811f93c3d149b6e25ec52ec",
+    "catalogUrl" : "http://data.tainan.gov.tw",
+    "version" : "V3"
+}
+
+/* 15 */
+{
+    "_id" : "5811fad63d149b6e25ecf147",
+    "catalogUrl" : "http://dadosabertos.senado.gov.br/",
+    "version" : "V3"
+}
+
+/* 16 */
+{
+    "_id" : "5811fad73d149b6e25ecf1ea",
+    "catalogUrl" : "https://datahub.io/",
+    "version" : "V3"
+}
+
+/* 17 */
+{
+    "_id" : "5811fafd3d149b6e25ed0329",
+    "catalogUrl" : "https://iatiregistry.org",
+    "version" : "V3"
+}
+
+/* 18 */
+{
+    "_id" : "581200f73d149b6e25ef543f",
+    "catalogUrl" : "http://data.london.gov.uk",
+    "version" : "V3"
+}
+
+/* 19 */
+{
+    "_id" : "581201743d149b6e25ef9536",
+    "catalogUrl" : "http://data-gov-ua.org",
+    "version" : "V3"
+}
+
+/* 20 */
+{
+    "_id" : "581201763d149b6e25ef9686",
+    "catalogUrl" : "http://oppnadata.se",
+    "version" : "V3"
+}
+
+/* 21 */
+{
+    "_id" : "581477c13d149b3c5dd9f9d3",
+    "catalogUrl" : "http://data.nhm.ac.uk",
+    "version" : "V3"
+}
+
+/* 22 */
+{
+    "_id" : "581477c13d149b3c5dd9f9d4",
+    "catalogUrl" : "http://b2find.eudat.eu/",
+    "version" : "V3"
+}
+
+/* 23 */
+{
+    "_id" : "581477c13d149b3c5dd9f9d2",
+    "catalogUrl" : "http://data.bris.ac.uk/data/",
+    "version" : "V3"
+}
+
+/* 24 */
+{
+    "_id" : "581477c13d149b3c5dd9f9d5",
+    "catalogUrl" : "http://catalog.data.gov/",
+    "version" : "V3"
+}
+
+/* 25 */
+{
+    "_id" : "581477c13d149b3c5dd9f9d6",
+    "catalogUrl" : "http://data.london.gov.uk/",
+    "version" : "V3"
+}
+
+/* 26 */
+{
+    "_id" : "581477c23d149b3c5dd9fa2d",
+    "catalogUrl" : "http://data.gov.au/",
+    "version" : "V3"
+}
+
+/* 27 */
+{
+    "_id" : "581477c33d149b3c5dd9fa62",
+    "catalogUrl" : "https://wci.earth2observe.eu/data/",
+    "version" : "V3"
+}
+
+/* 28 */
+{
+    "_id" : "581477c33d149b3c5dd9fa6e",
+    "catalogUrl" : "https://open-data.europa.eu/en/data",
+    "version" : "V3"
+}
+
+/* 29 */
+{
+    "_id" : "581477c93d149b3c5dd9ff4e",
+    "catalogUrl" : "https://repod.pon.edu.pl/",
+    "version" : "V3"
+}
+
+/* 30 */
+{
+    "_id" : "581477ce3d149b3c5dda02df",
+    "catalogUrl" : "http://en.openei.org/datasets/",
+    "version" : "V3"
+}
+
+/* 31 */
+{
+    "_id" : "581478023d149b3dd93c4b3e",
+    "catalogUrl" : "http://openresearchdata.ch/",
+    "version" : "V3"
+}
+
+/* 32 */
+{
+    "_id" : "5814781d3d149b3dd93c7d60",
+    "catalogUrl" : "http://search.geothermaldata.org/",
+    "version" : "V3"
+}
+
+/* 33 */
+{
+    "_id" : "581478313d149b3dd93c94ad",
+    "catalogUrl" : "https://iatiregistry.org/",
+    "version" : "V3"
+}
+
+/* 34 */
+{
+    "_id" : "581b6bc53d149b60fc991799",
+    "catalogUrl" : "https://edx.netl.doe.gov",
+    "version" : "V3"
+}
+
+/* 35 */
+{
+    "_id" : "581d905e3d149b7bdda5bcae",
+    "catalogUrl" : "http://data.nhm.ac.uk/",
+    "version" : "V3"
+}
+
+/* 36 */
+{
+    "_id" : "581d905e3d149b7bdda5bcb8",
+    "catalogUrl" : "https://open-data.europa.eu/en/data/",
+    "version" : "V3"
+}
