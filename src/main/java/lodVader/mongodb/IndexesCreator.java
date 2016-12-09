@@ -5,8 +5,10 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoCommandException;
 
 import lodVader.mongodb.collections.DatasetDB;
-import lodVader.mongodb.collections.MetadataParserDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.LinkIndegree;
+import lodVader.mongodb.collections.LinkOutdegree;
+import lodVader.mongodb.collections.MetadataParserDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.ckanparser.CkanCatalogDB;
@@ -38,8 +40,11 @@ public class IndexesCreator {
 		addIndex(CkanCatalogDB.COLLECTION_NAME, CkanCatalogDB.CATALOG_URL, 1, true);
 		addIndex(CkanDatasetDB.COLLECTION_NAME, CkanDatasetDB.CKAN_ID, 1, true);
 		addIndex(CkanResourceDB.COLLECTION_NAME, CkanDatasetDB.CKAN_ID, 1,true);
-		
-		
+
+		addIndex(LinkOutdegree.COLLECTION_NAME, LinkOutdegree.DATSET , 1,true); 
+		addIndex(LinkIndegree.COLLECTION_NAME, LinkIndegree.DATSET , 1,true);  
+
+		 
 		
 		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.SOURCE_DISTRIBUTION.toString(), 1);
 		addIndex("PLUGIN_INTERSECTION_PLUGIN", LODVaderIntersectionPlugin.TARGET_DISTRIBUTION.toString(), 1);

@@ -1,3 +1,4 @@
+
 /**
  * 
  */
@@ -28,6 +29,7 @@ import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.DBSuperClass;
 import lodVader.mongodb.collections.DistributionDB;
 import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
+import lodVader.mongodb.collections.LinkIndegree;
 import lodVader.mongodb.collections.LinkOutdegree;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.collections.datasetBF.BucketDB;
@@ -40,7 +42,7 @@ import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
 import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
 import lodVader.parsers.descriptionFileParser.Impl.LodStatsMainParser;
 import lodVader.parsers.descriptionFileParser.Impl.SparqlesMainParser;
-import lodVader.services.mongodb.GeneralResourceRelationServices;
+import lodVader.plugins.intersection.subset.linkset.LinksetDetectionHelper;
 import lodVader.streaming.LODVStreamFileImpl;
 import lodVader.streaming.LODVStreamInterface;
 import lodVader.streaming.LODVStreamInternetImpl;
@@ -142,8 +144,11 @@ public class LODVader {
 			detectDatasets();
 
 		// detectDBPediaDatasets();
-		addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
-		addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
+		// addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
+		// addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
+		detectOutdegree();
+		
+		detectIndegree();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
 
@@ -275,8 +280,10 @@ public class LODVader {
 		else
 			distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME, new BasicDBObject());
 
-		distributionObjects = queries.getObjects(DistributionDB.COLLECTION_NAME,
-				new BasicDBObject(DistributionDB.DATASOURCE, new LodStatsMainParser().getParserName()));
+		// distributionObjects =
+		// queries.getObjects(DistributionDB.COLLECTION_NAME,
+		// new BasicDBObject(DistributionDB.DATASOURCE, new
+		// LodStatsMainParser().getParserName()));
 
 		logger.info("Streaming " + distributionsBeingProcessed.get() + " distributions with " + numberOfThreads
 				+ " threads.");
@@ -336,7 +343,7 @@ public class LODVader {
 
 		for (DBObject object : distributionObjects) {
 			DistributionDB distribution = new DistributionDB(object);
-			executor.execute(new SubsetDetect(distribution));
+			executor.execute(new SubsetDetector(distribution));
 		}
 
 		executor.shutdown();
@@ -351,33 +358,92 @@ public class LODVader {
 	}
 
 	public void detectOutdegree() {
+		logger.info("Detecting outdegree!");
+
 		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject());
 
 		HashMap<String, Integer> h = new HashMap<>();
-		
+		ExecutorService ex = Executors.newFixedThreadPool(3);
+
 		for (DBObject object : distributionObjects) {
-			DistributionDB distribution = new DistributionDB(object);
 
-			// get all object ns of the distribution
-			List<String> nso = new GeneralResourceRelationServices().getSetOfResourcesIDAsString(distribution.getID(),
-					GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
-			HashMap<String, List<String>> distids = new GeneralResourceRelationServices()
-					.getCommonDistributionsByResourceID(nso,
-							GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
+			Runnable r = () -> {
+				DistributionDB distribution = new DistributionDB(object);
 
-			h.put(distribution.getDownloadUrl(), distids.size());
-			
-			LinkOutdegree link = new LinkOutdegree();
-			link.setdataset(distribution.getTopDatasetID());
-			link.setAmount(distids.size());
-			try {
-				link.update();
-			} catch (LODVaderMissingPropertiesException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				List<String> distids = new LinksetDetectionHelper().loadOutdegreeTargetDatasetsIds(distribution);
+
+				h.put(distribution.getDownloadUrl(), distids.size());
+
+				LinkOutdegree link = new LinkOutdegree();
+				link.setdataset(distribution.getTopDatasetID());
+				link.setAmount(distids.size());
+				if (distids.size() > 0)
+					try {
+						link.update();
+					} catch (LODVaderMissingPropertiesException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			};
+
+			ex.submit(r);
 		}
+		ex.shutdown();
+		try {
+			ex.awaitTermination(123, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		logger.info("Done detecting outdegree!");
+
+
+	}
+
+	public void detectIndegree() {
+		logger.info("Detecting indegree!");
+
+		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+				new BasicDBObject());
+
+		HashMap<String, Integer> h = new HashMap<>();
+		ExecutorService ex = Executors.newFixedThreadPool(3);
+
+		for (DBObject object : distributionObjects) {
+
+			Runnable r = () -> {
+				DistributionDB distribution = new DistributionDB(object);
+
+				List<String> distids = new LinksetDetectionHelper().loadIndegreeTargetDatasetsIds(distribution);
+
+				h.put(distribution.getDownloadUrl(), distids.size());
+
+				LinkIndegree link = new LinkIndegree();
+				link.setdataset(distribution.getTopDatasetID());
+				link.setAmount(distids.size());
+				if (distids.size() > 0)
+					try {
+						link.update();
+					} catch (LODVaderMissingPropertiesException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			};
+
+			ex.submit(r);
+		}
+		ex.shutdown();
+		try {
+			ex.awaitTermination(123, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		logger.info("Done detection indegree!");
+
 	}
 
 	public void addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS collection) {
@@ -395,9 +461,9 @@ public class LODVader {
 				GeneralResourceRelationDB v = new GeneralResourceRelationDB(collection, object);
 				v.setDatasetID(distribution.getTopDatasetID());
 				// System.out.println(new ObjectID(v.getID()));
-				if (v.getDatasetID() == null)
-					new GeneralResourceRelationDB(collection).getCollection(collection.toString())
-							.update(new BasicDBObject("_id", new ObjectId(v.getID())), v.mongoDBObject, true, false);
+				// if (v.getDatasetID() == null)
+				new GeneralResourceRelationDB(collection).getCollection(collection.toString())
+						.update(new BasicDBObject("_id", new ObjectId(v.getID())), v.mongoDBObject, true, false);
 
 				// System.out.println("l");
 				// try {

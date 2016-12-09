@@ -12,16 +12,17 @@ import lodVader.mongodb.DBSuperClass;
  */
 public class LinkIndegree extends DBSuperClass{
 
+	public static String COLLECTION_NAME = "LinkIndegree";
 	/**
 	 * Constructor for Class LinkIndegree 
 	 * @param collectionName
 	 */
 	public LinkIndegree() {
-		super("LinkIndegree");
+		super(COLLECTION_NAME);
 	}
 	
-	static String DATSET = "dataset";
-	static String AMOUNT = "amount";
+	public static String DATSET = "dataset";
+	public static String AMOUNT = "amount";
 
 	public void setAmount(int amount) {
 		addField(AMOUNT, amount);

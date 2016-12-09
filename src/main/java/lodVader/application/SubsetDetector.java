@@ -34,9 +34,9 @@ import lodVader.utils.Timer;
  * 
  *         Nov 28, 2016
  */
-public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable {
+public class SubsetDetector extends LODVaderIntersectionPlugin implements Runnable {
 
-	final static Logger logger = LoggerFactory.getLogger(SubsetDetect.class);
+	final static Logger logger = LoggerFactory.getLogger(SubsetDetector.class);
 
 	DistributionDB distribution;
 
@@ -51,8 +51,8 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 	// map of distributionID -> subsetExtractor
 	HashMap<String, SubsetExtractor> extractorSet = new HashMap<>();
 
-	// run extractor every 20k iterations
-	int runExtractor = 5_000;
+	
+	int runExtractorEvery = 5_000;
 
 	// executor service which will run the exctractors
 	ExecutorService ex = null;
@@ -62,7 +62,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 	/**
 	 * Constructor for Class LODVader.DetectSubsets
 	 */
-	public SubsetDetect(DistributionDB distribution) {
+	public SubsetDetector(DistributionDB distribution) {
 		super("SUBSET_LD_LEX_IMPL");
 		this.distribution = distribution;
 	}
@@ -176,7 +176,7 @@ public class SubsetDetect extends LODVaderIntersectionPlugin implements Runnable
 				}
 
 				// run extractors every 20.000 iterations
-				if (++count % runExtractor == 0) {
+				if (++count % runExtractorEvery == 0) {
 					logger.info("Running extractors... (" + formatter.format(count) + ") triples, "
 							+ formatter.format((distribution.getNumberOfTriples() - countTotal)) + " remaining.");
 

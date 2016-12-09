@@ -27,7 +27,7 @@ public class GeneralResourceServices {
 	 * @param collection: the collection which should be queries 
 	 * @return a list is resources IDs
 	 */
-	public List<ObjectId> getSetOfResourcesID(List<String> resourcesURL, GeneralResourceDB.COLLECTIONS collection) {
+	public List<ObjectId> getSetOfResourcesIDAsObj(List<String> resourcesURL, GeneralResourceDB.COLLECTIONS collection) {
 
 		List<ObjectId> resourcesIDs = new ArrayList<>();
 
@@ -36,6 +36,26 @@ public class GeneralResourceServices {
 		GeneralResourceDB.getCollection(collection.toString())
 				.find(query).forEach((object) -> {
 					resourcesIDs.add(new ObjectId(object.get(GeneralResourceDB.ID).toString()));
+				});
+
+		return resourcesIDs;
+	}
+	
+	/**
+	 * Get a set of resourcesIDs described by the URL
+	 * @param resourcesURL: the resources url
+	 * @param collection: the collection which should be queries 
+	 * @return a list is resources IDs
+	 */
+	public List<String> getSetOfResourcesID(List<String> resourcesURL, GeneralResourceDB.COLLECTIONS collection) {
+
+		List<String> resourcesIDs = new ArrayList<>();
+
+		BasicDBObject query = new BasicDBObject(GeneralResourceDB.URI,
+				new BasicDBObject("$in", resourcesURL));
+		GeneralResourceDB.getCollection(collection.toString())
+				.find(query).forEach((object) -> {
+					resourcesIDs.add(object.get(GeneralResourceDB.ID).toString());
 				});
 
 		return resourcesIDs;

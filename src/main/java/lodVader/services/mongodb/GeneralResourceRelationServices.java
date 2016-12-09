@@ -84,7 +84,7 @@ public class GeneralResourceRelationServices {
 			String dist = object.get(GeneralResourceRelationDB.DISTRIBUTION_ID).toString();
 			String ns = object.get(GeneralResourceRelationDB.PREDICATE_ID).toString();
 
-			// filter distributions which contains at least 50 resources
+			// filter distributions which contains at least 500 resources
 			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() >= 500)
 				if (distributionsIDs.get(dist) == null) {
 					List<String> namespaces = new ArrayList<>();
@@ -93,6 +93,33 @@ public class GeneralResourceRelationServices {
 				} else {
 					distributionsIDs.get(dist).add(ns);
 				}
+		});
+
+		return distributionsIDs;
+	}
+
+	/**
+	 * Get a list of distribution ids based on the resources ids
+	 * 
+	 * @param resourcesID
+	 * @param collection
+	 * @return a map with distributionIDs as key and namespaces as values
+	 */
+	public List<String> getCommonDistributionsByResourceObjectID(List<String> resourcesID,
+			GeneralResourceRelationDB.COLLECTIONS collection) {
+
+		List<String> distributionsIDs = new ArrayList<String>();
+
+		// get datasets which describe common namespaces (target datasets)
+		BasicDBObject query = new BasicDBObject(GeneralResourceRelationDB.PREDICATE_ID,
+				new BasicDBObject("$in", resourcesID));
+
+		GeneralResourceRelationDB.getCollection(collection.toString()).find(query).forEach((object) -> {
+			String dist = object.get(GeneralResourceRelationDB.DISTRIBUTION_ID).toString();
+
+			// filter distributions which contains at least 500 resources
+			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() >= 1)
+				distributionsIDs.add(dist);
 		});
 
 		return distributionsIDs;

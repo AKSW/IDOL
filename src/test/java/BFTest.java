@@ -13,7 +13,7 @@ import org.openrdf.model.Statement;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import lodVader.application.SubsetDetect;
+import lodVader.application.SubsetDetector;
 import lodVader.loader.LODVaderConfigurator;
 import lodVader.loader.LODVaderProperties;
 import lodVader.mongodb.DBSuperClass;
@@ -95,7 +95,7 @@ public class BFTest {
 		 */
 		
 		ExecutorService executor = Executors.newCachedThreadPool();
-		executor.execute(new SubsetDetect(distribution1));
+		executor.execute(new SubsetDetector(distribution1));
 
 
 		executor.shutdown();
