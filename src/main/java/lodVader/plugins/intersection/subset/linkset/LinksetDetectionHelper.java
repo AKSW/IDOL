@@ -25,7 +25,7 @@ public class LinksetDetectionHelper {
 
 	final static Logger logger = LoggerFactory.getLogger(LinksetDetectionHelper.class);
 
-	public List<String> loadOutdegreeTargetDatasetsIds(DistributionDB distribution) {
+	public List<String> loadOutdegreeTargetDatasetsIds(DistributionDB distribution, int minResources) {
 		logger.info("Loading outdegree data for " + distribution.getDownloadUrl());
 		
 		List<ObjectId> sourceNamespaceIDs = new GeneralResourceRelationServices()
@@ -39,10 +39,10 @@ public class LinksetDetectionHelper {
 				lodVader.mongodb.collections.Resources.GeneralResourceDB.COLLECTIONS.RESOURCES_SUBJECT_NS0);
 
 		return new GeneralResourceRelationServices().getCommonDistributionsByResourceObjectID(targetNamespacesIDs,
-				COLLECTIONS.RELATION_SUBJECT_NS0);
+				COLLECTIONS.RELATION_SUBJECT_NS0, minResources);
 	}
 
-	public List<String> loadIndegreeTargetDatasetsIds(DistributionDB distribution) {
+	public List<String> loadIndegreeTargetDatasetsIds(DistributionDB distribution, int minResources) {
 		logger.info("Loading indegree data for " + distribution.getDownloadUrl());
 		
 		List<ObjectId> sourceNamespaceIDs = new GeneralResourceRelationServices()
@@ -57,7 +57,7 @@ public class LinksetDetectionHelper {
 				lodVader.mongodb.collections.Resources.GeneralResourceDB.COLLECTIONS.RESOURCES_OBJECT_NS0);
 
 		return new GeneralResourceRelationServices().getCommonDistributionsByResourceObjectID(targetNamespacesIDs,
-				COLLECTIONS.RELATION_OBJECT_NS0);
+				COLLECTIONS.RELATION_OBJECT_NS0, minResources);
 	}
 
 }

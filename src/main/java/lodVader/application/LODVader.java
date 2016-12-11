@@ -367,13 +367,15 @@ public class LODVader {
 
 		HashMap<String, Integer> h = new HashMap<>();
 		ExecutorService ex = Executors.newFixedThreadPool(3);
+		
+		int minResources = 50;
 
 		for (DBObject object : distributionObjects) {
 
 			Runnable r = () -> {
 				DistributionDB distribution = new DistributionDB(object);
 
-				List<String> distids = new LinksetDetectionHelper().loadOutdegreeTargetDatasetsIds(distribution);
+				List<String> distids = new LinksetDetectionHelper().loadOutdegreeTargetDatasetsIds(distribution, minResources);
 
 				h.put(distribution.getDownloadUrl(), distids.size());
 
@@ -409,6 +411,7 @@ public class LODVader {
 
 		List<DBObject> distributionObjects = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject());
+		int minResources = 50;
 
 		HashMap<String, Integer> h = new HashMap<>();
 		ExecutorService ex = Executors.newFixedThreadPool(3);
@@ -418,7 +421,7 @@ public class LODVader {
 			Runnable r = () -> {
 				DistributionDB distribution = new DistributionDB(object);
 
-				List<String> distids = new LinksetDetectionHelper().loadIndegreeTargetDatasetsIds(distribution);
+				List<String> distids = new LinksetDetectionHelper().loadIndegreeTargetDatasetsIds(distribution, minResources);
 
 				h.put(distribution.getDownloadUrl(), distids.size());
 

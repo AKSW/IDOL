@@ -106,7 +106,7 @@ public class GeneralResourceRelationServices {
 	 * @return a map with distributionIDs as key and namespaces as values
 	 */
 	public List<String> getCommonDistributionsByResourceObjectID(List<String> resourcesID,
-			GeneralResourceRelationDB.COLLECTIONS collection) {
+			GeneralResourceRelationDB.COLLECTIONS collection, int minResources) {
 
 		List<String> distributionsIDs = new ArrayList<String>();
 
@@ -118,7 +118,7 @@ public class GeneralResourceRelationServices {
 			String dist = object.get(GeneralResourceRelationDB.DISTRIBUTION_ID).toString();
 
 			// filter distributions which contains at least 500 resources
-			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() >= 1)
+			if (((Number) object.get(GeneralResourceRelationDB.AMOUNT)).intValue() >= minResources)
 				distributionsIDs.add(dist);
 		});
 
