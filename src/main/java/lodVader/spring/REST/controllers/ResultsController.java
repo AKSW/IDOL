@@ -174,7 +174,7 @@ public class ResultsController {
 		return bf.toString();
 	}
 
-	@RequestMapping(value = "/results/topOutegree", method = RequestMethod.GET)
+	@RequestMapping(value = "/results/topOutdegree", method = RequestMethod.GET)
 	public String topOutdegree() {
 		StringBuffer bf = new StringBuffer();
 		int i = 0;

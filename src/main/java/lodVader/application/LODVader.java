@@ -148,9 +148,9 @@ public class LODVader {
 		// addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
 
 		
-//		detectOutdegree();
+		detectOutdegree();
 //		
-//		detectIndegree();
+		detectIndegree();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
 
