@@ -54,11 +54,11 @@ public class DatasetDB extends DBSuperClass {
 	/**
 	 * Constructor for Class DatasetDB 
 	 */
-	public DatasetDB(String uri) {
+	public DatasetDB(String id) {
 		super(COLLECTION_NAME);
 		setKeys();
-		setUri(uri);
-		find(true, URI, uri);
+		setID(id);;
+		find(true, ID, id);
 	}
 	
 
@@ -206,7 +206,7 @@ public class DatasetDB extends DBSuperClass {
 		}
 	}
 
-	public boolean getIsVocabulary() {
+	public boolean isVocabulary() {
 		return Boolean.getBoolean(getField(IS_VOCABULARY).toString());
 	}
 

@@ -18,6 +18,8 @@ import com.mongodb.DBObject;
 
 import lodVader.mongodb.collections.DatasetDB;
 import lodVader.mongodb.collections.DistributionDB;
+import lodVader.mongodb.collections.LinkIndegree;
+import lodVader.mongodb.collections.LinkOutdegree;
 import lodVader.mongodb.collections.Resources.GeneralResourceDB;
 import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
 import lodVader.mongodb.queries.GeneralQueriesHelper;
@@ -105,8 +107,7 @@ public class ResultsController {
 	@RequestMapping(value = "/results/triplesInterval", method = RequestMethod.GET)
 	public HashMap<Integer, Integer> triplesInterval(
 			@RequestParam(value = "interval", required = false, defaultValue = "1000000") Integer interval,
-			@RequestParam(value = "min", required = false, defaultValue = "0") Integer min
-			) {
+			@RequestParam(value = "min", required = false, defaultValue = "0") Integer min) {
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (DBObject d : new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
 				new BasicDBObject(DistributionDB.STATUS, DistributionDB.DistributionStatus.DONE.toString()))) {
@@ -146,8 +147,51 @@ public class ResultsController {
 		DataSourceSizeRESTModel model = new DataSourceSizeRESTModel();
 		model.checkStatus();
 		return model;
-
 	}
+
+	@RequestMapping(value = "/results/topIndegree", method = RequestMethod.GET)
+	public String topIndegree() {
+		StringBuffer bf = new StringBuffer();
+		int i = 0;
+
+		for (DBObject d : new GeneralQueriesHelper().getObjects(LinkIndegree.COLLECTION_NAME, new BasicDBObject(),
+				LinkIndegree.AMOUNT.toString())) {
+			LinkIndegree in = new LinkIndegree(d);
+			DatasetDB dataset = new DatasetDB(in.getDataset());
+			if (!dataset.isVocabulary()) {
+				bf.append(in.getAmount() + " " + new DatasetDB(in.getDataset()).getLabel() + " " + dataset.isVocabulary());
+				bf.append("<br>");
+
+				i++;
+			}
+			if (i > 1000)
+				return bf.toString();
+		}
+
+		return bf.toString();
+	}
+	
+	@RequestMapping(value = "/results/topOutegree", method = RequestMethod.GET)
+	public String topOutdegree() {
+		StringBuffer bf = new StringBuffer();
+		int i = 0;
+
+		for (DBObject d : new GeneralQueriesHelper().getObjects(LinkOutdegree.COLLECTION_NAME, new BasicDBObject(),
+				LinkOutdegree.AMOUNT.toString())) {
+			LinkOutdegree in = new LinkOutdegree(d);
+			DatasetDB dataset = new DatasetDB(in.getDataset());
+			if (!dataset.isVocabulary()) {
+				bf.append(in.getAmount() + " " + new DatasetDB(in.getDataset()).getLabel() + " " + dataset.isVocabulary());
+				bf.append("<br>");
+				i++;
+			}
+			if (i > 1000)
+				return bf.toString();
+		}
+
+		return bf.toString();
+	}
+
 
 	@RequestMapping(value = "/results/topPredicates", method = RequestMethod.GET)
 	public HashMap<String, Integer> predicates() {

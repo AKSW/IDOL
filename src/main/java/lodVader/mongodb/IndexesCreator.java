@@ -42,7 +42,7 @@ public class IndexesCreator {
 		addIndex(CkanResourceDB.COLLECTION_NAME, CkanDatasetDB.CKAN_ID, 1,true);
 
 		addIndex(LinkOutdegree.COLLECTION_NAME, LinkOutdegree.DATSET , 1,true); 
-		addIndex(LinkIndegree.COLLECTION_NAME, LinkIndegree.DATSET , 1,true);  
+		addIndex(LinkIndegree.COLLECTION_NAME, LinkIndegree.DATASET , 1,true);  
 
 		 
 		

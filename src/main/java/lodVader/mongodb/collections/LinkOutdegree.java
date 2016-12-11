@@ -3,6 +3,8 @@
  */
 package lodVader.mongodb.collections;
 
+import com.mongodb.DBObject;
+
 import lodVader.mongodb.DBSuperClass;
 
 /**
@@ -20,6 +22,11 @@ public class LinkOutdegree extends DBSuperClass{
 	 */
 	public LinkOutdegree() {
 		super(COLLECTION_NAME);
+	}
+	
+	public LinkOutdegree(DBObject o) {
+		super(COLLECTION_NAME);
+		mongoDBObject = o;
 	}
 	
 	public static String DATSET = "dataset";

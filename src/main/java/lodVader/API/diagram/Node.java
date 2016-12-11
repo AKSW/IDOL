@@ -69,7 +69,7 @@ public class Node {
 
 		else if (source instanceof DatasetDB) {
 			DatasetDB tmp = (DatasetDB) source;
-			this.isVocab = tmp.getIsVocabulary();
+			this.isVocab = tmp.isVocabulary();
 
 			if (tmp.getTitle() != null || !tmp.getTitle().equals(""))
 				setText(tmp.getTitle());
@@ -83,7 +83,7 @@ public class Node {
 
 			setRadius(31);
 
-			if (tmp.getIsVocabulary()) {
+			if (tmp.isVocabulary()) {
 				setColor("rgb(253, 174, 107)");
 				setRadius(27);
 			} else

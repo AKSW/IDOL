@@ -27,7 +27,11 @@ public class GeneralQueriesHelper {
 		return getObjects(collectionName, new BasicDBObject(field, value), null, sort, 1);
 	}
 
-	public ArrayList<DBObject> getObjects(String collectionName, DBObject query) {
+	public ArrayList<DBObject> getObjects(String collectionName, DBObject query, String sort) { 
+		return getObjects(collectionName, query, null, sort, -1);
+	}
+	
+	public ArrayList<DBObject> getObjects(String collectionName, DBObject query) { 
 		return getObjects(collectionName, query, null, null, 1);
 	}
 

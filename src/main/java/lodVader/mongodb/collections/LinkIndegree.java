@@ -3,6 +3,8 @@
  */
 package lodVader.mongodb.collections;
 
+import com.mongodb.DBObject;
+
 import lodVader.mongodb.DBSuperClass;
 
 /**
@@ -21,7 +23,12 @@ public class LinkIndegree extends DBSuperClass{
 		super(COLLECTION_NAME);
 	}
 	
-	public static String DATSET = "dataset";
+	public LinkIndegree(DBObject o ) {
+		super(COLLECTION_NAME);
+		mongoDBObject= o;
+	}
+	
+	public static String DATASET = "dataset";
 	public static String AMOUNT = "amount";
 
 	public void setAmount(int amount) {
@@ -30,7 +37,7 @@ public class LinkIndegree extends DBSuperClass{
 	
 	
 	public  void setdataset(String dataset) {
-		addField(DATSET, dataset);
+		addField(DATASET, dataset);
 	}
 	
 	public  int getAmount() {
@@ -39,7 +46,7 @@ public class LinkIndegree extends DBSuperClass{
 	
 	
 	public  String getDataset() {
-		return getField(DATSET	).toString();
+		return getField(DATASET).toString();
 	}
 	
 }
