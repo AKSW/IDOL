@@ -48,7 +48,7 @@ public class Node {
 
 			DistributionDB tmp = (DistributionDB) source;
 			this.group = tmp.getTopDatasetID();
-			this.isVocab = tmp.getIsVocabulary();
+			this.isVocab = tmp.isVocabulary();
 			if (tmp.getTitle() != null && !tmp.getTitle().equals(""))
 				setText(tmp.getTitle());
 			else
@@ -58,7 +58,7 @@ public class Node {
 
 			setRadius(31);
 
-			if (tmp.getIsVocabulary()) {
+			if (tmp.isVocabulary()) {
 				setColor("rgb(253, 174, 107)");
 				setRadius(30);
 			} else

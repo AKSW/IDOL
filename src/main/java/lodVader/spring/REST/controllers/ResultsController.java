@@ -158,19 +158,21 @@ public class ResultsController {
 				LinkIndegree.AMOUNT.toString())) {
 			LinkIndegree in = new LinkIndegree(d);
 			DatasetDB dataset = new DatasetDB(in.getDataset());
-			if (!dataset.isVocabulary()) {
-				bf.append(in.getAmount() + " " + new DatasetDB(in.getDataset()).getLabel() + " " + dataset.isVocabulary());
-				bf.append("<br>");
+			if (dataset.getDistributionsIDs().iterator().hasNext())
+				if (!new DistributionDB(dataset.getDistributionsIDs().iterator().next()).isVocabulary()) {
+					bf.append(in.getAmount() + " " + new DatasetDB(in.getDataset()).getLabel() + " "
+							+ dataset.isVocabulary());
+					bf.append("<br>");
 
-				i++;
-			}
+					i++;
+				}
 			if (i > 1000)
 				return bf.toString();
 		}
 
 		return bf.toString();
 	}
-	
+
 	@RequestMapping(value = "/results/topOutegree", method = RequestMethod.GET)
 	public String topOutdegree() {
 		StringBuffer bf = new StringBuffer();
@@ -180,8 +182,10 @@ public class ResultsController {
 				LinkOutdegree.AMOUNT.toString())) {
 			LinkOutdegree in = new LinkOutdegree(d);
 			DatasetDB dataset = new DatasetDB(in.getDataset());
-			if (!dataset.isVocabulary()) {
-				bf.append(in.getAmount() + " " + new DatasetDB(in.getDataset()).getLabel() + " " + dataset.isVocabulary());
+			if (dataset.getDistributionsIDs().iterator().hasNext())
+				if (!new DistributionDB(dataset.getDistributionsIDs().iterator().next()).isVocabulary()) {
+				bf.append(in.getAmount() + " " + new DatasetDB(in.getDataset()).getLabel() + " "
+						+ dataset.isVocabulary());
 				bf.append("<br>");
 				i++;
 			}
@@ -191,7 +195,6 @@ public class ResultsController {
 
 		return bf.toString();
 	}
-
 
 	@RequestMapping(value = "/results/topPredicates", method = RequestMethod.GET)
 	public HashMap<String, Integer> predicates() {

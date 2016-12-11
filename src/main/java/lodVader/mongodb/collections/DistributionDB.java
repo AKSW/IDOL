@@ -270,7 +270,7 @@ public class DistributionDB extends DBSuperClass {
 		addField(STATUS, status.name());
 	}
 
-	public boolean getIsVocabulary() {
+	public boolean isVocabulary() {
 		return Boolean.parseBoolean(getField(IS_VOCABULARY).toString());
 	}
 
