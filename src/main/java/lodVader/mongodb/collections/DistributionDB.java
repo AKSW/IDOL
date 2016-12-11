@@ -84,13 +84,12 @@ public class DistributionDB extends DBSuperClass {
 	public static final String NUMBER_OF_TRIPLES = "numberOfTriples";
 
 	public static final String NUMBER_OF_LITERALS = "numberOfLiterals";
-	
+
 	public static final String SPARQL_GRAPH = "sparqlGraph";
-	
+
 	public static final String SPARQL_COUNT = "sparqlCount";
-	
-	public static final String SPARQL_ENDPOINT = "sparqlEndpoint";	
-	
+
+	public static final String SPARQL_ENDPOINT = "sparqlEndpoint";
 
 	public enum DistributionStatus {
 
@@ -140,14 +139,14 @@ public class DistributionDB extends DBSuperClass {
 	public String getUri() {
 		return getField(URI).toString();
 	}
-	
-	public String getSparqlEndpoint(){
-		if(getField(SPARQL_ENDPOINT) == null)
+
+	public String getSparqlEndpoint() {
+		if (getField(SPARQL_ENDPOINT) == null)
 			return null;
 		return getField(SPARQL_ENDPOINT).toString();
 	}
-	
-	public void setSparqlEndpoint(String endpoint){
+
+	public void setSparqlEndpoint(String endpoint) {
 		addField(SPARQL_ENDPOINT, endpoint);
 	}
 
@@ -224,27 +223,26 @@ public class DistributionDB extends DBSuperClass {
 	public void setSparqlCount(int count) {
 		addField(SPARQL_COUNT, count);
 	}
-	
+
 	public void setSparqlGraph(String graph) {
 		addField(SPARQL_GRAPH, graph);
-	}	
-	
+	}
+
 	public void setFormat(String format) {
 		addField(FORMAT, format);
 	}
-	
-	public int getSparqlCount(){
-		if(getField(SPARQL_COUNT) == null)
+
+	public int getSparqlCount() {
+		if (getField(SPARQL_COUNT) == null)
 			return 0;
 		return ((Number) getField(SPARQL_COUNT)).intValue();
 	}
-	
-	public String getSparqlGraph(){
-		if(getField(SPARQL_GRAPH) == null)
+
+	public String getSparqlGraph() {
+		if (getField(SPARQL_GRAPH) == null)
 			return null;
 		return getField(SPARQL_GRAPH).toString();
 	}
-	
 
 	public String getLastMsg() {
 
@@ -271,7 +269,11 @@ public class DistributionDB extends DBSuperClass {
 	}
 
 	public boolean isVocabulary() {
-		return Boolean.parseBoolean(getField(IS_VOCABULARY).toString());
+		try {
+			return Boolean.parseBoolean(getField(IS_VOCABULARY).toString());
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	public String getResourceUri() {
@@ -366,7 +368,7 @@ public class DistributionDB extends DBSuperClass {
 	 * @return the repository
 	 */
 	public ArrayList<String> getRepositories() {
-		return  (ArrayList<String>) getField(REPOSITORY);
+		return (ArrayList<String>) getField(REPOSITORY);
 	}
 
 	public void addDatasource(String datasource) {
@@ -386,8 +388,8 @@ public class DistributionDB extends DBSuperClass {
 	public ArrayList<String> getDatasources() {
 		return (ArrayList<String>) getField(DATASOURCE);
 	}
-	
-	public void setDatasource(ArrayList<String> d){
+
+	public void setDatasource(ArrayList<String> d) {
 		addField(DATASOURCE, d);
 	}
 
