@@ -8,15 +8,15 @@ import org.openrdf.model.Statement;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import lodVader.loader.LODVaderConfigurator;
-import lodVader.mongodb.DBSuperClass;
-import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.Resources.GeneralResourceDB;
-import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
-import lodVader.mongodb.queries.GeneralQueriesHelper;
-import lodVader.tupleManager.processors.BloomFilterProcessor;
-import lodVader.utils.NSUtils;
-import lodVader.utils.StatementUtils;
+import idol.loader.LODVaderConfigurator;
+import idol.mongodb.DBSuperClass;
+import idol.mongodb.collections.DistributionDB;
+import idol.mongodb.collections.Resources.GeneralResourceDB;
+import idol.mongodb.collections.Resources.GeneralResourceRelationDB;
+import idol.mongodb.queries.GeneralQueriesHelper;
+import idol.tupleManager.processors.BloomFilterProcessor;
+import idol.utils.NSUtils;
+import idol.utils.StatementUtils;
 
 /**
  * 

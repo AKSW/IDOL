@@ -3,9 +3,9 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
-import lodVader.utils.ConnectionUtils;
-import lodVader.utils.SPARQLUtils;
-import lodVader.utils.URLUtils;
+import idol.utils.ConnectionUtils;
+import idol.utils.SPARQLUtils;
+import idol.utils.URLUtils;
 
 /**
  * @author Ciro Baron Neto

@@ -3,9 +3,9 @@ import java.net.MalformedURLException;
 import org.bson.types.ObjectId;
 import org.openrdf.model.Statement;
 
-import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
-import lodVader.utils.StatementUtils;
+import idol.mongodb.collections.DistributionDB;
+import idol.mongodb.collections.DistributionDB.DistributionStatus;
+import idol.utils.StatementUtils;
 
 /**
  * @author Ciro Baron Neto

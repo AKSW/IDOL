@@ -5,9 +5,9 @@ import java.text.DecimalFormat;
 
 import org.junit.Test;
 
-import lodVader.bloomfilters.BloomFilterI;
-import lodVader.bloomfilters.impl.BloomFilterFactory;
-import lodVader.utils.Timer;
+import idol.bloomfilters.BloomFilterI;
+import idol.bloomfilters.impl.BloomFilterFactory;
+import idol.utils.Timer;
 
 /**
  * 
