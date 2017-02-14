@@ -17,8 +17,7 @@
 		<module>visualization</module>
 		<module>idol-utils</module>
 	</modules>
-
-
+ 
 
 	<dependencies>
 

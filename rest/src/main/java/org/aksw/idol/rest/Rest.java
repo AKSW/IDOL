@@ -11,7 +11,6 @@ import org.aksw.idol.core.loader.LODVaderProperties;
 import org.aksw.idol.core.mongodb.collections.DistributionDB;
 import org.aksw.idol.core.mongodb.collections.DistributionDB.DistributionStatus;
 import org.aksw.idol.core.mongodb.queries.GeneralQueriesHelper;
-import org.aksw.idol.core.parsers.descriptionFileParser.Impl.LodStatsMainParser;
 import org.aksw.idol.core.streaming.LODVStreamFileImpl;
 import org.aksw.idol.core.streaming.LODVStreamInterface;
 import org.aksw.idol.core.tupleManager.processors.DBpediaProcessor;
@@ -19,21 +18,24 @@ import org.aksw.idol.core.tupleManager.processors.DBpediaProcessor;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+
+
+
 /**
  * @author Ciro Baron Neto
  * 
  *         Feb 14, 2017
- */
+ */ 
 public class Rest {
 
 	public static void main(String[] args) {
 		/**
 		 * Load properties file, create MondoDB indexes, etc
 		 */
-		LODVaderConfigurator s = new LODVaderConfigurator();
+		LODVaderConfigurator s = new LODVaderConfigurator(); 
 		s.configure();
-
-		GeneralQueriesHelper queries = new GeneralQueriesHelper();
+ 
+		GeneralQueriesHelper queries = new GeneralQueriesHelper(); 
 
 		// load distributions to be analyzed
 		List<DBObject> distributionObjects = null;
@@ -45,7 +47,7 @@ public class Rest {
 			DistributionDB distribution = new DistributionDB(object);
 			process(distribution);
 		}
-
+ 
 	}
 
 	public static void process(DistributionDB distribution) {
@@ -53,7 +55,7 @@ public class Rest {
 		/**
 		 * Check whether LODVader should stream from the internet of loca files
 		 */
-		LODVStreamInterface coreStream = null;
+		LODVStreamInterface coreStream = null; 
 
 		coreStream = new LODVStreamFileImpl(LODVaderProperties.BASE_PATH + "/raw_files/");
 
