@@ -1,5 +1,8 @@
 package org.aksw.idol.rest.visualization;
 
+import org.aksw.idol.core.mongodb.collections.DatasetDB;
+import org.aksw.idol.core.mongodb.collections.DistributionDB;
+
 public class Node {
 
 	Object dynLodObject;

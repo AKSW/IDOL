@@ -13,7 +13,7 @@ public class NSUtils {
 			url = split[0] + "//" + split[2] + "/";
 		else if (!url.endsWith("/"))
 			url = url + "/";
-		if (url.startsWith("htt"))
+		if (url.startsWith("htt")) 
 			return url;
 		else
 			return "";
@@ -23,7 +23,7 @@ public class NSUtils {
 		if (url.startsWith("htt"))
 			if (url.length() > 1024)
 				url = url.substring(0, 1024);
-
+ 
 		String[] split = url.split("/");
 		if (split.length > 4)
 			url = split[0] + "//" + split[2] + "/" + split[3] + "/";

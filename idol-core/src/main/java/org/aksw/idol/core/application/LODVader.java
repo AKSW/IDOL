@@ -79,7 +79,7 @@ public class LODVader {
 	boolean createDumpOnDisk = false;
 	boolean overrideDumpOnDisk = false;
 
-	boolean processStatisticalData = false;
+	boolean processStatisticalData = true;
 	boolean createBloomFilter = false;
 
 	/**

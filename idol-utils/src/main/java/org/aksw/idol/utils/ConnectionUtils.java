@@ -4,10 +4,8 @@
 package org.aksw.idol.utils;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -26,7 +24,7 @@ public class ConnectionUtils {
 	 */
 	public final static String MEDIA_TYPE_RDF = "application/rdf+xml";
 	public final static String MEDIA_TYPE_TTL = "text/turtle";
-	public final static String MEDIA_TYPE_JSON = "application/json"; O
+	public final static String MEDIA_TYPE_JSON = "application/json";
 
 	/**
 	 * Open a connection and return the stream
@@ -36,7 +34,7 @@ public class ConnectionUtils {
 	 * @throws IOException
 	 */
 	public InputStream getStream(String downloadURL, String accept) throws IOException {
-		HttpURLConnection httpConn;
+		HttpURLConnection httpConn; 
 		httpConn = (HttpURLConnection) new URL(downloadURL).openConnection();
 		httpConn.setReadTimeout(114000);
 		httpConn.setConnectTimeout(114000);

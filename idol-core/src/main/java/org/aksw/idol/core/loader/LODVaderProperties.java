@@ -22,6 +22,7 @@ public class LODVaderProperties {
 		InputStream inputStream = null;
 		try {
 			String propFileName = "resources/config.properties";
+			
 
 			inputStream = new FileInputStream(propFileName);
 

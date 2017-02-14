@@ -1,0 +1,130 @@
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:39:54 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:40:33 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:41:58 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:42:51 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:44:19 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:45:09 INFO  LODVaderConfigurator:55 - Creating MongoDB indexes...
+2017-02-14 23:45:09 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-02-14 23:45:09 INFO  cluster:71 - No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, serverDescriptions=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out
+2017-02-14 23:45:09 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:1}] to localhost:27017
+2017-02-14 23:45:09 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 0, 14]}, minWireVersion=0, maxWireVersion=3, maxDocumentSize=16777216, roundTripTimeNanos=670508}
+2017-02-14 23:45:09 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:2}] to localhost:27017
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:54:48 INFO  LODVaderConfigurator:55 - Creating MongoDB indexes...
+2017-02-14 23:54:48 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-02-14 23:54:49 INFO  cluster:71 - No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, serverDescriptions=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out
+2017-02-14 23:54:49 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:3}] to localhost:27017
+2017-02-14 23:54:49 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 0, 14]}, minWireVersion=0, maxWireVersion=3, maxDocumentSize=16777216, roundTripTimeNanos=798003}
+2017-02-14 23:54:49 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:4}] to localhost:27017
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:57:04 INFO  LODVaderConfigurator:55 - Creating MongoDB indexes...
+2017-02-14 23:57:04 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-02-14 23:57:04 INFO  cluster:71 - No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, serverDescriptions=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out
+2017-02-14 23:57:04 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:5}] to localhost:27017
+2017-02-14 23:57:04 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 0, 14]}, minWireVersion=0, maxWireVersion=3, maxDocumentSize=16777216, roundTripTimeNanos=637437}
+2017-02-14 23:57:04 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:6}] to localhost:27017
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:57:36 INFO  LODVaderConfigurator:55 - Creating MongoDB indexes...
+2017-02-14 23:57:36 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-02-14 23:57:37 INFO  cluster:71 - No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, serverDescriptions=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out
+2017-02-14 23:57:37 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:7}] to localhost:27017
+2017-02-14 23:57:37 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 0, 14]}, minWireVersion=0, maxWireVersion=3, maxDocumentSize=16777216, roundTripTimeNanos=1082534}
+2017-02-14 23:57:37 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:8}] to localhost:27017
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:129 - ==========================================================
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:130 - 
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:131 - 
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:132 - ====================================================
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:133 - ============== LODVader v1.4 Started ===============
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:134 - ====================================================
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:135 - 
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:136 - 
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:43 - Reading properties file.
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:51 - Creating folders...
+2017-02-14 23:57:46 INFO  LODVaderConfigurator:55 - Creating MongoDB indexes...
+2017-02-14 23:57:47 INFO  cluster:71 - Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-02-14 23:57:47 INFO  cluster:71 - No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, serverDescriptions=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out
+2017-02-14 23:57:47 INFO  connection:71 - Opened connection [connectionId{localValue:1, serverValue:9}] to localhost:27017
+2017-02-14 23:57:47 INFO  cluster:71 - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 0, 14]}, minWireVersion=0, maxWireVersion=3, maxDocumentSize=16777216, roundTripTimeNanos=527264}
+2017-02-14 23:57:47 INFO  connection:71 - Opened connection [connectionId{localValue:2, serverValue:10}] to localhost:27017

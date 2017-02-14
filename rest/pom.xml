@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.aksw.idol</groupId>
-			<artifactId>idol-parent</artifactId>
+			<artifactId>idol-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
