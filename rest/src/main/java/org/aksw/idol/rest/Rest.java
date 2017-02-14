@@ -3,7 +3,7 @@
  */
 package org.aksw.idol.rest;
 
-import org.aksw.idol.application.LODVader;
+import org.aksw.idol.core.application.LODVader;
 
 /**
  * @author Ciro Baron Neto

@@ -1,22 +1,17 @@
 package org.aksw.idol.rest.visualization;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Node {
 
 	Object dynLodObject;
 
-	@JsonIgnore
     String id;
-
+ 
 	String text;
 
-	@JsonIgnore
 	String url;
 
 	String color;
 
-	@JsonIgnore
 	boolean visible = false;
 
 	int radius;

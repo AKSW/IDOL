@@ -3,6 +3,8 @@ package org.aksw.idol.rest.visualization;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.aksw.idol.core.mongodb.collections.DistributionDB;
+
 public class DiagramData {
 	
 	// load all distributions

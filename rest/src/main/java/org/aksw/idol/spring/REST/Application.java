@@ -1,6 +1,6 @@
 package org.aksw.idol.spring.REST;
 
-import org.aksw.idol.application.LODVader;
+import org.aksw.idol.core.application.LODVader;
 
 public class Application {
 

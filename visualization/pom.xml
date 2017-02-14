@@ -11,7 +11,7 @@
   
   <groupId>aksw.org.idol</groupId>
   <artifactId>visualization</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+
   <name>visualization</name>
   <url>http://maven.apache.org</url>
   
@@ -21,11 +21,11 @@
   
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+     <groupId>org.aksw.idol</groupId>
+     <artifactId>idol-parent</artifactId>
+     <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
+  
   
 </project>

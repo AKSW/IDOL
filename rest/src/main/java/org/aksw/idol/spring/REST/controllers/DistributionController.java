@@ -6,8 +6,8 @@ package org.aksw.idol.spring.REST.controllers;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import org.aksw.idol.mongodb.collections.DistributionDB;
-import org.aksw.idol.mongodb.queries.DistributionQueries;
+import org.aksw.idol.core.mongodb.collections.DistributionDB;
+import org.aksw.idol.core.mongodb.queries.DistributionQueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
