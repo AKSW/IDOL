@@ -1,11 +1,10 @@
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.aksw.idol.utils.ConnectionUtils;
+import org.aksw.idol.utils.SPARQLUtils;
+import org.aksw.idol.utils.URLUtils;
 import org.junit.Test;
-
-import idol.utils.ConnectionUtils;
-import idol.utils.SPARQLUtils;
-import idol.utils.URLUtils;
 
 /**
  * @author Ciro Baron Neto

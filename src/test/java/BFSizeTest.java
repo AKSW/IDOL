@@ -3,11 +3,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
+import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.utils.Timer;
 import org.junit.Test;
-
-import idol.bloomfilters.BloomFilterI;
-import idol.bloomfilters.impl.BloomFilterFactory;
-import idol.utils.Timer;
 
 /**
  * 
