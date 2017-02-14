@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.aksw.idol.core.application;
 
 import java.io.File;

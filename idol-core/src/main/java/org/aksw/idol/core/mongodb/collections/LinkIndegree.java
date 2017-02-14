@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.aksw.idol.core.mongodb.collections;
 
 import org.aksw.idol.core.mongodb.DBSuperClass;

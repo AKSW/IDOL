@@ -15,6 +15,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.MongoCommandException;
 
+
 public class IndexesCreator {
 
 	public void createIndexes() {
@@ -31,8 +32,6 @@ public class IndexesCreator {
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.DOWNLOAD_URL, 1, true);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.IS_VOCABULARY, 1);
 		addIndex(DistributionDB.COLLECTION_NAME, DistributionDB.STATUS, 1);
-
-		
 
 
 		addIndex(CkanCatalogDB.COLLECTION_NAME, CkanCatalogDB.CATALOG_URL, 1, true);
