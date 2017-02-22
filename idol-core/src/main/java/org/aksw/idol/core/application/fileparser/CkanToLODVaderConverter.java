@@ -40,7 +40,7 @@ public class CkanToLODVaderConverter {
 				new BasicDBObject(CkanResourceDB.DATASOURCE, dataSourceName)).forEach((obj) -> {
 					CkanResourceDB ckanResourceDB = new CkanResourceDB(obj);
 					if (ckanResourceDB.getFormat() != null)
-						if (!FormatsUtils.getEquivalentFormat(ckanResourceDB.getFormat()).equals("")) {
+						if (!FormatsUtils.getSerializationFormat(ckanResourceDB.getFormat()).equals("")) {
 							DistributionDB distributionDB = new DistributionDBAdapter(ckanResourceDB, dataSourceName);
 							distributionDB.find(true, distributionDB.DOWNLOAD_URL, distributionDB.getDownloadUrl());
 							distributionDB.addDatasource(dataSourceName);

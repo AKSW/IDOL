@@ -23,7 +23,7 @@ public class DistributionDBAdapter extends DistributionDB{
 	public DistributionDBAdapter(CkanResourceDB ckanResourceDB, String datasource) {
 		try {
 			setUri(ckanResourceDB.getCkanID());
-			setFormat(FormatsUtils.getEquivalentFormat(ckanResourceDB.getFormat()));
+			setFormat(FormatsUtils.getSerializationFormat(ckanResourceDB.getFormat()));
 			setDownloadUrl(ckanResourceDB.getDownloadURL());
 			setTitle(ckanResourceDB.getTitle());
 			setIsVocabulary(false);

@@ -3,8 +3,13 @@ package org.aksw.idol.core.mongodb.collections;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
+import org.aksw.idol.core.loader.LODVaderProperties;
 import org.aksw.idol.core.mongodb.DBSuperClass;
 import org.aksw.idol.core.mongodb.queries.DatasetQueries;
+import org.aksw.idol.core.utils.FileUtils;
+import org.aksw.idol.utils.ConnectionUtils;
+import org.aksw.idol.utils.FileStatement;
+import org.aksw.idol.utils.StatementUtils;
 import org.aksw.idol.utils.URLUtils;
 
 import com.mongodb.DBObject;
@@ -84,13 +89,12 @@ public class DistributionDB extends DBSuperClass {
 	public static final String NUMBER_OF_TRIPLES = "numberOfTriples";
 
 	public static final String NUMBER_OF_LITERALS = "numberOfLiterals";
-	
+
 	public static final String SPARQL_GRAPH = "sparqlGraph";
-	
+
 	public static final String SPARQL_COUNT = "sparqlCount";
-	
-	public static final String SPARQL_ENDPOINT = "sparqlEndpoint";	
-	
+
+	public static final String SPARQL_ENDPOINT = "sparqlEndpoint";
 
 	public enum DistributionStatus {
 
@@ -123,7 +127,7 @@ public class DistributionDB extends DBSuperClass {
 		URLUtils utils = new URLUtils();
 		// utils.validateURL(downloadUrl);
 		addField(DOWNLOAD_URL, downloadUrl);
-	} 
+	}
 
 	public String getHttpByteSize() {
 		try {
@@ -140,14 +144,14 @@ public class DistributionDB extends DBSuperClass {
 	public String getUri() {
 		return getField(URI).toString();
 	}
-	
-	public String getSparqlEndpoint(){
-		if(getField(SPARQL_ENDPOINT) == null)
+
+	public String getSparqlEndpoint() {
+		if (getField(SPARQL_ENDPOINT) == null)
 			return null;
 		return getField(SPARQL_ENDPOINT).toString();
 	}
-	
-	public void setSparqlEndpoint(String endpoint){
+
+	public void setSparqlEndpoint(String endpoint) {
 		addField(SPARQL_ENDPOINT, endpoint);
 	}
 
@@ -224,27 +228,26 @@ public class DistributionDB extends DBSuperClass {
 	public void setSparqlCount(int count) {
 		addField(SPARQL_COUNT, count);
 	}
-	
+
 	public void setSparqlGraph(String graph) {
 		addField(SPARQL_GRAPH, graph);
-	}	
-	
+	}
+
 	public void setFormat(String format) {
 		addField(FORMAT, format);
 	}
-	
-	public int getSparqlCount(){
-		if(getField(SPARQL_COUNT) == null)
+
+	public int getSparqlCount() {
+		if (getField(SPARQL_COUNT) == null)
 			return 0;
 		return ((Number) getField(SPARQL_COUNT)).intValue();
 	}
-	
-	public String getSparqlGraph(){
-		if(getField(SPARQL_GRAPH) == null)
+
+	public String getSparqlGraph() {
+		if (getField(SPARQL_GRAPH) == null)
 			return null;
 		return getField(SPARQL_GRAPH).toString();
 	}
-	
 
 	public String getLastMsg() {
 
@@ -366,7 +369,7 @@ public class DistributionDB extends DBSuperClass {
 	 * @return the repository
 	 */
 	public ArrayList<String> getRepositories() {
-		return  (ArrayList<String>) getField(REPOSITORY);
+		return (ArrayList<String>) getField(REPOSITORY);
 	}
 
 	public void addDatasource(String datasource) {
@@ -386,8 +389,8 @@ public class DistributionDB extends DBSuperClass {
 	public ArrayList<String> getDatasources() {
 		return (ArrayList<String>) getField(DATASOURCE);
 	}
-	
-	public void setDatasource(ArrayList<String> d){
+
+	public void setDatasource(ArrayList<String> d) {
 		addField(DATASOURCE, d);
 	}
 
@@ -398,5 +401,36 @@ public class DistributionDB extends DBSuperClass {
 	public ArrayList<DatasetDB> getDefaultDatasetsAsResources() {
 		return new DatasetQueries().getDatasets((ArrayList<Integer>) getField(DEFAULT_DATASETS));
 	}
+
+	/**
+	 * Return the internal path where the distribution is being stored/loaded.
+	 *
+	 * @return the path
+	 */
+	public String getDistributionInternalPath() {
+		return LODVaderProperties.DUMP_PATH + "/" + FileUtils.stringToHash(getDownloadUrl());
+	}
+
+//	/**
+//	 * Download distribution and save into disk
+//	 * 
+//	 * @return
+//	 */
+//	public boolean streamToDisk() {
+//
+//		if (getDownloadUrl() != null){
+//			
+//			ConnectionUtils conn = new ConnectionUtils();
+//			StatementUtils stmt  = new StatementUtils();
+//			FileStatement fileStmt = new FileStatement(fullPath)
+//			FileList<Sat>
+//			
+////			conn.getStream(getDownloadUrl(), ConnectionUtils.MEDIA_TYPE_RDF);
+//			
+//			
+//		}
+//			
+//			return false;
+//	}
 
 }

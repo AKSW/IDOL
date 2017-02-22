@@ -110,9 +110,9 @@ public class LodStatsMainParser extends MetadataParser {
 		for (String s : r) {
 			DatasetDB d = saveDataset(s, s);
 			String sparqlEndpoint = null;
-			if (formatutils.getEquivalentFormat(s).equals(formatutils.DEFAULT_SPARQL))
+			if (formatutils.getSerializationFormat(s).equals(formatutils.DEFAULT_SPARQL))
 				sparqlEndpoint = s;
-			saveDistribution(s, s, formatutils.getEquivalentFormat(s), d, null, s);
+			saveDistribution(s, s, formatutils.getSerializationFormat(s), d, null, s);
 		}
 
 	}

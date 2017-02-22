@@ -159,7 +159,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 			inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 			inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
 			if (rdfFormat.equals(""))
-				rdfFormat = FormatsUtils.getEquivalentFormat(downloadUrl);
+				rdfFormat = FormatsUtils.getSerializationFormat(downloadUrl);
 
 			startStream(inputStream, compressionFormat, rdfFormat);
 		} catch (RDFParseException | RDFHandlerException e) {
@@ -171,7 +171,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 
 				inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 				inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
-				rdfFormat = FormatsUtils.getEquivalentFormat("ttl");
+				rdfFormat = FormatsUtils.getSerializationFormat("ttl");
 
 				startStream(inputStream, compressionFormat, rdfFormat);
 
@@ -183,7 +183,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 					// try with RDF
 					inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 					inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
-					rdfFormat = FormatsUtils.getEquivalentFormat("rdf");
+					rdfFormat = FormatsUtils.getSerializationFormat("rdf");
 
 					startStream(inputStream, compressionFormat, rdfFormat);
 
@@ -194,7 +194,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 					// try with NT
 					inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
 					inputStream = loadCompressors(new BufferedInputStream(inputStream), compressionFormat);
-					rdfFormat = FormatsUtils.getEquivalentFormat("nt");
+					rdfFormat = FormatsUtils.getSerializationFormat("nt");
 
 					startStream(inputStream, compressionFormat, rdfFormat);
 				}
@@ -352,7 +352,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 					logger.info(++nf + " zip file(s) uncompressed.");
 					logger.info("File name: " + entry.getName());
 
-					rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
+					rdfFormat = FormatsUtils.getSerializationFormat(entry.getName());
 
 					if (!rdfFormat.equals("")) {
 
@@ -397,7 +397,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 
 					File f = new File(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID());
 
-					rdfFormat = FormatsUtils.getEquivalentFormat(entry.getName());
+					rdfFormat = FormatsUtils.getSerializationFormat(entry.getName());
 					if (!rdfFormat.equals("")) {
 						COMPRESSION_FORMATS newCompressionFormat = new FormatsUtils()
 								.getCompressionFormat(entry.getName());

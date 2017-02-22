@@ -6,92 +6,93 @@ import org.apache.commons.io.FilenameUtils;
 
 public class FormatsUtils {
 
-	public static final String DEFAULT_TURTLE = "ttl";
+	// public static final String DEFAULT_TURTLE = "ttl";
+	//
+	// public static final String DEFAULT_NTRIPLES = "nt";
+	//
+	// public static final String DEFAULT_NQUADS = "nq";
+	//
+	// public static final String DEFAULT_N3 = "n3";
+	//
+	// public static final String DEFAULT_TQL = "tql";
+	//
+	// public static final String DEFAULT_RDFXML = "rdf";
+	//
+	// public static final String DEFAULT_JSONLD = "jsonld";
+	//
+	// public static final String DEFAULT_SPARQL = "sparql";
 
-	public static final String DEFAULT_NTRIPLES = "nt";
+	public static enum COMPRESSION_FORMATS {
+		ZIP, TAR, GZ, TAR_GZ, TGZ, BZ2, NO_COMPRESSION
+	};
 
-	public static final String DEFAULT_NQUADS = "nq";
+	public static enum SERIALIZATION_FORMAT {
+		TTL, NT, NQ, N3, TQL, RDF, JSON_LD, SPARQL
+	};
 
-	public static final String DEFAULT_N3 = "n3";
-
-	public static final String DEFAULT_TQL = "tql";
-
-	public static final String DEFAULT_RDFXML = "rdf";
-
-	public static final String DEFAULT_JSONLD = "jsonld";
-
-	public static final String DEFAULT_SPARQL = "sparql";
-	 
-	
-	public static enum COMPRESSION_FORMATS {ZIP, TAR, GZ, TAR_GZ, TGZ, BZ2, NO_COMPRESSION} ;
-
-
-	public static String getEquivalentFormat(String str) {
-		if(str.length() > 30)
-		str = str.substring(str.length() - 30);
+	public static SERIALIZATION_FORMAT getSerializationFormat(String str) {
+		if (str.length() > 30)
+			str = str.substring(str.length() - 30);
 		String soriginal = str;
 
 		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
-			return DEFAULT_TURTLE;
+			return SERIALIZATION_FORMAT.TTL;
 		else if (NTRIPLES_FORMATS.contains(str))
-			return DEFAULT_NTRIPLES;
+			return SERIALIZATION_FORMAT.NT;
 		else if (RDFXML_FORMATS.contains(str) || str.contains("rdf") || str.contains("RDF"))
-			return DEFAULT_RDFXML;
-		else if (NQUADS_FORMATS.contains(str)|| str.contains("nq"))
-			return DEFAULT_NQUADS;
-		else if (SPARQL_FORMATS.contains(str)|| str.contains("sparql"))
-			return DEFAULT_SPARQL;
-		else if (N3_FORMATS.contains(str)|| str.contains("n3"))
-			return DEFAULT_N3;
+			return SERIALIZATION_FORMAT.RDF;
+		else if (NQUADS_FORMATS.contains(str) || str.contains("nq"))
+			return SERIALIZATION_FORMAT.NQ;
+		else if (SPARQL_FORMATS.contains(str) || str.contains("sparql"))
+			return SERIALIZATION_FORMAT.SPARQL;
+		else if (N3_FORMATS.contains(str) || str.contains("n3"))
+			return SERIALIZATION_FORMAT.N3;
 		else if (JSONLD_FORMATS.contains(str))
-			return DEFAULT_JSONLD;
+			return SERIALIZATION_FORMAT.JSON_LD;
 		else if (TQL_FORMATS.contains(str))
-			return DEFAULT_TQL;
-		
+			return SERIALIZATION_FORMAT.TQL;
+
 		str = FilenameUtils.getExtension(str);
-		
-		
+
 		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
-			return DEFAULT_TURTLE;
+			return SERIALIZATION_FORMAT.TTL;
 		else if (NTRIPLES_FORMATS.contains(str))
-			return DEFAULT_NTRIPLES;
+			return SERIALIZATION_FORMAT.NT;
 		else if (RDFXML_FORMATS.contains(str) || str.contains("rdf") || str.contains("RDF"))
-			return DEFAULT_RDFXML;
-		else if (NQUADS_FORMATS.contains(str)|| str.contains("nq"))
-			return DEFAULT_NQUADS;
-		else if (SPARQL_FORMATS.contains(str)|| str.contains("sparql"))
-			return DEFAULT_SPARQL;
-		else if (N3_FORMATS.contains(str)|| str.contains("n3"))
-			return DEFAULT_N3;
+			return SERIALIZATION_FORMAT.RDF;
+		else if (NQUADS_FORMATS.contains(str) || str.contains("nq"))
+			return SERIALIZATION_FORMAT.NQ;
+		else if (SPARQL_FORMATS.contains(str) || str.contains("sparql"))
+			return SERIALIZATION_FORMAT.SPARQL;
+		else if (N3_FORMATS.contains(str) || str.contains("n3"))
+			return SERIALIZATION_FORMAT.N3;
 		else if (JSONLD_FORMATS.contains(str))
-			return DEFAULT_JSONLD;
+			return SERIALIZATION_FORMAT.JSON_LD;
 		else if (TQL_FORMATS.contains(str))
-			return DEFAULT_TQL;
-		
-		str = FilenameUtils.getExtension(soriginal.replace("."+str, ""));
-		
-		
+			return SERIALIZATION_FORMAT.TQL;
+
+		str = FilenameUtils.getExtension(soriginal.replace("." + str, ""));
+
 		if (TURTLE_FORMATS.contains(str) || str.contains("ttl") || str.contains("turtle"))
-			return DEFAULT_TURTLE;
+			return SERIALIZATION_FORMAT.TTL;
 		else if (NTRIPLES_FORMATS.contains(str))
-			return DEFAULT_NTRIPLES;
+			return SERIALIZATION_FORMAT.NT;
 		else if (RDFXML_FORMATS.contains(str) || str.contains("rdf") || str.contains("RDF"))
-			return DEFAULT_RDFXML;
-		else if (NQUADS_FORMATS.contains(str)|| str.contains("nq"))
-			return DEFAULT_NQUADS;
-		else if (SPARQL_FORMATS.contains(str)|| str.contains("sparql"))
-			return DEFAULT_SPARQL;
-		else if (N3_FORMATS.contains(str)|| str.contains("n3"))
-			return DEFAULT_N3;
+			return SERIALIZATION_FORMAT.RDF;
+		else if (NQUADS_FORMATS.contains(str) || str.contains("nq"))
+			return SERIALIZATION_FORMAT.NQ;
+		else if (SPARQL_FORMATS.contains(str) || str.contains("sparql"))
+			return SERIALIZATION_FORMAT.SPARQL;
+		else if (N3_FORMATS.contains(str) || str.contains("n3"))
+			return SERIALIZATION_FORMAT.N3;
 		else if (JSONLD_FORMATS.contains(str))
-			return DEFAULT_JSONLD;
+			return SERIALIZATION_FORMAT.JSON_LD;
 		else if (TQL_FORMATS.contains(str))
-			return DEFAULT_TQL;
+			return SERIALIZATION_FORMAT.TQL;
 		else {
-			return "";
+			return null;
 		}
 	}
-	
 
 	private static final ArrayList<String> N3_FORMATS = new ArrayList<String>() {
 		{
@@ -156,7 +157,7 @@ public class FormatsUtils {
 			add("7z:ttl");
 		}
 	};
-	
+
 	private static final ArrayList<String> NTRIPLES_FORMATS = new ArrayList<String>() {
 		{
 			add("nt");
@@ -192,53 +193,47 @@ public class FormatsUtils {
 		}
 	};
 
-
 	/**
 	 * Return the file compression format based on the URL
+	 * 
 	 * @param url
 	 * @return the compression format
 	 */
-	public COMPRESSION_FORMATS getCompressionFormat(String url){
-		if(url.endsWith(".zip")){
+	public static COMPRESSION_FORMATS getCompressionFormat(String url) {
+		if (url.endsWith(".zip")) {
 			return COMPRESSION_FORMATS.ZIP;
-		}
-		else if(url.endsWith(".tar")){
+		} else if (url.endsWith(".tar")) {
 			return COMPRESSION_FORMATS.TAR;
-		}
-		else if(url.endsWith(".tar.gz")){
-			return  COMPRESSION_FORMATS.TAR_GZ;			
-		}
-		else if(url.endsWith(".bz2")){
-			return COMPRESSION_FORMATS.BZ2;			
-		}
-		else if(url.endsWith(".gz")){
-			return COMPRESSION_FORMATS.GZ;			
-		}
-		else if(url.endsWith(".tgz")){
-			return COMPRESSION_FORMATS.TGZ;						
-		}
-		else return COMPRESSION_FORMATS.NO_COMPRESSION;
+		} else if (url.endsWith(".tar.gz")) {
+			return COMPRESSION_FORMATS.TAR_GZ;
+		} else if (url.endsWith(".bz2")) {
+			return COMPRESSION_FORMATS.BZ2;
+		} else if (url.endsWith(".gz")) {
+			return COMPRESSION_FORMATS.GZ;
+		} else if (url.endsWith(".tgz")) {
+			return COMPRESSION_FORMATS.TGZ;
+		} else
+			return COMPRESSION_FORMATS.NO_COMPRESSION;
 	}
-	
-	
+
 	/**
 	 * Get serialization format for Jena processing
 	 * 
 	 * @param format
-	 * @return
+	 * @return jena format
 	 */
 	public String getJenaFormat(String format) {
-		format = FormatsUtils.getEquivalentFormat(format);
-		if (format.equals(FormatsUtils.DEFAULT_NTRIPLES) || format.contains("nt"))
+		SERIALIZATION_FORMAT format2 = FormatsUtils.getSerializationFormat(format);
+		if (format2.equals(SERIALIZATION_FORMAT.NT) || format.contains("nt"))
 			return "N-TRIPLES";
-		else if (format.equals(FormatsUtils.DEFAULT_TURTLE) || format.contains("ttl") || format.contains("turtle"))
+		else if (format2.equals(SERIALIZATION_FORMAT.TTL) || format.contains("ttl") || format.contains("turtle"))
 			return "TTL";
-		else if (format.equals(FormatsUtils.DEFAULT_JSONLD))
+		else if (format2.equals(SERIALIZATION_FORMAT.JSON_LD))
 			return "JSON-LD";
-		else if (format.equals(FormatsUtils.DEFAULT_RDFXML) || format.contains("rdf"))
+		else if (format2.equals(SERIALIZATION_FORMAT.RDF) || format.contains("rdf"))
 			return "RDF/XML";
 		else
-			return "";
+			return null;
 
 	}
 

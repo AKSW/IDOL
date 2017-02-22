@@ -1,4 +1,4 @@
-package org.rdf.formats.utils;
+package org.idol.metadata.mongo;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

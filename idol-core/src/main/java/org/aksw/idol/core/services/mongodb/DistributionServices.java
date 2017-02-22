@@ -76,7 +76,7 @@ public class DistributionServices {
 			} catch (MalformedURLException e) {
 				e.printStackTrace(); 
 			}
-			distributionDB.setFormat(FormatsUtils.getEquivalentFormat(format));
+			distributionDB.setFormat(FormatsUtils.getSerializationFormat(format));
 			distributionDB.setTopDataset(topDataset);
 			distributionDB.setSparqlGraph(sparqlGraph);
 			distributionDB.setSparqlEndpoint(sparqlEndpoint);

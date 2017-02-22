@@ -78,7 +78,7 @@ public class DataIDParser extends MetadataParser {
 		String topDatasetTitle = dataset.getTitle();
 		String format = dataidHelper.getFormat(distribution);
 		if(format.equals(""))
-			format=FormatsUtils.getEquivalentFormat(downloadURL);
+			format=FormatsUtils.getSerializationFormat(downloadURL);
 		
 		return addDistribution(uri, false, title, format, downloadURL, topDataset, topDatasetTitle, getParserName(), repositoryAddress, null, null);
 	}
