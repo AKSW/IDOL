@@ -106,6 +106,7 @@ public class DatasetServices {
 		else{
 			datasetDB = new DatasetDB(uri);
 			datasetDB.setIsVocabulary(isVocab);
+			datasetDB.setUri(uri);
 			datasetDB.setTitle(title);
 			datasetDB.setLabel(label);
 		}
