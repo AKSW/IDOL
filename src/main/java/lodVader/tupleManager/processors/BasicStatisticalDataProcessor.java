@@ -239,7 +239,7 @@ public class BasicStatisticalDataProcessor implements BasicProcessorInterface {
 //		fileUtils.removeFile(owlClassesFileName);
 				
 		distribution.setNumberOfLiterals(numberOfLiterals);
-//		distribution.setNumberOfTriples(numberOfTriples);
+		distribution.setNumberOfTriples(numberOfTriples);
 		distribution.setNumberOfBlankNodes(numberOfBlankNodes);
 
 		try {
