@@ -229,7 +229,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 		subjectWriter.clear();
 		triplesWriter.clear();
 
-		logger.info(getClass().getName() + " finished.");
+		logger.info("Bloom filter for distribution: " + distribution.getTitle() + " saved.");
+		logger.info("Objects: " + objectWriter.size()+" Subjects: " + subjectWriter.size() + "Triples: " + triplesWriter.size());
+		
 	}
 
 }
