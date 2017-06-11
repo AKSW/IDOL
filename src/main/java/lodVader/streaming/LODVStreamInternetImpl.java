@@ -102,7 +102,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 	@Override
 	public void startParsing(DistributionDB distributionMongoDBObj) throws Exception {
 		this.distribution = distributionMongoDBObj;
-		checkFormatType(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
+		checkFormatTypeAndStartParsingAndStreaming(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
 	}
 
 	
@@ -116,7 +116,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 	 * @throws RDFHandlerException
 	 * @throws LODVaderSPARQLGraphNotFound
 	 */
-	public void checkFormatType(String downloadUrl, String rdfFormat) throws IOException, LODVaderLODGeneralException,
+	public void checkFormatTypeAndStartParsingAndStreaming(String downloadUrl, String rdfFormat) throws IOException, LODVaderLODGeneralException,
 			RDFParseException, RDFHandlerException, LODVaderSPARQLGraphNotFound {
 
 		/**

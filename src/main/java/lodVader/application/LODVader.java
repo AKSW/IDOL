@@ -66,18 +66,18 @@ public class LODVader {
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 4;
+	int numberOfThreads = 6;
 
 	/**
 	 * Count unique triples
 	 */
-	boolean uniqPerDatasource = false;
+	boolean uniqPerDatasource = true;
 
 	/**
 	 * Streaming and processing
 	 */
 	boolean streamDistribution = false;
-	boolean streamFromInternet = false;
+	boolean streamFromInternet = true;
 
 	boolean createDumpOnDisk = false;
 	boolean overrideDumpOnDisk = false;
@@ -120,8 +120,6 @@ public class LODVader {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 
-		if (uniqPerDatasource)
-			countUniqPerDatasource();
 
 		// new MetadataParserServices().removeDistributions(new
 		// DataIDParser(null));
@@ -131,6 +129,9 @@ public class LODVader {
 		 */
 		parseFiles();
 
+		if (uniqPerDatasource)
+			countUniqPerDatasource();
+
 		/**
 		 * Stream and process distributions
 		 */
@@ -139,6 +140,7 @@ public class LODVader {
 			// streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
 			// streamDistributions(DistributionDB.DistributionStatus.DONE);
 			streamDistributions(null);
+		
 
 		if (detectOverlappingDatasets)
 			detectDatasets();
@@ -161,14 +163,16 @@ public class LODVader {
 	 */
 	public void countUniqPerDatasource() {
 		// new DatasourcesUniqTriples(new CLODParser(null, null)).count();
-		// new DatasourcesUniqTriples(new LOVParser()).count();
+		
+//		 new DatasourcesUniqTriples(new LOVParser()).countLoadingFromInternet();   
+		 
 		// new DatasourcesUniqTriples(new RE3RepositoriesParser(null,
 		// 0)).count();
 		// new DatasourcesUniqTriples(new LinghubParser(null)).count();
-		// new DatasourcesUniqTriples(new DataIDParser(null)).count();
+		 new DatasourcesUniqTriples(new DataIDParser(null)).countLoadingFile(); 
 		// new DatasourcesUniqTriples(new LODCloudParser()).count();
 		// new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
-		new DatasourcesUniqTriples(new LodStatsMainParser()).count();
+//		new DatasourcesUniqTriples(new LodStatsMainParser()).count();
 
 	}
 

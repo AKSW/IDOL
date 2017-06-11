@@ -4,6 +4,7 @@
 package lodVader.services.mongodb;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -57,6 +58,26 @@ public class MetadataParserServices {
 			}
 		}
 		return files;
+	}
+	
+	/**
+	 * Return a list of dump files from the parser
+	 * @param parserName the parser name
+	 * @return
+	 */
+	public Collection<DistributionDB> getDistributionsFromParser(String parserName) {
+		Collection<DistributionDB> distributionsReturn = new ArrayList<>();
+		ArrayList<DBObject> parsers = new GeneralQueriesHelper().getObjects(MetadataParserDB.COLLECTION_NAME,
+				MetadataParserDB.PARSER_NAME, parserName);
+		if (parsers.size() > 0) {
+			ArrayList<DBObject> distributions = new GeneralQueriesHelper().getObjects(DistributionDB.COLLECTION_NAME,
+					DistributionDB.DATASOURCE, parserName);
+			for (DBObject o : distributions) {
+				DistributionDB dist = new DistributionDB(o);
+				distributionsReturn.add(dist);
+			}
+		}
+		return distributionsReturn;
 	}
 
 	/**
