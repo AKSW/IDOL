@@ -58,7 +58,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 	public String httpContentType = null;
 	public double httpContentLength;
 	public String httpLastModified = "0";
-	
+
 	int timeout = 5000;
 
 	private int redirection = 0;
@@ -102,12 +102,13 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 	@Override
 	public void startParsing(DistributionDB distributionMongoDBObj) throws Exception {
 		this.distribution = distributionMongoDBObj;
-		checkFormatTypeAndStartParsingAndStreaming(distributionMongoDBObj.getDownloadUrl(), distributionMongoDBObj.getFormat());
+		checkFormatTypeAndStartParsingAndStreaming(distributionMongoDBObj.getDownloadUrl(),
+				distributionMongoDBObj.getFormat());
 	}
 
-	
 	/**
 	 * Analyze if the stream is from a sparql endpoint or a dumpfile
+	 * 
 	 * @param downloadUrl
 	 * @param rdfFormat
 	 * @throws IOException
@@ -116,8 +117,8 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 	 * @throws RDFHandlerException
 	 * @throws LODVaderSPARQLGraphNotFound
 	 */
-	public void checkFormatTypeAndStartParsingAndStreaming(String downloadUrl, String rdfFormat) throws IOException, LODVaderLODGeneralException,
-			RDFParseException, RDFHandlerException, LODVaderSPARQLGraphNotFound {
+	public void checkFormatTypeAndStartParsingAndStreaming(String downloadUrl, String rdfFormat) throws IOException,
+			LODVaderLODGeneralException, RDFParseException, RDFHandlerException, LODVaderSPARQLGraphNotFound {
 
 		/**
 		 * Check whether is a sparql endpoint.
@@ -130,22 +131,23 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 		 */
 		else
 			streamAndParse(downloadUrl, rdfFormat);
-			
+
 	}
-	
-	
+
 	/**
 	 * Method used to start the sstreaming process
+	 * 
 	 * @param downloadUrl
 	 * @param rdfFormat
 	 * @throws IOException
 	 * @throws RDFParseException
 	 * @throws RDFHandlerException
 	 */
-	public void streamAndParse(String downloadUrl, String rdfFormat) throws IOException, RDFParseException, RDFHandlerException{
-		
+	public void streamAndParse(String downloadUrl, String rdfFormat)
+			throws IOException, RDFParseException, RDFHandlerException {
+
 		InputStream inputStream = null;
-		
+
 		COMPRESSION_FORMATS compressionFormat;
 		// TODO This is a last minute change. Please, change the laundromat
 		// parser to detect the compression format.
@@ -154,7 +156,6 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 		else
 			compressionFormat = new FormatsUtils().getCompressionFormat(downloadUrl);
 
-		
 		try {
 
 			inputStream = openConnection(downloadUrl, rdfFormat).getInputStream();
@@ -202,13 +203,17 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 			}
 
 		} finally {
-			inputStream.close();
+			try {
+				inputStream.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
 		}
-		
-	}
-	
 
-	public void prepareToSparqlEndpoint() throws LODVaderSPARQLGraphNotFound, IOException, RDFParseException, RDFHandlerException {
+	}
+
+	public void prepareToSparqlEndpoint()
+			throws LODVaderSPARQLGraphNotFound, IOException, RDFParseException, RDFHandlerException {
 
 		/**
 		 * Check whether there is a graph to be queried
@@ -216,7 +221,7 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 		if (distribution.getSparqlGraph() == null) {
 			throw new LODVaderSPARQLGraphNotFound("We couldn't find a graph within the endpoint.");
 		}
-		
+
 		// set timeout to one min
 		timeout = 60_000;
 
@@ -235,36 +240,36 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 
 		// if graph has no triples, get out of here
 		if (nrTriples == 0) {
-			throw new LODVaderSPARQLGraphNotFound("The graph "+ distribution.getSparqlGraph() + " has 0 triple. ");
+			throw new LODVaderSPARQLGraphNotFound("The graph " + distribution.getSparqlGraph() + " has 0 triple. ");
 		}
 
 		logger.debug("SPARQL Graph found! ");
 		logger.debug("Endpoint: " + distribution.getSparqlEndpoint());
 		logger.debug("Graph: " + distribution.getSparqlGraph());
 		logger.info("Triples: " + nrTriples);
-		
+
 		distribution.setSparqlCount((int) nrTriples);
 		try {
 			distribution.update();
 		} catch (LODVaderMissingPropertiesException e) {
 			e.printStackTrace();
 		}
-		
+
 		/**
 		 * Start pagination
 		 */
 		int offset_step = 1_000_000;
 		int current_offset = 0;
-		while(current_offset < distribution.getSparqlCount()){
+		while (current_offset < distribution.getSparqlCount()) {
 			String newUrl = sparqlUtils.createSparqlPaginationRequest(distribution.getSparqlEndpoint(),
 					distribution.getSparqlGraph(), current_offset + offset_step, current_offset);
 			current_offset = current_offset + offset_step;
 			logger.info("Streaming paginated sparql request: " + newUrl);
 			streamAndParse(sparqlUtils.encodeSparqlQuery(newUrl), "ttl");
-			if(pipelineProcessor.getTriplesProcessed() < offset_step)
+			if (pipelineProcessor.getTriplesProcessed() < offset_step)
 				break;
-		}	
-		
+		}
+
 	}
 
 	public RDFParser getSuitableParser(String rdfFormat) throws IOException, LODVaderFormatNotAcceptedException {
@@ -369,7 +374,12 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 								e.printStackTrace();
 							}
 						} catch (LODVaderFormatNotAcceptedException e1) {
+							try{
 							inputStream.close();
+							}
+							catch (Exception e) {
+								e.printStackTrace();
+							}
 							e1.printStackTrace();
 						}
 						f.delete();
@@ -564,7 +574,9 @@ public class LODVStreamInternetImpl implements LODVStreamInterface {
 			ReadableByteChannel rbc = Channels.newChannel(stream);
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+			
 			fos.close();
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
