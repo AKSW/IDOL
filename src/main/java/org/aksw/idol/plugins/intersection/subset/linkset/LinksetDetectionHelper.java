@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.aksw.idol.application.LODVader;
+import org.aksw.idol.application.Manager;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
 import org.aksw.idol.services.mongodb.GeneralResourceRelationServices;

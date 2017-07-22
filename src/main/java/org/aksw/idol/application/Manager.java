@@ -56,9 +56,9 @@ import com.mongodb.gridfs.GridFS;
  * 
  *         Oct 1, 2016
  */
-public class LODVader {
+public class Manager {
 
-	final static Logger logger = LoggerFactory.getLogger(LODVader.class);
+	final static Logger logger = LoggerFactory.getLogger(Manager.class);
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
@@ -111,7 +111,7 @@ public class LODVader {
 	/**
 	 * Main method
 	 */
-	public void Manager() {
+	public void start() {
 
 		/**
 		 * Load properties file, create MondoDB indexes, etc

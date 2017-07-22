@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.aksw.idol.application.LODVader;
+import org.aksw.idol.application.Manager;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.helpers.RDFHandlerBase;

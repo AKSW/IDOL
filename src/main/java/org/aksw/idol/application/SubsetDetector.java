@@ -68,7 +68,7 @@ public class SubsetDetector extends LODVaderIntersectionPlugin implements Runnab
 
 	@Override
 	public void run() {
-		logger.info("Datasets to be processed: " + LODVader.distributionsBeingProcessed.decrementAndGet());
+		logger.info("Datasets to be processed: " + Manager.distributionsBeingProcessed.decrementAndGet());
 		if (!shouldProcess())
 			return;
 
