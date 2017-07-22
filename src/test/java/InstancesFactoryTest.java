@@ -1,11 +1,10 @@
 import java.net.MalformedURLException;
 
+import org.aksw.idol.mongodb.collections.DistributionDB;
+import org.aksw.idol.mongodb.collections.DistributionDB.DistributionStatus;
+import org.aksw.idol.utils.StatementUtils;
 import org.bson.types.ObjectId;
 import org.openrdf.model.Statement;
-
-import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.DistributionDB.DistributionStatus;
-import lodVader.utils.StatementUtils;
 
 /**
  * @author Ciro Baron Neto

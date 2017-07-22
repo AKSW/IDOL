@@ -3,14 +3,14 @@
  */
 package fix;
 
-import lodVader.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
-import lodVader.parsers.descriptionFileParser.Impl.CLODParser;
-import lodVader.parsers.descriptionFileParser.Impl.DataIDParser;
-import lodVader.parsers.descriptionFileParser.Impl.LODCloudParser;
-import lodVader.parsers.descriptionFileParser.Impl.LOVParser;
-import lodVader.parsers.descriptionFileParser.Impl.LinghubParser;
-import lodVader.parsers.descriptionFileParser.Impl.RE3RepositoriesParser;
-import lodVader.services.mongodb.MetadataParserServices;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.CLODParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.DataIDParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.LODCloudParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.LOVParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.LinghubParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.RE3RepositoriesParser;
+import org.aksw.idol.services.mongodb.MetadataParserServices;
 
 /**
  * @author Ciro Baron Neto

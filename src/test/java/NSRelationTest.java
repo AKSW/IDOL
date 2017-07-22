@@ -1,22 +1,21 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aksw.idol.loader.LODVaderConfigurator;
+import org.aksw.idol.mongodb.DBSuperClass;
+import org.aksw.idol.mongodb.collections.DistributionDB;
+import org.aksw.idol.mongodb.collections.Resources.GeneralResourceDB;
+import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB;
+import org.aksw.idol.mongodb.queries.GeneralQueriesHelper;
+import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
+import org.aksw.idol.utils.NSUtils;
+import org.aksw.idol.utils.StatementUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-
-import lodVader.loader.LODVaderConfigurator;
-import lodVader.mongodb.DBSuperClass;
-import lodVader.mongodb.collections.DistributionDB;
-import lodVader.mongodb.collections.Resources.GeneralResourceDB;
-import lodVader.mongodb.collections.Resources.GeneralResourceRelationDB;
-import lodVader.mongodb.queries.GeneralQueriesHelper;
-import lodVader.tupleManager.processors.BloomFilterProcessor;
-import lodVader.utils.NSUtils;
-import lodVader.utils.StatementUtils;
 
 /**
  * 
