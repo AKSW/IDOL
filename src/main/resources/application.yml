@@ -1,1 +1,26 @@
-p:oi
+idolproperties:
+  nrthreads: 6
+  streaming: internet
+#  streaming: local
+  tasks:
+    dumpcreation:
+      createdumpondisk: false
+      overridedumpondisk: false
+    bloomfiltercreation:
+      createdatsetsbloomfilter: false
+      createdatasourcebloomfilter: false
+      overridecreatedbloomfilter: false
+    calculateuniqperdatasource: true
+    processstatisticaldata: true
+  parse:
+    sparqles: false
+    lov: false
+    dbpedia: false
+    lodlaundromat: false
+    lodcloud: false
+    re3: false
+    ckanrepositories: false
+    linghib: false
+    lodstats: false
+   
+    

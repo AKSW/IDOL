@@ -19,9 +19,9 @@ import org.aksw.idol.loader.LODVaderConfigurator;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.DBSuperClass;
 import org.aksw.idol.mongodb.collections.DistributionDB;
+import org.aksw.idol.mongodb.collections.DistributionDB.DistributionStatus;
 import org.aksw.idol.mongodb.collections.LinkIndegree;
 import org.aksw.idol.mongodb.collections.LinkOutdegree;
-import org.aksw.idol.mongodb.collections.DistributionDB.DistributionStatus;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB;
 import org.aksw.idol.mongodb.collections.datasetBF.BucketDB;
 import org.aksw.idol.mongodb.queries.GeneralQueriesHelper;
@@ -34,6 +34,8 @@ import org.aksw.idol.parsers.descriptionFileParser.Impl.LinghubParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.LodStatsMainParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.SparqlesMainParser;
 import org.aksw.idol.plugins.intersection.subset.linkset.LinksetDetectionHelper;
+import org.aksw.idol.properties.IDOLProperties;
+import org.aksw.idol.properties.Properties;
 import org.aksw.idol.streaming.LODVStreamFileImpl;
 import org.aksw.idol.streaming.LODVStreamInterface;
 import org.aksw.idol.streaming.LODVStreamInternetImpl;
@@ -43,6 +45,7 @@ import org.aksw.idol.tupleManager.processors.SaveDumpDataProcessor;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -62,10 +65,18 @@ public class Manager {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
+	Properties properties;
+
+	@Autowired
+	public Manager(Properties idolProperties) {
+		this.properties = idolProperties;
+		setProperties();
+	}
+
 	/**
 	 * How many operation to run in parallel.
 	 */
-	int numberOfThreads = 6;
+	int numberOfThreads;
 
 	/**
 	 * Count unique triples
@@ -119,7 +130,6 @@ public class Manager {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 
-
 		// new MetadataParserServices().removeDistributions(new
 		// DataIDParser(null));
 
@@ -139,7 +149,6 @@ public class Manager {
 			// streamDistributions(DistributionDB.DistributionStatus.WAITING_TO_STREAM);
 			// streamDistributions(DistributionDB.DistributionStatus.DONE);
 			streamDistributions(null);
-		
 
 		if (detectOverlappingDatasets)
 			detectDatasets();
@@ -148,9 +157,8 @@ public class Manager {
 		// addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_OBJECT_NS0);
 		// addDatasetsIntoRelations(GeneralResourceRelationDB.COLLECTIONS.RELATION_SUBJECT_NS0);
 
-		
 		detectOutdegree();
-//		
+		//
 		detectIndegree();
 
 		logger.info("LODVader is done with the initial tasks. The API is running.");
@@ -162,16 +170,17 @@ public class Manager {
 	 */
 	public void countUniqPerDatasource() {
 		// new DatasourcesUniqTriples(new CLODParser(null, null)).count();
-		
-//		 new DatasourcesUniqTriples(new LOVParser()).countLoadingFromInternet();   
-		 
+
+		// new DatasourcesUniqTriples(new
+		// LOVParser()).countLoadingFromInternet();
+
 		// new DatasourcesUniqTriples(new RE3RepositoriesParser(null,
 		// 0)).count();
 		// new DatasourcesUniqTriples(new LinghubParser(null)).count();
-		 new DatasourcesUniqTriples(new DataIDParser(null)).countLoadingFile(); 
+		new DatasourcesUniqTriples(new DataIDParser(null)).countLoadingFile();
 		// new DatasourcesUniqTriples(new LODCloudParser()).count();
 		// new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
-//		new DatasourcesUniqTriples(new LodStatsMainParser()).count();
+		// new DatasourcesUniqTriples(new LodStatsMainParser()).count();
 
 	}
 
@@ -370,7 +379,7 @@ public class Manager {
 
 		HashMap<String, Integer> h = new HashMap<>();
 		ExecutorService ex = Executors.newFixedThreadPool(3);
-		
+
 		int minResources = 50;
 
 		for (DBObject object : distributionObjects) {
@@ -378,7 +387,8 @@ public class Manager {
 			Runnable r = () -> {
 				DistributionDB distribution = new DistributionDB(object);
 
-				List<String> distids = new LinksetDetectionHelper().loadOutdegreeTargetDatasetsIds(distribution, minResources);
+				List<String> distids = new LinksetDetectionHelper().loadOutdegreeTargetDatasetsIds(distribution,
+						minResources);
 
 				h.put(distribution.getDownloadUrl(), distids.size());
 
@@ -403,9 +413,8 @@ public class Manager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		logger.info("Done detecting outdegree!");
 
+		logger.info("Done detecting outdegree!");
 
 	}
 
@@ -424,7 +433,8 @@ public class Manager {
 			Runnable r = () -> {
 				DistributionDB distribution = new DistributionDB(object);
 
-				List<String> distids = new LinksetDetectionHelper().loadIndegreeTargetDatasetsIds(distribution, minResources);
+				List<String> distids = new LinksetDetectionHelper().loadIndegreeTargetDatasetsIds(distribution,
+						minResources);
 
 				h.put(distribution.getDownloadUrl(), distids.size());
 
@@ -610,6 +620,35 @@ public class Manager {
 			logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());
 
 		}
+	}
+
+	private void setProperties() {
+		this.numberOfThreads = properties.getIdolproperties().getNrthreads();
+		if (properties.getIdolproperties().getStreaming() != null) {
+			this.streamDistribution = true;
+			if (properties.getIdolproperties().getStreaming() == IDOLProperties.Streaming.INTERNET) {
+				this.streamFromInternet = true;
+			} else if (properties.getIdolproperties().getStreaming() == IDOLProperties.Streaming.LOCAL) {
+				this.streamFromInternet = false;
+			}
+
+		} else {
+			this.streamDistribution = false;
+		}
+		this.createDumpOnDisk = properties.getIdolproperties().getTasks().getCreateDumpOnDisk();
+		this.overrideDumpOnDisk = properties.getIdolproperties().getTasks().getOverrideDumpOnDisk();
+		this.processStatisticalData = properties.getIdolproperties().getTasks().isProcessstatisticaldata();
+		this.createBloomFilter = properties.getIdolproperties().getTasks().getCreateDatasetsBloomFilter();
+
+		this.parseSparqles = properties.getIdolproperties().getParse().getSparqles();
+		this.parseLOV = properties.getIdolproperties().getParse().getLov();
+		this.parseDBpedia = properties.getIdolproperties().getParse().getDbpedia();
+		this.parseLaundromat = properties.getIdolproperties().getParse().getLodlaundromat();
+		this.parseLODCloud = properties.getIdolproperties().getParse().getLodcloud();
+		this.parseRE3 = properties.getIdolproperties().getParse().getRe3();
+		this.parseCKANRepositories = properties.getIdolproperties().getParse().getCkanrepositories();
+		this.parseLinghub = properties.getIdolproperties().getParse().getLinghib();
+		this.parseLodStats = properties.getIdolproperties().getParse().getLodcloud();
 	}
 
 }

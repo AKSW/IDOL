@@ -1,28 +1,58 @@
-/**
- * 
- */
 package org.aksw.idol.properties;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
-/**
- * @author Ciro Baron Neto
- * 
- * Jul 22, 2017
- */
-
-@ConfigurationProperties
 public class IDOLProperties {
 	
-	String p;
+	public int nrthreads;
 	
-	public String getP() {
-		return p;
+	public static enum Streaming{
+		
+		LOCAL("local"),
+		INTERNET("internet");
+		
+		String type;
+		
+		private Streaming(String type) {
+			this.type = type;
+		}
 	}
 	
-	public void setP(String p) {
-		this.p = p;
+	Streaming streaming;
+	
+	
+	public TaskProperties tasks = new TaskProperties();
+	
+	public ParseProperties parse = new ParseProperties();
+
+	public int getNrthreads() {
+		return nrthreads;
+	}
+
+	public void setNrthreads(int nrthreads) {
+		this.nrthreads = nrthreads;
+	}
+
+	public Streaming getStreaming() {
+		return streaming;
+	}
+
+	public void setStreaming(Streaming streaming) {
+		this.streaming = streaming;
+	}
+
+	public TaskProperties getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(TaskProperties tasks) {
+		this.tasks = tasks;
+	}
+
+	public ParseProperties getParse() {
+		return parse;
+	}
+
+	public void setParse(ParseProperties parse) {
+		this.parse = parse;
 	}
 	
 }
