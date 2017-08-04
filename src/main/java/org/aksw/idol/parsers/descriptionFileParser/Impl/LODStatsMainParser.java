@@ -29,9 +29,9 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  * 
  *         Sep 27, 2016
  */
-public class LodStatsMainParser extends MetadataParser {
+public class LODStatsMainParser extends MetadataParser {
 
-	final static Logger logger = LoggerFactory.getLogger(LodStatsMainParser.class);
+	final static Logger logger = LoggerFactory.getLogger(LODStatsMainParser.class);
 
 	String repositoryAddress = "http://stats.lod2.eu/sparql/";
 
@@ -40,7 +40,7 @@ public class LodStatsMainParser extends MetadataParser {
 	/**
 	 * Constructor for Class LodCloudParser
 	 */
-	public LodStatsMainParser() {
+	public LODStatsMainParser() {
 		super("LODSTATS_PARSER");
 	}
 

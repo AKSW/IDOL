@@ -27,9 +27,9 @@ import com.mongodb.BasicDBObject;
  * 
  *         Oct 28, 2016
  */
-public class CkanToLODVaderConverter {
+public class CKANToLODVaderConverter {
 
-	final static Logger logger = LoggerFactory.getLogger(CkanToLODVaderConverter.class);
+	final static Logger logger = LoggerFactory.getLogger(CKANToLODVaderConverter.class);
 
 	public void convert(String dataSourceName) {
 

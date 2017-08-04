@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  * 
  * Dec 1, 2016
  */
-public class LodStatsHTMLParser {
+public class LODStatsHTMLParser {
 
 	final static Logger logger = LoggerFactory.getLogger(SparqlesHTMLParser.class);
 	InputStream stream = null;
@@ -37,7 +37,7 @@ public class LodStatsHTMLParser {
 	/**
 	 * Constructor for Class SparqlesRDFParser
 	 */
-	public LodStatsHTMLParser(InputStream stream) {
+	public LODStatsHTMLParser(InputStream stream) {
 		this.stream = stream;
 	}
 

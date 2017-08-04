@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.aksw.idol.application.fileparser.CKANRepositoryLoader;
-import org.aksw.idol.application.fileparser.CkanToLODVaderConverter;
+import org.aksw.idol.application.fileparser.CKANToLODVaderConverter;
 import org.aksw.idol.exceptions.LODVaderMissingPropertiesException;
 import org.aksw.idol.loader.LODVaderConfigurator;
 import org.aksw.idol.loader.LODVaderProperties;
@@ -31,7 +31,7 @@ import org.aksw.idol.parsers.descriptionFileParser.Impl.DataIDParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.LODCloudParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.LOVParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.LinghubParser;
-import org.aksw.idol.parsers.descriptionFileParser.Impl.LodStatsMainParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.LODStatsMainParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.SparqlesMainParser;
 import org.aksw.idol.plugins.intersection.subset.linkset.LinksetDetectionHelper;
 import org.aksw.idol.properties.IDOLProperties;
@@ -281,7 +281,7 @@ public class Manager {
 		 * Parsing LodStats
 		 */
 		if (parseLodStats) {
-			loader.load(new LodStatsMainParser());
+			loader.load(new LODStatsMainParser());
 			loader.parse();
 		}
 
@@ -310,7 +310,7 @@ public class Manager {
 			String datasource = "CKAN_REPOSITORIES";
 			CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 			ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
-			new CkanToLODVaderConverter().convert(datasource);
+			new CKANToLODVaderConverter().convert(datasource);
 			logger.info("Ckan parsing done");
 		}
 
@@ -321,7 +321,7 @@ public class Manager {
 			String datasource = "RE3_REPOSITORIES";
 			CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 			ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
-			new CkanToLODVaderConverter().convert(datasource);
+			new CKANToLODVaderConverter().convert(datasource);
 			logger.info("RE3 parsing done");
 		}
 
