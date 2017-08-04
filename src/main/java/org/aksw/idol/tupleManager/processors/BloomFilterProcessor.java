@@ -9,13 +9,13 @@ import java.util.List;
 
 import org.aksw.idol.bloomfilters.BloomFilterI;
 import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.file.FileLazyHandler;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB;
 import org.aksw.idol.mongodb.collections.datasetBF.BucketDB;
 import org.aksw.idol.services.mongodb.BucketService;
-import org.aksw.idol.utils.FileList;
 import org.aksw.idol.utils.NSUtils;
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
@@ -32,9 +32,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 
 	DistributionDB distribution;
 
-	FileList<String> triplesWriter;
-	FileList<String> subjectWriter;
-	FileList<String> objectWriter;
+	FileLazyHandler<String> triplesWriter;
+	FileLazyHandler<String> subjectWriter;
+	FileLazyHandler<String> objectWriter;
 
 	enum TYPE_OF_FILE {
 		OBJECT, SUBJECT, TRIPLES
@@ -45,9 +45,9 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	 */
 	public BloomFilterProcessor(DistributionDB distribution) {
 		this.distribution = distribution;
-		triplesWriter = new FileList<>(LODVaderProperties.TMP_FOLDER, "tmpTriples_" + distribution.getID());
-		subjectWriter = new FileList<>(LODVaderProperties.TMP_FOLDER, "tmpSubject_" + distribution.getID());
-		objectWriter = new FileList<>(LODVaderProperties.TMP_FOLDER, "tmpObject_" + distribution.getID());
+		triplesWriter = new FileLazyHandler<>(LODVaderProperties.TMP_FOLDER, "tmpTriples_" + distribution.getID());
+		subjectWriter = new FileLazyHandler<>(LODVaderProperties.TMP_FOLDER, "tmpSubject_" + distribution.getID());
+		objectWriter = new FileLazyHandler<>(LODVaderProperties.TMP_FOLDER, "tmpObject_" + distribution.getID());
 	}
 
 	/*
@@ -91,7 +91,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 	 *            and dataset/distribution
 	 * @return
 	 */
-	private List<String> saveResources(FileList<String> list, TYPE_OF_FILE type) {
+	private List<String> saveResources(FileLazyHandler<String> list, TYPE_OF_FILE type) {
 
 		logger.info("Saving resources from file " + list.getFullPath());
 

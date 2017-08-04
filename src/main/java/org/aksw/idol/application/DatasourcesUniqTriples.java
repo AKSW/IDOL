@@ -10,13 +10,13 @@ import java.util.Collection;
 
 import org.aksw.idol.bloomfilters.BloomFilterI;
 import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
 import org.aksw.idol.services.mongodb.MetadataParserServices;
 import org.aksw.idol.streaming.LODVStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
-import org.aksw.idol.utils.FileStatement;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -42,9 +42,9 @@ public class DatasourcesUniqTriples {
 
 	String fileName = null;
 
-	FileStatement fileStatement1 = null;
+	FileStatementCustom fileStatement1 = null;
 
-	FileStatement fileStatement2 = null;
+	FileStatementCustom fileStatement2 = null;
 
 	// BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_001);
 	BloomFilterI bf = BloomFilterFactory.newBloomFilter();
@@ -75,8 +75,8 @@ public class DatasourcesUniqTriples {
 		new File(LODVaderProperties.TMP_FOLDER, fileName + 1).delete();
 		new File(LODVaderProperties.TMP_FOLDER, fileName + 2).delete();
 
-		fileStatement1 = new FileStatement(LODVaderProperties.TMP_FOLDER, fileName + 1);
-		fileStatement2 = new FileStatement(LODVaderProperties.TMP_FOLDER, fileName + 2);
+		fileStatement1 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 1);
+		fileStatement2 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 2);
 
 	}
 
@@ -136,7 +136,7 @@ public class DatasourcesUniqTriples {
 					.renameTo(new File(LODVaderProperties.TMP_FOLDER + fileName + 1));
 			fileStatement2.clear();
 
-			fileStatement2 = new FileStatement(LODVaderProperties.TMP_FOLDER, fileName + 2);
+			fileStatement2 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 2);
 
 		}
 
@@ -156,7 +156,7 @@ public class DatasourcesUniqTriples {
 
 		logger.info("Counting uniq triples for parser: " + parser.getParserName());
 
-		for (FileStatement f : new MetadataParserServices().getFilesFromParser(parser.getParserName())) {
+		for (FileStatementCustom f : new MetadataParserServices().getFilesFromParser(parser.getParserName())) {
 			try {
 				while (f.hasNext()) {
 					processStatement(f.getStatement(), fileStatement1);
@@ -192,7 +192,7 @@ public class DatasourcesUniqTriples {
 					.renameTo(new File(LODVaderProperties.TMP_FOLDER + fileName + 1));
 			fileStatement2.clear();
 
-			fileStatement2 = new FileStatement(LODVaderProperties.TMP_FOLDER, fileName + 2);
+			fileStatement2 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 2);
 
 		}
 
@@ -207,7 +207,7 @@ public class DatasourcesUniqTriples {
 		new File(LODVaderProperties.TMP_FOLDER, fileName + 2).delete();
 	}
 
-	private void processStatement(Statement s, FileStatement fileStatement) {
+	private void processStatement(Statement s, FileStatementCustom fileStatement) {
 		String triple = s.getSubject().stringValue() + " " + s.getPredicate().stringValue() + " "
 				+ s.getObject().stringValue();
 		if (!bf.compare(triple)) {

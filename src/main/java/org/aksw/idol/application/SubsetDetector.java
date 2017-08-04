@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
@@ -21,7 +22,6 @@ import org.aksw.idol.plugins.intersection.LODVaderIntersectionPlugin;
 import org.aksw.idol.services.mongodb.CachedBucketService;
 import org.aksw.idol.services.mongodb.GeneralResourceRelationServices;
 import org.aksw.idol.services.mongodb.GeneralResourceServices;
-import org.aksw.idol.utils.FileStatement;
 import org.aksw.idol.utils.NSUtils;
 import org.aksw.idol.utils.Timer;
 import org.openrdf.model.Statement;
@@ -146,7 +146,7 @@ public class SubsetDetector extends LODVaderIntersectionPlugin implements Runnab
 		/**
 		 * Load all triples from the distribution using filestatement
 		 */
-		FileStatement triples = new FileStatement(LODVaderProperties.RAW_FILE_PATH + distribution.getID());
+		FileStatementCustom triples = new FileStatementCustom(LODVaderProperties.RAW_FILE_PATH + distribution.getID());
 		int count = 0;
 		int countTotal = 0;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.idol.utils;
+package org.aksw.idol.file;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * 
  *         Nov 11, 2016
  */
-public class FileList<T> extends AbstractList<T> implements Iterator<T> {
+public class FileLazyHandler<T> extends AbstractList<T> implements Iterator<T> {
 
 	private String path = null;
 
@@ -46,7 +46,7 @@ public class FileList<T> extends AbstractList<T> implements Iterator<T> {
 	 * @param path
 	 *            the path used to store the file
 	 */
-	public FileList(String path, String fileName) {
+	public FileLazyHandler(String path, String fileName) {
 
 		if (!path.endsWith("/"))
 			path = path + "/";

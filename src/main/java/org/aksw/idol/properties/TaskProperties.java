@@ -7,7 +7,7 @@ public class TaskProperties {
 
 	Map<String, Boolean> dumpcreation = new HashMap<String, Boolean>();
 
-	Map<String, String> bloomfiltercreation = new HashMap<String, String>();
+	Map<String, Boolean> bloomfiltercreation = new HashMap<String, Boolean>();
 
 	public Boolean getCreateDumpOnDisk() {
 		return dumpcreation.get("createdumpondisk");
@@ -18,14 +18,14 @@ public class TaskProperties {
 	}
 	
 	public Boolean getCreateDatasetsBloomFilter() {
-		return dumpcreation.get("createdatsetsbloomfilter");
+		return bloomfiltercreation.get("createdatsetsbloomfilter");
 	}
 	
 	public Boolean getCreateDatasourceBLoomFilter() {
-		return dumpcreation.get("createdatasourcebloomfilter");
+		return bloomfiltercreation.get("createdatasourcebloomfilter");
 	}
 	public Boolean getOverrideCreatedBloomFilter() {
-		return dumpcreation.get("overridecreatedbloomfilter");
+		return bloomfiltercreation.get("overridecreatedbloomfilter");
 	}
 		
 
@@ -41,11 +41,11 @@ public class TaskProperties {
 		this.dumpcreation = dumpcreation;
 	}
 
-	public Map<String, String> getBloomfiltercreation() {
+	public Map<String, Boolean> getBloomfiltercreation() {
 		return bloomfiltercreation;
 	}
 
-	public void setBloomfiltercreation(Map<String, String> bloomfiltercreation) {
+	public void setBloomfiltercreation(Map<String, Boolean> bloomfiltercreation) {
 		this.bloomfiltercreation = bloomfiltercreation;
 	}
 

@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 import eu.fbk.rdfpro.tql.TQL;
 import eu.fbk.rdfpro.tql.TQLParserFactory;
 
-public class LODVStreamInternetImpl implements LODVStreamInterface {
+public class LODVStreamInternetImpl implements IDOLStreamInterface {
 
 	final static Logger logger = LoggerFactory.getLogger(LODVStreamInternetImpl.class);
 

@@ -7,9 +7,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.aksw.idol.exceptions.LODVaderMissingPropertiesException;
+import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
-import org.aksw.idol.utils.FileStatement;
 import org.aksw.idol.utils.FileUtils;
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class SaveDumpDataProcessor implements BasicProcessorInterface {
 
 	DistributionDB distribution;
 
-	FileStatement file = null;
+	FileStatementCustom file = null;
 	
 	String triplesTmpFilePath;
 	
@@ -46,7 +46,7 @@ public class SaveDumpDataProcessor implements BasicProcessorInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		file = new FileStatement(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + fileName);
+		file = new FileStatementCustom(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + fileName);
 	}
 
 	public void closeFile() {

@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.aksw.idol.exceptions.LODVaderMissingPropertiesException;
+import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.MetadataParserDB;
 import org.aksw.idol.mongodb.queries.GeneralQueriesHelper;
 import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
-import org.aksw.idol.utils.FileStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +44,8 @@ public class MetadataParserServices {
 	 * @param parserName the parser name
 	 * @return
 	 */
-	public List<FileStatement> getFilesFromParser(String parserName) {
-		List<FileStatement> files = new ArrayList<>();
+	public List<FileStatementCustom> getFilesFromParser(String parserName) {
+		List<FileStatementCustom> files = new ArrayList<>();
 		ArrayList<DBObject> parsers = new GeneralQueriesHelper().getObjects(MetadataParserDB.COLLECTION_NAME,
 				MetadataParserDB.PARSER_NAME, parserName);
 		if (parsers.size() > 0) {
@@ -53,7 +53,7 @@ public class MetadataParserServices {
 					DistributionDB.DATASOURCE, parserName);
 			for (DBObject o : distributions) {
 				DistributionDB dist = new DistributionDB(o);
-				files.add(new FileStatement(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + dist.getID()));
+				files.add(new FileStatementCustom(LODVaderProperties.BASE_PATH + "/raw_files/", "__RAW_" + dist.getID()));
 			}
 		}
 		return files;

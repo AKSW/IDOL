@@ -36,8 +36,8 @@ import org.aksw.idol.parsers.descriptionFileParser.Impl.SparqlesMainParser;
 import org.aksw.idol.plugins.intersection.subset.linkset.LinksetDetectionHelper;
 import org.aksw.idol.properties.IDOLProperties;
 import org.aksw.idol.properties.Properties;
-import org.aksw.idol.streaming.LODVStreamFileImpl;
-import org.aksw.idol.streaming.LODVStreamInterface;
+import org.aksw.idol.streaming.IDOLFileStream;
+import org.aksw.idol.streaming.IDOLStreamInterface;
 import org.aksw.idol.streaming.LODVStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicStatisticalDataProcessor;
 import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
@@ -70,9 +70,55 @@ public class Manager {
 	@Autowired
 	public Manager(Properties idolProperties) {
 		this.properties = idolProperties;
-		setProperties();
+		 setProperties();
 	}
 
+//	/**
+//	 * How many operation to run in parallel.
+//	 */
+//	int numberOfThreads;
+//
+//	/**
+//	 * Count unique triples
+//	 */
+//	boolean uniqPerDatasource = true;
+//
+//	/**
+//	 * Streaming and processing
+//	 */
+//	boolean streamDistribution = false;
+//	boolean streamFromInternet = true;
+//
+//	boolean createDumpOnDisk = false;
+//	boolean overrideDumpOnDisk = false;
+//
+//	boolean processStatisticalData = false;
+//	boolean createBloomFilter = false;
+//
+//	/**
+//	 * Parsing options
+//	 */
+//	boolean parseSparqles = false;
+//	boolean parseLOV = false;
+//	boolean parseDBpedia = false;
+//	boolean parseLaundromat = false;
+//	boolean parseLODCloud = false;
+//	boolean parseRE3 = false;
+//	boolean parseCKANRepositories = false;
+//	boolean parseLinghub = false;
+//	boolean parseLodStats = false;
+//
+//	/**
+//	 * BF options.
+//	 */
+//	// check if there already is a BF created for the distribution
+//	boolean ignoreCreatedBF = true;
+//
+//	/**
+//	 * Detect overlapping datasets
+//	 */
+//	boolean detectOverlappingDatasets = false;
+	
 	/**
 	 * How many operation to run in parallel.
 	 */
@@ -81,38 +127,38 @@ public class Manager {
 	/**
 	 * Count unique triples
 	 */
-	boolean uniqPerDatasource = true;
+	boolean uniqPerDatasource;
 
 	/**
 	 * Streaming and processing
 	 */
-	boolean streamDistribution = false;
-	boolean streamFromInternet = true;
+	boolean streamDistribution;
+	boolean streamFromInternet;
 
-	boolean createDumpOnDisk = false;
-	boolean overrideDumpOnDisk = false;
+	boolean createDumpOnDisk;
+	boolean overrideDumpOnDisk;
 
-	boolean processStatisticalData = false;
-	boolean createBloomFilter = false;
+	boolean processStatisticalData ;
+	boolean createBloomFilter;
 
 	/**
 	 * Parsing options
 	 */
-	boolean parseSparqles = false;
-	boolean parseLOV = false;
-	boolean parseDBpedia = false;
-	boolean parseLaundromat = false;
-	boolean parseLODCloud = false;
-	boolean parseRE3 = false;
-	boolean parseCKANRepositories = false;
-	boolean parseLinghub = false;
-	boolean parseLodStats = false;
+	boolean parseSparqles;
+	boolean parseLOV;
+	boolean parseDBpedia;
+	boolean parseLaundromat;
+	boolean parseLODCloud;
+	boolean parseRE3;
+	boolean parseCKANRepositories;
+	boolean parseLinghub;
+	boolean parseLodStats;
 
 	/**
 	 * BF options.
 	 */
 	// check if there already is a BF created for the distribution
-	boolean ignoreCreatedBF = true;
+	boolean ignoreCreatedBF;
 
 	/**
 	 * Detect overlapping datasets
@@ -123,6 +169,7 @@ public class Manager {
 	 * Main method
 	 */
 	public void start() {
+		setProperties();
 
 		/**
 		 * Load properties file, create MondoDB indexes, etc
@@ -198,7 +245,7 @@ public class Manager {
 		 * Parsing DBpedia DataID file
 		 */
 		if (parseDBpedia) {
-			loader.load(new DataIDParser("http://downloads.dbpedia.org/2016-04/2016-04_dataid_catalog.ttl"));
+			loader.load(new DataIDParser("http://downloads.dbpedia.org/2016-10/2016-10_dataid_catalog.ttl"));
 			// loader.load(new
 			// DataIDParser("http://downloads.dbpedia.org/2016-04/2016-04_dataid_catalog.ttl"));
 			loader.parse();
@@ -527,128 +574,133 @@ public class Manager {
 			 * Check whether LODVader should stream from the internet of loca
 			 * files
 			 */
-			LODVStreamInterface coreStream = null;
+			IDOLStreamInterface coreStream = null;
 
 			if (streamFromInternet)
 				coreStream = new LODVStreamInternetImpl();
-			else
-				coreStream = new LODVStreamFileImpl(LODVaderProperties.BASE_PATH + "/raw_files/");
+			else {
+				coreStream = new IDOLFileStream(LODVaderProperties.BASE_PATH + "/raw_files/");
 
-			/**
-			 * Registering statistical data processor
-			 */
-			BasicStatisticalDataProcessor basicStatisticalProcessor = null;
-			if (processStatisticalData) {
-				basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
-				coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
-			}
-
-			/**
-			 * Registering raw data processor if there already is a file named
-			 * with the same id, do not stream again
-			 */
-			SaveDumpDataProcessor saveDumpDataProcessor = null;
-			if (createDumpOnDisk) {
-				if (overrideDumpOnDisk || !new File(LODVaderProperties.RAW_FILE_PATH + distribution.getID()).exists()) {
-					saveDumpDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
-					coreStream.getPipelineProcessor().registerProcessor(saveDumpDataProcessor);
-				} else {
-					logger.info("File: " + LODVaderProperties.RAW_FILE_PATH + distribution.getID()
-							+ " already exists. We are not overriding it.");
+				/**
+				 * Registering statistical data processor
+				 */
+				BasicStatisticalDataProcessor basicStatisticalProcessor = null;
+				if (processStatisticalData) {
+					basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
+					coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
 				}
+
+				/**
+				 * Registering raw data processor if there already is a file
+				 * named with the same id, do not stream again
+				 */
+				SaveDumpDataProcessor saveDumpDataProcessor = null;
+				if (createDumpOnDisk) {
+					if (overrideDumpOnDisk
+							|| !new File(LODVaderProperties.RAW_FILE_PATH + distribution.getID()).exists()) {
+						saveDumpDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
+						coreStream.getPipelineProcessor().registerProcessor(saveDumpDataProcessor);
+					} else {
+						logger.info("File: " + LODVaderProperties.RAW_FILE_PATH + distribution.getID()
+								+ " already exists. We are not overriding it.");
+					}
+				}
+
+				/**
+				 * Registering bloom filter processor
+				 */
+				BloomFilterProcessor bfProcessor = null;
+				if (createBloomFilter) {
+					bfProcessor = new BloomFilterProcessor(distribution);
+					coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
+				}
+
+				// start processing
+				try {
+					distribution.setStatus(DistributionStatus.STREAMING);
+					distribution.update();
+
+					coreStream.startParsing(distribution);
+
+					// after finishing processing, finalize the processors (save
+					// data, etc etc).
+					if (processStatisticalData)
+						basicStatisticalProcessor.saveStatisticalData();
+
+					if (createDumpOnDisk)
+						if (saveDumpDataProcessor != null)
+							saveDumpDataProcessor.closeFile();
+
+					if (createBloomFilter)
+						bfProcessor.saveFilters();
+
+					distribution.setStatus(DistributionStatus.DONE);
+
+				} catch (Exception e) {
+
+					// e.printStackTrace();
+
+					// case get an exception, finalize the processors (save
+					// data, etc etc).
+					if (createDumpOnDisk)
+						if (saveDumpDataProcessor != null)
+							saveDumpDataProcessor.closeFile();
+
+					if (processStatisticalData)
+						basicStatisticalProcessor.saveStatisticalData();
+
+					if (createBloomFilter)
+						bfProcessor.saveFilters();
+
+					distribution.setLastMsg(e.getMessage());
+					distribution.setStatus(DistributionStatus.ERROR);
+					logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "
+							+ distribution.getStatus().toString() + " with error msg '" + distribution.getLastMsg()
+							+ "'.");
+				}
+
+				try {
+					distribution.update();
+				} catch (LODVaderMissingPropertiesException e) {
+					e.printStackTrace();
+
+				}
+
+				logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());
+
 			}
-
-			/**
-			 * Registering bloom filter processor
-			 */
-			BloomFilterProcessor bfProcessor = null;
-			if (createBloomFilter) {
-				bfProcessor = new BloomFilterProcessor(distribution);
-				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
-			}
-
-			// start processing
-			try {
-				distribution.setStatus(DistributionStatus.STREAMING);
-				distribution.update();
-
-				coreStream.startParsing(distribution);
-
-				// after finishing processing, finalize the processors (save
-				// data, etc etc).
-				if (processStatisticalData)
-					basicStatisticalProcessor.saveStatisticalData();
-
-				if (createDumpOnDisk)
-					if (saveDumpDataProcessor != null)
-						saveDumpDataProcessor.closeFile();
-
-				if (createBloomFilter)
-					bfProcessor.saveFilters();
-
-				distribution.setStatus(DistributionStatus.DONE);
-
-			} catch (Exception e) {
-
-				// e.printStackTrace();
-
-				// case get an exception, finalize the processors (save
-				// data, etc etc).
-				if (createDumpOnDisk)
-					if (saveDumpDataProcessor != null)
-						saveDumpDataProcessor.closeFile();
-
-				if (processStatisticalData)
-					basicStatisticalProcessor.saveStatisticalData();
-
-				if (createBloomFilter)
-					bfProcessor.saveFilters();
-
-				distribution.setLastMsg(e.getMessage());
-				distribution.setStatus(DistributionStatus.ERROR);
-				logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "
-						+ distribution.getStatus().toString() + " with error msg '" + distribution.getLastMsg() + "'.");
-			}
-
-			try {
-				distribution.update();
-			} catch (LODVaderMissingPropertiesException e) {
-				e.printStackTrace();
-
-			}
-
-			logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());
-
 		}
+
 	}
 
 	private void setProperties() {
-		this.numberOfThreads = properties.getIdolproperties().getNrthreads();
+
+		numberOfThreads = properties.getIdolproperties().getNrthreads();
 		if (properties.getIdolproperties().getStreaming() != null) {
-			this.streamDistribution = true;
+			streamDistribution = true;
 			if (properties.getIdolproperties().getStreaming() == IDOLProperties.Streaming.INTERNET) {
-				this.streamFromInternet = true;
+				streamFromInternet = true;
 			} else if (properties.getIdolproperties().getStreaming() == IDOLProperties.Streaming.LOCAL) {
-				this.streamFromInternet = false;
+				streamFromInternet = false;
 			}
 
 		} else {
-			this.streamDistribution = false;
+			streamDistribution = false;
 		}
-		this.createDumpOnDisk = properties.getIdolproperties().getTasks().getCreateDumpOnDisk();
-		this.overrideDumpOnDisk = properties.getIdolproperties().getTasks().getOverrideDumpOnDisk();
-		this.processStatisticalData = properties.getIdolproperties().getTasks().isProcessstatisticaldata();
-		this.createBloomFilter = properties.getIdolproperties().getTasks().getCreateDatasetsBloomFilter();
+		createDumpOnDisk = properties.getIdolproperties().getTasks().getCreateDumpOnDisk();
+		overrideDumpOnDisk = properties.getIdolproperties().getTasks().getOverrideDumpOnDisk();
+		processStatisticalData = properties.getIdolproperties().getTasks().isProcessstatisticaldata();
+		createBloomFilter = properties.getIdolproperties().getTasks().getCreateDatasetsBloomFilter();
 
-		this.parseSparqles = properties.getIdolproperties().getParse().getSparqles();
-		this.parseLOV = properties.getIdolproperties().getParse().getLov();
-		this.parseDBpedia = properties.getIdolproperties().getParse().getDbpedia();
-		this.parseLaundromat = properties.getIdolproperties().getParse().getLodlaundromat();
-		this.parseLODCloud = properties.getIdolproperties().getParse().getLodcloud();
-		this.parseRE3 = properties.getIdolproperties().getParse().getRe3();
-		this.parseCKANRepositories = properties.getIdolproperties().getParse().getCkanrepositories();
-		this.parseLinghub = properties.getIdolproperties().getParse().getLinghib();
-		this.parseLodStats = properties.getIdolproperties().getParse().getLodcloud();
+		parseSparqles = properties.getIdolproperties().getParse().getSparqles();
+		parseLOV = properties.getIdolproperties().getParse().getLov();
+		parseDBpedia = properties.getIdolproperties().getParse().getDbpedia();
+		parseLaundromat = properties.getIdolproperties().getParse().getLodlaundromat();
+		parseLODCloud = properties.getIdolproperties().getParse().getLodcloud();
+		parseRE3 = properties.getIdolproperties().getParse().getRe3();
+		parseCKANRepositories = properties.getIdolproperties().getParse().getCkanrepositories();
+		parseLinghub = properties.getIdolproperties().getParse().getLinghib();
+		parseLodStats = properties.getIdolproperties().getParse().getLodcloud();
 	}
 
 }

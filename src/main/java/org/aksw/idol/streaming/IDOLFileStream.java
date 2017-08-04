@@ -3,9 +3,9 @@
  */
 package org.aksw.idol.streaming;
 
+import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.tupleManager.PipelineProcessor;
-import org.aksw.idol.utils.FileStatement;
 import org.aksw.idol.utils.StatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +15,15 @@ import org.slf4j.LoggerFactory;
  * 
  *         Nov 13, 2016
  */
-public class LODVStreamFileImpl implements LODVStreamInterface {
+public class IDOLFileStream implements IDOLStreamInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(LODVStreamFileImpl.class);
+	final static Logger logger = LoggerFactory.getLogger(IDOLFileStream.class);
 
 	DistributionDB distribution = null;
 
 	String path = null;
 	
-	FileStatement fileTriple = null;
+	FileStatementCustom fileTriple = null;
 
 	PipelineProcessor pipelineProcessor = new PipelineProcessor();
 	StatementUtils statementUtils = new StatementUtils();
@@ -31,8 +31,15 @@ public class LODVStreamFileImpl implements LODVStreamInterface {
 	/**
 	 * Constructor for Class LODVaderRawDataStream
 	 */
-	public LODVStreamFileImpl(String basePath) {
+	public IDOLFileStream(String basePath) {
 		this.path = basePath;
+	}
+	
+	public IDOLFileStream() {
+	}
+	
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public PipelineProcessor getPipelineProcessor() {
@@ -44,7 +51,7 @@ public class LODVStreamFileImpl implements LODVStreamInterface {
 
 		try {
 			logger.info("Loading: " + path + distribution.getID());
-			fileTriple = new FileStatement(path+ distribution.getID());
+			fileTriple = new FileStatementCustom(path+ distribution.getID());
 			int triples= 0;
 			while(fileTriple.hasNext()){
 				pipelineProcessor.handleStatement(fileTriple.getStatement());
@@ -53,7 +60,6 @@ public class LODVStreamFileImpl implements LODVStreamInterface {
 			fileTriple.close();
 			logger.info(triples+ " triples handled.");			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

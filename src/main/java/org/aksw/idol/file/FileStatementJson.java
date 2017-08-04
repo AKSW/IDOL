@@ -1,8 +1,9 @@
 /**
  * 
  */
-package org.aksw.idol.utils;
+package org.aksw.idol.file;
 
+import org.aksw.idol.utils.StatementUtils;
 import org.openrdf.model.Statement;
 
 /**
@@ -10,7 +11,7 @@ import org.openrdf.model.Statement;
  * 
  *         Nov 13, 2016
  */
-public class FileStatement extends FileList<String> {
+public class FileStatementJson extends FileLazyHandler<String> {
 
 	StatementUtils statementUtils = new StatementUtils();
 	
@@ -20,11 +21,11 @@ public class FileStatement extends FileList<String> {
 	 * @param path
 	 * @param fileName
 	 */
-	public FileStatement(String path, String fileName) {
+	public FileStatementJson(String path, String fileName) {
 		super(path, fileName);
 	}
 	
-	public FileStatement(String fullPath) {
+	public FileStatementJson(String fullPath) {
 		super(fullPath.split("__RAW_")[0],"__RAW_" + fullPath.split("__RAW_") [1]);
 	}
 

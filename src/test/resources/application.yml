@@ -1,0 +1,6 @@
+pring:
+  application:
+    name: idol-test
+  profiles:
+    active: dryrun
+

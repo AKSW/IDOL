@@ -11,7 +11,7 @@ import org.aksw.idol.tupleManager.PipelineProcessor;
  * 
  * Nov 14, 2016
  */
-public interface LODVStreamInterface {
+public interface IDOLStreamInterface {
 	
 	
 	/**

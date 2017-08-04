@@ -19,8 +19,8 @@ import org.aksw.idol.plugins.intersection.subset.SubsetDetectionService;
 import org.aksw.idol.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
 import org.aksw.idol.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import org.aksw.idol.services.mongodb.BucketService;
-import org.aksw.idol.streaming.LODVStreamFileImpl;
-import org.aksw.idol.streaming.LODVStreamInterface;
+import org.aksw.idol.streaming.IDOLFileStream;
+import org.aksw.idol.streaming.IDOLStreamInterface;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
 import org.aksw.idol.tupleManager.processors.SaveDumpDataProcessor;
@@ -127,7 +127,7 @@ public class BFTest {
 		rawDataProcessor.closeFile();
 
 		BloomFilterProcessor processor = new BloomFilterProcessor(distribution);
-		LODVStreamInterface streamer = new LODVStreamFileImpl(LODVaderProperties.RAW_FILE_PATH);
+		IDOLStreamInterface streamer = new IDOLFileStream(LODVaderProperties.RAW_FILE_PATH);
 
 		streamer.getPipelineProcessor().registerProcessor(processor);
 		try {
