@@ -1,7 +1,6 @@
 package org.aksw.idol.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
 
 public class NSUtils {
 

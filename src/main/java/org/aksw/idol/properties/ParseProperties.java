@@ -1,85 +1,80 @@
 package org.aksw.idol.properties;
 
-public class ParseProperties {
-	Boolean sparqles;
-	Boolean lov;
-	Boolean dbpedia;
-	Boolean lodlaundromat;
-	Boolean lodcloud;
-	Boolean re3;
-	Boolean ckanrepositories;
-	Boolean linghib;
-	Boolean lodstats;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.LinghubParser;
+import org.aksw.idol.properties.parsers.CKANParserProperties;
+import org.aksw.idol.properties.parsers.DBpediaParserProperties;
+import org.aksw.idol.properties.parsers.LODCloudParserProperties;
+import org.aksw.idol.properties.parsers.LODLaundromatParserProperties;
+import org.aksw.idol.properties.parsers.LODStatsParserProperties;
+import org.aksw.idol.properties.parsers.LOVParserProperties;
+import org.aksw.idol.properties.parsers.LinghubParserProperties;
+import org.aksw.idol.properties.parsers.RE3ParserProperties;
+import org.aksw.idol.properties.parsers.SparqlesParserProperties;
 
-	public Boolean getSparqles() {
+public class ParseProperties {
+	SparqlesParserProperties sparqles = new SparqlesParserProperties();
+	LOVParserProperties lov = new LOVParserProperties();
+	DBpediaParserProperties dbpedia = new DBpediaParserProperties();
+	LODLaundromatParserProperties lodlaundromat = new LODLaundromatParserProperties();
+	LODCloudParserProperties lodcloud = new LODCloudParserProperties();
+	RE3ParserProperties re3 = new RE3ParserProperties();
+	CKANParserProperties ckanrepositories = new CKANParserProperties();
+	LinghubParserProperties linghub = new LinghubParserProperties();
+	LODStatsParserProperties lodstats = new LODStatsParserProperties();
+	public SparqlesParserProperties getSparqles() {
 		return sparqles;
 	}
-
-	public void setSparqles(Boolean sparqles) {
+	public void setSparqles(SparqlesParserProperties sparqles) {
 		this.sparqles = sparqles;
 	}
-
-	public Boolean getLov() {
+	public LOVParserProperties getLov() {
 		return lov;
 	}
-
-	public void setLov(Boolean lov) {
+	public void setLov(LOVParserProperties lov) {
 		this.lov = lov;
 	}
-
-	public Boolean getDbpedia() {
+	public DBpediaParserProperties getDbpedia() {
 		return dbpedia;
 	}
-
-	public void setDbpedia(Boolean dbpedia) {
+	public void setDbpedia(DBpediaParserProperties dbpedia) {
 		this.dbpedia = dbpedia;
 	}
-
-	public Boolean getLodlaundromat() {
+	public LODLaundromatParserProperties getLodlaundromat() {
 		return lodlaundromat;
 	}
-
-	public void setLodlaundromat(Boolean lodlaundromat) {
+	public void setLodlaundromat(LODLaundromatParserProperties lodlaundromat) {
 		this.lodlaundromat = lodlaundromat;
 	}
-
-	public Boolean getLodcloud() {
+	public LODCloudParserProperties getLodcloud() {
 		return lodcloud;
 	}
-
-	public void setLodcloud(Boolean lodcloud) {
+	public void setLodcloud(LODCloudParserProperties lodcloud) {
 		this.lodcloud = lodcloud;
 	}
-
-	public Boolean getRe3() {
+	public RE3ParserProperties getRe3() {
 		return re3;
 	}
-
-	public void setRe3(Boolean re3) {
+	public void setRe3(RE3ParserProperties re3) {
 		this.re3 = re3;
 	}
 
-	public Boolean getCkanrepositories() {
+	public CKANParserProperties getCkanrepositories() {
 		return ckanrepositories;
 	}
-
-	public void setCkanrepositories(Boolean ckanrepositories) {
+	public void setCkanrepositories(CKANParserProperties ckanrepositories) {
 		this.ckanrepositories = ckanrepositories;
 	}
-
-	public Boolean getLinghib() {
-		return linghib;
+	public LinghubParserProperties getLinghub() {
+		return linghub;
 	}
-
-	public void setLinghib(Boolean linghib) {
-		this.linghib = linghib;
+	public void setLinghub(LinghubParserProperties linghub) {
+		this.linghub = linghub;
 	}
-
-	public Boolean getLodstats() {
+	public LODStatsParserProperties getLodstats() {
 		return lodstats;
 	}
-
-	public void setLodstats(Boolean lodstats) {
+	public void setLodstats(LODStatsParserProperties lodstats) {
 		this.lodstats = lodstats;
 	}
 

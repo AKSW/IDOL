@@ -24,9 +24,9 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 
 	public BloomFilter<String> bf = null;
 
-	int numberOfElements = 0;
+	long numberOfElements = 0;
 
-	int initialSize = 0;
+	long initialSize = 0;
 
 	Double fpp;
 
@@ -36,7 +36,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 	 * @see lodVader.bloomfilters.BloomFilterI#create(int, double)
 	 */
 	@Override
-	public boolean create(int initialSize, double fpp) {
+	public boolean create(long initialSize, double fpp) {
 
 		if (fpp > 1)
 			fpp = 0.000_000_1;
@@ -47,7 +47,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 		// carter
 
 		if (bf == null)
-			bf = new FilterBuilder(initialSize, fpp)
+			bf = new FilterBuilder((int) initialSize, fpp)
 //					bf = new FilterBuilder()
 //					.expectedElements(initialSize)
 //					.size(820000*8)
@@ -93,7 +93,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 	 * @see lodVader.bloomfilters.BloomFilterI#getNumberOfElements()
 	 */
 	@Override
-	public int getNumberOfElements() {
+	public long getNumberOfElements() {
 		return numberOfElements;
 	}
 

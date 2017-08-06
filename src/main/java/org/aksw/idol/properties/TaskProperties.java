@@ -10,28 +10,37 @@ public class TaskProperties {
 	Map<String, Boolean> bloomfiltercreation = new HashMap<String, Boolean>();
 
 	public Boolean getCreateDumpOnDisk() {
-		return dumpcreation.get("createdumpondisk");
+		return dumpcreation.get("createDumpOnDisk");
 	}
 
 	public Boolean getOverrideDumpOnDisk() {
-		return dumpcreation.get("overridedumpondisk");
+		return dumpcreation.get("overrideDumpOnDisk");
 	}
 	
 	public Boolean getCreateDatasetsBloomFilter() {
-		return bloomfiltercreation.get("createdatsetsbloomfilter");
+		return bloomfiltercreation.get("createDatasetsBloomFilter");
 	}
 	
 	public Boolean getCreateDatasourceBLoomFilter() {
-		return bloomfiltercreation.get("createdatasourcebloomfilter");
+		return bloomfiltercreation.get("createDataSourceBloomFilter");
 	}
 	public Boolean getOverrideCreatedBloomFilter() {
-		return bloomfiltercreation.get("overridecreatedbloomfilter");
+		return bloomfiltercreation.get("overrideCreatedBloomFilter");
 	}
 		
 
 	boolean processstatisticaldata;
 	
-	boolean calculateuniqperdatasource;
+	CalculateUniqPerDataSourceProperties calculateUniqPerDataSource = new CalculateUniqPerDataSourceProperties();
+
+
+	public CalculateUniqPerDataSourceProperties getCalculateUniqPerDataSource() {
+		return calculateUniqPerDataSource;
+	}
+
+	public void setCalculateUniqPerDataSource(CalculateUniqPerDataSourceProperties calculateUniqPerDataSource) {
+		this.calculateUniqPerDataSource = calculateUniqPerDataSource;
+	}
 
 	public Map<String, Boolean> getDumpcreation() {
 		return dumpcreation;
@@ -56,15 +65,5 @@ public class TaskProperties {
 	public void setProcessstatisticaldata(boolean processstatisticaldata) {
 		this.processstatisticaldata = processstatisticaldata;
 	}
-
-	public boolean isCalculateuniqperdatasource() {
-		return calculateuniqperdatasource;
-	}
-
-	public void setCalculateuniqperdatasource(boolean calculateuniqperdatasource) {
-		this.calculateuniqperdatasource = calculateuniqperdatasource;
-	}
-	
-	
 
 }

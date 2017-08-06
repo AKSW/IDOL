@@ -37,14 +37,15 @@ public class LOVParser extends MetadataParser{
 	 * Constructor for Class LOVParser 
 	 * @param parserName
 	 */
-	public LOVParser() {
+	public LOVParser(String URL) {
 		super("LOV_PARSER");
+		this.repositoryAddress = URL;
 	}
 
 	final static Logger logger = LoggerFactory.getLogger(LOVParser.class);
 
 
-	String repositoryAddress = "http://lov.okfn.org/dataset/lov/api/v2/vocabulary/list";
+	String repositoryAddress;
 
 	/**
 	 * Save a LOV Vocabulary or ontology instance the main collection

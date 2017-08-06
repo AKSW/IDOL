@@ -109,7 +109,7 @@ public class HTTPConnectionHelper {
 	public JSONObject getJSONResponse(String url) throws MalformedURLException, IOException {
 		JSONObject o;
 		try {
-			openConnection((url), true);
+			openConnection((url), true); 
 			o = readJsonFromUrl();
 		} 
 		finally {

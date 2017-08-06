@@ -24,7 +24,7 @@ public interface BloomFilterI {
 	 *            - false positive probability (between 0 and 1)
 	 * @return
 	 */
-	public boolean create(int initialSize, double fpp);
+	public boolean create(long initialSize, double fpp);
 
 	/**
 	 * Add a new element to the set
@@ -47,7 +47,7 @@ public interface BloomFilterI {
 	 * 
 	 * @return - number of elements
 	 */
-	public int getNumberOfElements();
+	public long getNumberOfElements();
 
 	/**
 	 * Read from an inputstream and save to filter

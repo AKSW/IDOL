@@ -5,8 +5,8 @@ package org.aksw.idol.streaming;
 
 import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.mongodb.collections.DistributionDB;
+import org.aksw.idol.services.StatementService;
 import org.aksw.idol.tupleManager.PipelineProcessor;
-import org.aksw.idol.utils.StatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ public class IDOLFileStream implements IDOLStreamInterface {
 	FileStatementCustom fileTriple = null;
 
 	PipelineProcessor pipelineProcessor = new PipelineProcessor();
-	StatementUtils statementUtils = new StatementUtils();
+	StatementService statementUtils = new StatementService();
 
 	/**
 	 * Constructor for Class LODVaderRawDataStream

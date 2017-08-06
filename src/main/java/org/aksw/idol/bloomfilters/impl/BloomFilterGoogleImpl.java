@@ -23,11 +23,11 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 	// final static Logger logger =
 	// LoggerFactory.getLogger(GoogleBloomFilter.class);
 
-	private double fpp = 0;  
+	private double fpp = 0;
 
 	private int insertions = 0;
 
-	private int initialSize = 0;
+	private long initialSize = 0;
 
 	private BloomFilter<byte[]> filter = null;
 
@@ -38,9 +38,9 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 	 * 
 	 * @see bloomfilter.BloomFilterI#create(int, double)
 	 */
-	public boolean create(int initialSize, double fpp) {
+	public boolean create(long initialSize, double fpp) {
 		if (fpp > 1)
-			fpp = 0.000_000_1;
+			fpp = 0.000_0001;
 
 		if (filter == null)
 			filter = BloomFilter.create(funnel, initialSize, fpp);
@@ -79,7 +79,7 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 	 * 
 	 * @see bloomfilter.BloomFilterI#getNumberOfElements()
 	 */
-	public int getNumberOfElements() {
+	public long getNumberOfElements() {
 		return insertions;
 	}
 
@@ -101,36 +101,43 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 		return initialSize;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bloomfilter.BloomFilterI#readFrom(java.io.InputStream)
 	 */
 	public void readFrom(InputStream in) throws IOException {
-		filter = BloomFilter.readFrom(in, funnel);		
+		filter = BloomFilter.readFrom(in, funnel);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see bloomfilter.BloomFilterI#writeTo(java.io.OutputStream)
 	 */
 	public void writeTo(OutputStream out) throws IOException {
 		filter.writeTo(new BufferedOutputStream(out));
 	}
 
-	/* (non-Javadoc)
-	 * @see lodVader.bloomfilters.BloomFilterI#intersection(lodVader.bloomfilters.BloomFilterI)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see lodVader.bloomfilters.BloomFilterI#intersection(lodVader.bloomfilters.
+	 * BloomFilterI)
 	 */
 	@Override
 	public Double intersection(BloomFilterI toIntersectWith) {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see lodVader.bloomfilters.BloomFilterI#getImplementation()
 	 */
 	@Override
 	public Object getImplementation() {
 		return filter;
 	}
-
-
 
 }

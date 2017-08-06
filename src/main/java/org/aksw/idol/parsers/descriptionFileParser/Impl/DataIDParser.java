@@ -70,35 +70,37 @@ public class DataIDParser extends MetadataParser {
 	}
 
 	public DistributionDB saveDistribution(String distribution, DatasetDB dataset) {
-		
+
 		String downloadURL = (distribution);
 		String uri = distribution;
 		String title = dataidHelper.getTitle(distribution);
 		String topDataset = dataset.getID();
 		String topDatasetTitle = dataset.getTitle();
 		String format = dataidHelper.getFormat(distribution);
-		if(format.equals(""))
-			format=FormatsUtils.getEquivalentFormat(downloadURL);
-		
-		return addDistribution(uri, false, title, format, downloadURL, topDataset, topDatasetTitle, getParserName(), repositoryAddress, null, null);
+		if (format.equals(""))
+			format = FormatsUtils.getEquivalentFormat(downloadURL);
+
+		return addDistribution(uri, false, title, format, downloadURL, topDataset, topDatasetTitle, getParserName(),
+				repositoryAddress, null, null);
 	}
 
 	public void iterateDatasets(String dataset, DatasetDB parentDataset) {
 		// get all subsets
-//		for (String subset : dataidHelper.getSubsets(dataset)) {
-//			iterateDatasets(subset, parentDataset);
-//		}
+		// for (String subset : dataidHelper.getSubsets(dataset)) {
+		// iterateDatasets(subset, parentDataset);
+		// }
 
 		DatasetDB datasetDB = saveDataset(dataset, parentDataset.getID());
-//		if (!dataset.equals(parentDataset.getID())) {
-//			parentDataset.addSubsetID(datasetDB.getID());
-//		}
+		// if (!dataset.equals(parentDataset.getID())) {
+		// parentDataset.addSubsetID(datasetDB.getID());
+		// }
 
 		List<String> distributions = dataidHelper.getDistributions(dataset);
-		System.out.println(distributions.size());
+		logger.debug(distributions.size() + " distributions found for dataset: " + dataset);
+		int counter = 0;
 		for (String distribution : distributions) {
 			DistributionDB distributionDB = saveDistribution(distribution, datasetDB);
-			System.out.println(distributionDB.getDownloadUrl());
+			logger.debug(++counter + ": " + distributionDB.getDownloadUrl());
 			datasetDB.addDistributionID(distributionDB.getID());
 			parentDataset.addDistributionID(distributionDB.getID());
 		}
@@ -106,9 +108,9 @@ public class DataIDParser extends MetadataParser {
 	}
 
 	public DatasetDB saveDataset(String dataset, String parentDataset) {
-		
-		return addDataset(dataset, false, dataidHelper.getTitle(dataset), dataidHelper.getLabel(dataset), getParserName());
 
+		return addDataset(dataset, false, dataidHelper.getTitle(dataset), dataidHelper.getLabel(dataset),
+				getParserName());
 
 	}
 

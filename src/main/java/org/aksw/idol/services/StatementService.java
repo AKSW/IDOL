@@ -1,19 +1,21 @@
 /**
  * 
  */
-package org.aksw.idol.utils;
+package org.aksw.idol.services;
 
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Ciro Baron Neto
  * 
  *         Nov 13, 2016
  */
-public class StatementUtils {
+@Service
+public class StatementService {
 
 	public Statement createStatement(String subject, String predicate, String object) {
 

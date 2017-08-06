@@ -16,7 +16,6 @@ import org.aksw.idol.plugins.intersection.LODVaderIntersectionPlugin;
 import org.aksw.idol.services.mongodb.BucketService;
 import org.aksw.idol.services.mongodb.GeneralResourceRelationServices;
 
-import com.google.common.collect.Lists;
 
 /**
  * @author Ciro Baron Neto

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.aksw.idol.application.fileparser.CKANRepositoryLoader;
-import org.aksw.idol.application.fileparser.CKANToLODVaderConverter;
+import org.aksw.idol.application.fileparser.CkanToLODVaderConverter;
 import org.aksw.idol.exceptions.LODVaderMissingPropertiesException;
 import org.aksw.idol.loader.LODVaderConfigurator;
 import org.aksw.idol.loader.LODVaderProperties;
@@ -26,15 +26,19 @@ import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB;
 import org.aksw.idol.mongodb.collections.datasetBF.BucketDB;
 import org.aksw.idol.mongodb.queries.GeneralQueriesHelper;
 import org.aksw.idol.parsers.descriptionFileParser.DescriptionFileParserLoader;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.CLODParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.DataIDParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.LODCloudParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.LOVParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.LinghubParser;
-import org.aksw.idol.parsers.descriptionFileParser.Impl.LODStatsMainParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.LodStatsMainParser;
+import org.aksw.idol.parsers.descriptionFileParser.Impl.RE3RepositoriesParser;
 import org.aksw.idol.parsers.descriptionFileParser.Impl.SparqlesMainParser;
 import org.aksw.idol.plugins.intersection.subset.linkset.LinksetDetectionHelper;
+import org.aksw.idol.properties.DataSourcesProperties;
 import org.aksw.idol.properties.IDOLProperties;
+import org.aksw.idol.properties.ParseProperties;
 import org.aksw.idol.properties.Properties;
 import org.aksw.idol.streaming.IDOLFileStream;
 import org.aksw.idol.streaming.IDOLStreamInterface;
@@ -65,69 +69,16 @@ public class Manager {
 
 	static AtomicInteger distributionsBeingProcessed = new AtomicInteger(0);
 
-	Properties properties;
-
 	@Autowired
-	public Manager(Properties idolProperties) {
-		this.properties = idolProperties;
-		 setProperties();
-	}
-
-//	/**
-//	 * How many operation to run in parallel.
-//	 */
-//	int numberOfThreads;
-//
-//	/**
-//	 * Count unique triples
-//	 */
-//	boolean uniqPerDatasource = true;
-//
-//	/**
-//	 * Streaming and processing
-//	 */
-//	boolean streamDistribution = false;
-//	boolean streamFromInternet = true;
-//
-//	boolean createDumpOnDisk = false;
-//	boolean overrideDumpOnDisk = false;
-//
-//	boolean processStatisticalData = false;
-//	boolean createBloomFilter = false;
-//
-//	/**
-//	 * Parsing options
-//	 */
-//	boolean parseSparqles = false;
-//	boolean parseLOV = false;
-//	boolean parseDBpedia = false;
-//	boolean parseLaundromat = false;
-//	boolean parseLODCloud = false;
-//	boolean parseRE3 = false;
-//	boolean parseCKANRepositories = false;
-//	boolean parseLinghub = false;
-//	boolean parseLodStats = false;
-//
-//	/**
-//	 * BF options.
-//	 */
-//	// check if there already is a BF created for the distribution
-//	boolean ignoreCreatedBF = true;
-//
-//	/**
-//	 * Detect overlapping datasets
-//	 */
-//	boolean detectOverlappingDatasets = false;
+	Properties properties;
 	
+	@Autowired
+	DatasourcesUniqTriples datasourcesUniqTriples;
+
 	/**
 	 * How many operation to run in parallel.
 	 */
 	int numberOfThreads;
-
-	/**
-	 * Count unique triples
-	 */
-	boolean uniqPerDatasource;
 
 	/**
 	 * Streaming and processing
@@ -138,7 +89,7 @@ public class Manager {
 	boolean createDumpOnDisk;
 	boolean overrideDumpOnDisk;
 
-	boolean processStatisticalData ;
+	boolean processStatisticalData;
 	boolean createBloomFilter;
 
 	/**
@@ -170,7 +121,6 @@ public class Manager {
 	 */
 	public void start() {
 		setProperties();
-
 		/**
 		 * Load properties file, create MondoDB indexes, etc
 		 */
@@ -185,8 +135,7 @@ public class Manager {
 		 */
 		parseFiles();
 
-		if (uniqPerDatasource)
-			countUniqPerDatasource();
+		countUniqPerDatasource();
 
 		/**
 		 * Stream and process distributions
@@ -216,38 +165,50 @@ public class Manager {
 	 * Count unique triples per datasource
 	 */
 	public void countUniqPerDatasource() {
-		// new DatasourcesUniqTriples(new CLODParser(null, null)).count();
+		DataSourcesProperties datasources = properties.getIdolproperties().getTasks().getCalculateUniqPerDataSource().getDataSources();
 
-		// new DatasourcesUniqTriples(new
-		// LOVParser()).countLoadingFromInternet();
+		if (datasources.isLodlaundromat())
+			datasourcesUniqTriples.setup(new CLODParser(null, null));
 
-		// new DatasourcesUniqTriples(new RE3RepositoriesParser(null,
-		// 0)).count();
-		// new DatasourcesUniqTriples(new LinghubParser(null)).count();
-		new DatasourcesUniqTriples(new DataIDParser(null)).countLoadingFile();
-		// new DatasourcesUniqTriples(new LODCloudParser()).count();
-		// new DatasourcesUniqTriples(new CKANRepositoriesParser()).count();
-		// new DatasourcesUniqTriples(new LodStatsMainParser()).count();
+		if (datasources.isLov())
+			datasourcesUniqTriples.setup(new LOVParser(null));
+
+		if (datasources.isRe3())
+			datasourcesUniqTriples.setup(new RE3RepositoriesParser(null, 0));
+
+		if (datasources.isLinghib())
+			datasourcesUniqTriples.setup(new LinghubParser(null));
+
+		if (datasources.isDbpedia())
+			datasourcesUniqTriples.setup(new DataIDParser(null));
+
+		if (datasources.isLodcloud())
+			datasourcesUniqTriples.setup(new LODCloudParser(null));
+
+		if (datasources.isCkanrepositories())
+			datasourcesUniqTriples.setup(new CKANRepositoriesParser());
+
+		if (datasources.isLodstats())
+			datasourcesUniqTriples.setup(new LodStatsMainParser(null));
 
 	}
 
 	/**
-	 * Parse description files such as DCAT, VoID, DataID, CKAN repositories,
-	 * etc.
+	 * Parse description files such as DCAT, VoID, DataID, CKAN repositories, etc.
 	 */
 	public void parseFiles() {
 
 		logger.info("Parsing files...");
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
+		
+		ParseProperties parse = properties.getIdolproperties().getParse();
 
 		/**
 		 * Parsing DBpedia DataID file
 		 */
 		if (parseDBpedia) {
-			loader.load(new DataIDParser("http://downloads.dbpedia.org/2016-10/2016-10_dataid_catalog.ttl"));
-			// loader.load(new
-			// DataIDParser("http://downloads.dbpedia.org/2016-04/2016-04_dataid_catalog.ttl"));
+			loader.load(new DataIDParser(parse.getDbpedia().getUrl().toString()));
 			loader.parse();
 		}
 
@@ -255,7 +216,7 @@ public class Manager {
 		 * Parsing LODLaundromat
 		 */
 		if (parseLaundromat) {
-			loader.load(new CLODParser("http://cirola2000.cloudapp.net/files/urls", "ttl"));
+			loader.load(new CLODParser(parse.getLodlaundromat().getUrl().toString(), "ttl"));
 			loader.parse();
 		}
 
@@ -263,9 +224,7 @@ public class Manager {
 		 * Parsing Sparqles
 		 */
 		if (parseSparqles) {
-			loader.load(new SparqlesMainParser("http://sparqles.ai.wu.ac.at/api/endpoint/list"));
-			// loader.load(new
-			// SparqlesMainParser("http://localhost/dbpedia/sparqllist.json"));
+			loader.load(new SparqlesMainParser(parse.getSparqles().getUrl().toString()));
 			loader.parse();
 		}
 
@@ -273,7 +232,7 @@ public class Manager {
 		 * Parsing Linked Open Vocabularies (lov.okfn.org)
 		 */
 		if (parseLOV) {
-			loader.load(new LOVParser());
+			loader.load(new LOVParser(parse.getLov().getUrl().toString()));
 			loader.parse();
 		}
 
@@ -281,7 +240,7 @@ public class Manager {
 		 * Parsing LodStats
 		 */
 		if (parseLodStats) {
-			loader.load(new LODStatsMainParser());
+			loader.load(new LodStatsMainParser(parse.getLodstats().getUrl().toString()));
 			loader.parse();
 		}
 
@@ -289,7 +248,7 @@ public class Manager {
 		 * Parsing lod-cloud (lod-cloud.net)
 		 */
 		if (parseLODCloud) {
-			loader.load(new LODCloudParser());
+			loader.load(new LODCloudParser(parse.getLodcloud().getUrl().toString()));
 			loader.parse();
 		}
 
@@ -297,9 +256,7 @@ public class Manager {
 		 * Parsing Linghub (linghub.lider-project.eu)
 		 */
 		if (parseLinghub) {
-			loader.load(new LinghubParser("http://cirola2000.cloudapp.net/files/linghub.nt.gz"));
-			// loader.load(new
-			// LinghubParser("http://localhost/dbpedia/linghub.nt.gz"));
+			loader.load(new LinghubParser(parse.getLinghub().getUrl().toString()));
 			loader.parse();
 		}
 
@@ -310,7 +267,7 @@ public class Manager {
 			String datasource = "CKAN_REPOSITORIES";
 			CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 			ckanLoader.loadAllRepositories(CKANRepositories.ckanRepositoryList, datasource);
-			new CKANToLODVaderConverter().convert(datasource);
+			new CkanToLODVaderConverter().convert(datasource);
 			logger.info("Ckan parsing done");
 		}
 
@@ -321,7 +278,7 @@ public class Manager {
 			String datasource = "RE3_REPOSITORIES";
 			CKANRepositoryLoader ckanLoader = new CKANRepositoryLoader();
 			ckanLoader.loadAllRepositories(CKANRepositories.RE3Repositories, datasource);
-			new CKANToLODVaderConverter().convert(datasource);
+			new CkanToLODVaderConverter().convert(datasource);
 			logger.info("RE3 parsing done");
 		}
 
@@ -571,8 +528,7 @@ public class Manager {
 			Logger logger = LoggerFactory.getLogger(ProcessDataset.class);
 
 			/**
-			 * Check whether LODVader should stream from the internet of loca
-			 * files
+			 * Check whether LODVader should stream from the internet of loca files
 			 */
 			IDOLStreamInterface coreStream = null;
 
@@ -591,8 +547,8 @@ public class Manager {
 				}
 
 				/**
-				 * Registering raw data processor if there already is a file
-				 * named with the same id, do not stream again
+				 * Registering raw data processor if there already is a file named with the same
+				 * id, do not stream again
 				 */
 				SaveDumpDataProcessor saveDumpDataProcessor = null;
 				if (createDumpOnDisk) {
@@ -692,15 +648,15 @@ public class Manager {
 		processStatisticalData = properties.getIdolproperties().getTasks().isProcessstatisticaldata();
 		createBloomFilter = properties.getIdolproperties().getTasks().getCreateDatasetsBloomFilter();
 
-		parseSparqles = properties.getIdolproperties().getParse().getSparqles();
-		parseLOV = properties.getIdolproperties().getParse().getLov();
-		parseDBpedia = properties.getIdolproperties().getParse().getDbpedia();
-		parseLaundromat = properties.getIdolproperties().getParse().getLodlaundromat();
-		parseLODCloud = properties.getIdolproperties().getParse().getLodcloud();
-		parseRE3 = properties.getIdolproperties().getParse().getRe3();
-		parseCKANRepositories = properties.getIdolproperties().getParse().getCkanrepositories();
-		parseLinghub = properties.getIdolproperties().getParse().getLinghib();
-		parseLodStats = properties.getIdolproperties().getParse().getLodcloud();
+		parseSparqles = properties.getIdolproperties().getParse().getSparqles().isStream();
+		parseLOV = properties.getIdolproperties().getParse().getLov().isStream();
+		parseDBpedia = properties.getIdolproperties().getParse().getDbpedia().isStream();
+		parseLaundromat = properties.getIdolproperties().getParse().getLodlaundromat().isStream();
+		parseLODCloud = properties.getIdolproperties().getParse().getLodcloud().isStream();
+		parseRE3 = properties.getIdolproperties().getParse().getRe3().isStream();
+		parseCKANRepositories = properties.getIdolproperties().getParse().getCkanrepositories().isStream();
+		parseLinghub = properties.getIdolproperties().getParse().getLinghub().isStream();
+		parseLodStats = properties.getIdolproperties().getParse().getLodcloud().isStream();
 	}
 
 }

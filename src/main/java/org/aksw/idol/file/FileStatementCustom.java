@@ -3,7 +3,7 @@
  */
 package org.aksw.idol.file;
 
-import org.aksw.idol.utils.StatementUtils;
+import org.aksw.idol.services.StatementService;
 import org.openrdf.model.Statement;
 
 /**
@@ -13,7 +13,7 @@ import org.openrdf.model.Statement;
  */
 public class FileStatementCustom extends FileLazyHandler<String> {
 
-	StatementUtils statementUtils = new StatementUtils();
+	StatementService statementUtils = new StatementService();
 	
 	/**
 	 * Constructor for Class FileTriple

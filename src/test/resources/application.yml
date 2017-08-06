@@ -1,6 +1,58 @@
-pring:
-  application:
-    name: idol-test
-  profiles:
-    active: dryrun
-
+idolproperties:
+  nrthreads: 6
+  streaming: internet
+#  streaming: local
+  parse:
+    sparqles:
+      stream: false
+      url: http://sparqles.ai.wu.ac.at/api/endpoint/list
+    lov:
+      stream: false
+      url: http://lov.okfn.org/dataset/lov/api/v2/vocabulary/list
+    dbpedia:
+      stream: false
+      url: http://downloads.dbpedia.org/2016-10/2016-10_dataid_catalog.ttl  
+    lodlaundromat:
+      stream: false
+      url: http://cirola2000.cloudapp.net/files/urls
+    lodcloud: 
+      stream: false
+      url: http://data.dws.informatik.uni-mannheim.de/lodcloud/2014/ISWC-RDB/datacatalog_metadata.tar.gz  
+    re3: 
+      stream: false
+    ckanrepositories: 
+      stream: false
+    linghub: 
+      stream: false
+      url: http://cirola2000.cloudapp.net/files/linghub.nt.gz
+    lodstats: 
+      stream: false
+      url: http://stats.lod2.eu/sparql/
+  tasks:
+    dumpcreation:
+      createDumpOnDisk: false
+      overrideDumpOnDisk: false
+    bloomfiltercreation:
+      createDatasetsBloomFilter: false
+      createDatasourceBloomFilter: false
+      overrideCreatedBloomFilter: false
+    calculateUniqPerDataSource:
+      bloomFilterSize: 500000
+      bloomFilterFpp: 0.000001
+      tmpDir: tmp
+      dataSources:
+        sparqles: false
+        lov: true
+        dbpedia: false
+        lodlaundromat: false
+        lodcloud: false
+        re3: false
+        ckanrepositories: false
+        linghib: false
+        lodstats: false
+    processstatisticaldata: true
+      
+logging:
+  level:
+    org.aksw.idol.parsers: debug  
+#    org.springframework: debug    

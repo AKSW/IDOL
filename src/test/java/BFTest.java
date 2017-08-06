@@ -18,6 +18,7 @@ import org.aksw.idol.plugins.intersection.LODVaderIntersectionPlugin;
 import org.aksw.idol.plugins.intersection.subset.SubsetDetectionService;
 import org.aksw.idol.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
 import org.aksw.idol.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
+import org.aksw.idol.services.StatementService;
 import org.aksw.idol.services.mongodb.BucketService;
 import org.aksw.idol.streaming.IDOLFileStream;
 import org.aksw.idol.streaming.IDOLStreamInterface;
@@ -25,7 +26,6 @@ import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
 import org.aksw.idol.tupleManager.processors.SaveDumpDataProcessor;
 import org.aksw.idol.utils.NSUtils;
-import org.aksw.idol.utils.StatementUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -55,7 +55,7 @@ public class BFTest {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 
-		StatementUtils stmtUtils = new StatementUtils();
+		StatementService stmtUtils = new StatementService();
 		DistributionDB distribution1 = InstancesFactoryTest.createDistribution();
 		DistributionDB distribution2 = InstancesFactoryTest.createDistribution();
 

@@ -51,7 +51,7 @@ public class LODCloudParser extends MetadataParser {
 	final static Logger logger = LoggerFactory.getLogger(LODCloudParser.class);
 
 
-	String repositoryAddress = "http://data.dws.informatik.uni-mannheim.de/lodcloud/2014/ISWC-RDB/datacatalog_metadata.tar.gz";
+	String repositoryAddress;
 
 	/**
 	 * Constructor for Class LodCloudParser
@@ -59,13 +59,6 @@ public class LODCloudParser extends MetadataParser {
 	public LODCloudParser(String dumpAddress) {
 		super("LOD_CLOUD_PARSER");
 		this.repositoryAddress = dumpAddress;
-	}
-
-	/**
-	 * Constructor for Class LodCloudParser
-	 */
-	public LODCloudParser() {
-		super("LOD_CLOUD_PARSER");
 	}
 
 	/**

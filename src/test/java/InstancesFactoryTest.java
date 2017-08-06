@@ -2,7 +2,7 @@ import java.net.MalformedURLException;
 
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.DistributionDB.DistributionStatus;
-import org.aksw.idol.utils.StatementUtils;
+import org.aksw.idol.services.StatementService;
 import org.bson.types.ObjectId;
 import org.openrdf.model.Statement;
 

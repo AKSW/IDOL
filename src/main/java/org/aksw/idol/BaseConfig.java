@@ -14,7 +14,7 @@ public class BaseConfig {
 	
 	@Bean
 	public Manager getManager(){
-		return new Manager(getProperties());
+		return new Manager();
 	}
 	
 	@Bean
@@ -22,7 +22,12 @@ public class BaseConfig {
 		return new Properties();
 	}
 	
-	@Profile(value="dryrun")
+//	@Bean
+//	public DatasourcesUniqTriples getDatasourcesUniqTriples() {
+//		return new DatasourcesUniqTriples();
+//	}
+	
+//	@Profile(value="dryrun")
 	@Bean
 	public IDOLFileStream getIDOLFileStream(){
 		return new IDOLFileStream();

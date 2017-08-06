@@ -7,9 +7,9 @@ import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB;
 import org.aksw.idol.mongodb.queries.GeneralQueriesHelper;
+import org.aksw.idol.services.StatementService;
 import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
 import org.aksw.idol.utils.NSUtils;
-import org.aksw.idol.utils.StatementUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -37,7 +37,7 @@ public class NSRelationTest {
 		LODVaderConfigurator s = new LODVaderConfigurator();
 		s.configure();
 
-		StatementUtils stmtUtils = new StatementUtils();
+		StatementService stmtUtils = new StatementService();
 		DistributionDB distribution = InstancesFactoryTest.createDistribution();
 
 		/**

@@ -10,10 +10,13 @@ import java.util.Collection;
 
 import org.aksw.idol.bloomfilters.BloomFilterI;
 import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.file.FileCacheStatement;
 import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
+import org.aksw.idol.properties.CalculateUniqPerDataSourceProperties;
+import org.aksw.idol.properties.Properties;
 import org.aksw.idol.services.mongodb.MetadataParserServices;
 import org.aksw.idol.streaming.LODVStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
@@ -22,31 +25,48 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Ciro Baron Neto
  * 
  *         Nov 19, 2016
  */
+@Component
 public class DatasourcesUniqTriples {
-
+	
 	final static Logger logger = LoggerFactory.getLogger(DatasourcesUniqTriples.class);
 
 	MetadataParser parser = null;
 
-	int bfSize = 990_000_000; 
-
-	long limit = 990_000_000;
-
+	long bfSize;
+	
+	long limit;
+	
+	double bfFpp;
+	
+	String tmpFolder;
+	
+	@Autowired
+	public DatasourcesUniqTriples(Properties properties, FileCacheStatement fileStatement1, FileCacheStatement fileStatement2) {
+		this.bfSize = properties.getIdolproperties().getTasks().getCalculateUniqPerDataSource().getBloomFilterSize();
+		this.limit = properties.getIdolproperties().getTasks().getCalculateUniqPerDataSource().getBloomFilterSize();
+		this.bfFpp = properties.getIdolproperties().getTasks().getCalculateUniqPerDataSource().getBloomFilterFpp();
+		this.tmpFolder = properties.getIdolproperties().getTasks().getCalculateUniqPerDataSource().getTmpDir();
+		this.fileStatement1 = fileStatement1;
+		this.fileStatement2 = fileStatement2;
+	}
+	
+	
 	boolean keepProcessing = false;
 
-	String fileName = null;
+	String fileName = "uniqExccess";
+	
+	FileCacheStatement fileStatement1;
+	
+	FileCacheStatement fileStatement2;
 
-	FileStatementCustom fileStatement1 = null;
-
-	FileStatementCustom fileStatement2 = null;
-
-	// BloomFilterCache bf = new BloomFilterCache(bfSize, 0.000_001);
 	BloomFilterI bf = BloomFilterFactory.newBloomFilter();
 
 	long uniq = 0;
@@ -63,21 +83,24 @@ public class DatasourcesUniqTriples {
 
 	DecimalFormat formatter = new DecimalFormat("#,###,###,###,###");
 
-	/**
-	 * Constructor for Class DatasourcesUniqTriples
-	 */
-	public DatasourcesUniqTriples(MetadataParser parser) {
+	public void setup(MetadataParser parser) {
 		this.parser = parser;
 
-		bf.create(bfSize, 0.000_001);
-		fileName = "uniqExccess";
+		bf.create(bfSize, bfFpp);
+		
+		deleteTmpFileIfExist();
 
-		new File(LODVaderProperties.TMP_FOLDER, fileName + 1).delete();
-		new File(LODVaderProperties.TMP_FOLDER, fileName + 2).delete();
+		try {
+			fileStatement1.openWriter();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		fileStatement1 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 1);
-		fileStatement2 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 2);
-
+		try {
+			countLoadingFromInternet();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	class CountProcessor implements BasicProcessorInterface {
@@ -93,7 +116,7 @@ public class DatasourcesUniqTriples {
 
 	}
 
-	public void countLoadingFromInternet() {
+	public void countLoadingFromInternet() throws IOException {
 
 		logger.info("Counting uniq triples (streaming from the internet) for parser: " + parser.getParserName());
 
@@ -105,109 +128,66 @@ public class DatasourcesUniqTriples {
 
 		logger.info("Streaming " + distributions.size() + " distributions");
 
+		int c = 0;
+		
 		for (DistributionDB d : distributions) {
+			if(c<15)
 			try {
+				c++;
 				stream.streamAndParse(d.getDownloadUrl(), d.getFormat());
 
 			} catch (RDFParseException | RDFHandlerException | IOException e) {
 				e.printStackTrace();
 			}
 		}
+				
+		// after finishing reading all triples, close the cache file
+		fileStatement1.closeWriter();
+		countFromFile();
+	}
+	
+	public void countFromFile() throws IOException  {
+
 		while (keepProcessing) {
+			
 			logger.info("" );
 			logger.info("Reading file: " + LODVaderProperties.TMP_FOLDER + fileName + 1);
 			logger.info("Triples on file: " + formatter.format(triplesInFile));
 			logger.info("" );
-			// bf = new BloomFilterCache(bfSize, 0.000_01);
+			
 			bf = BloomFilterFactory.newBloomFilter();
-			bf.create(bfSize, 0.000_001);
+			bf.create(bfSize, bfFpp);
 			triplesInFile = 0;
 			uniq = 0;
 			total = 0;
-			fileStatement1.close();
+			
+			fileStatement2.createNewFile();
+			fileStatement2.openWriter();
+
+			fileStatement1.openReader();
+			
 			while (fileStatement1.hasNext()) {
 				processStatement(fileStatement1.getStatement(), fileStatement2);
 				total++;
 			}
-			fileStatement2.close();
-			fileStatement1.close();
-
-			new File(LODVaderProperties.TMP_FOLDER + fileName + 2)
-					.renameTo(new File(LODVaderProperties.TMP_FOLDER + fileName + 1));
-			fileStatement2.clear();
-
-			fileStatement2 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 2);
-
+			fileStatement2.closeWriter();
+			
+			fileStatement1.removeFile();
+			fileStatement1.fileName = fileStatement2.fileName;
 		}
 
 		updateCounter(totalUniq, totalTriples);
 
-		fileStatement1.close();
+		fileStatement1.removeFile();
 
 		logger.info("uniq " + totalUniq);
 		logger.info("triples " + totalTriples);
-
-		new File(LODVaderProperties.TMP_FOLDER, fileName + 1).delete();
-		new File(LODVaderProperties.TMP_FOLDER, fileName + 2).delete();
+		
 
 	}
 
-	public void countLoadingFile() {
 
-		logger.info("Counting uniq triples for parser: " + parser.getParserName());
-
-		for (FileStatementCustom f : new MetadataParserServices().getFilesFromParser(parser.getParserName())) {
-			try {
-				while (f.hasNext()) {
-					processStatement(f.getStatement(), fileStatement1);
-					totalTriples++;
-					if (totalTriples % msgInterval == 0) {
-						logger.info(formatter.format(totalTriples) + " statements processed (" + uniq + " unique).");
-					}
-				}
-				f.close();
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-			}
-		}
-
-		while (keepProcessing) {
-			logger.info("Reading file: " + LODVaderProperties.TMP_FOLDER + fileName + 1);
-			logger.info("Triples on file: " + formatter.format(triplesInFile));
-			// bf = new BloomFilterCache(bfSize, 0.000_01);
-			bf = BloomFilterFactory.newBloomFilter();
-			bf.create(bfSize, 0.000_001);
-			triplesInFile = 0;
-			uniq = 0;
-			total = 0;
-			fileStatement1.close();
-			while (fileStatement1.hasNext()) {
-				processStatement(fileStatement1.getStatement(), fileStatement2);
-				total++;
-			}
-			fileStatement2.close();
-			fileStatement1.close();
-
-			new File(LODVaderProperties.TMP_FOLDER + fileName + 2)
-					.renameTo(new File(LODVaderProperties.TMP_FOLDER + fileName + 1));
-			fileStatement2.clear();
-
-			fileStatement2 = new FileStatementCustom(LODVaderProperties.TMP_FOLDER, fileName + 2);
-
-		}
-
-		updateCounter(totalUniq, totalTriples);
-
-		fileStatement1.close();
-
-		logger.info("uniq " + totalUniq);
-		logger.info("triples " + totalTriples);
-
-		new File(LODVaderProperties.TMP_FOLDER, fileName + 1).delete();
-		new File(LODVaderProperties.TMP_FOLDER, fileName + 2).delete();
-	}
-
-	private void processStatement(Statement s, FileStatementCustom fileStatement) {
+	private void processStatement(Statement s, FileCacheStatement fileStatement) {
 		String triple = s.getSubject().stringValue() + " " + s.getPredicate().stringValue() + " "
 				+ s.getObject().stringValue();
 		if (!bf.compare(triple)) {
@@ -215,7 +195,7 @@ public class DatasourcesUniqTriples {
 				fileStatement.writeStatement(s);
 				triplesInFile++;
 				if (triplesInFile % msgInterval == 0) {
-					logger.info(triplesInFile + " statements saved into file!!!!!!!!!!!!");
+					logger.info(triplesInFile + " statements saved into file!");
 				}
 				keepProcessing = true;
 			} else {
@@ -230,6 +210,11 @@ public class DatasourcesUniqTriples {
 	public void updateCounter(long uniq, long total) {
 		MetadataParserServices services = new MetadataParserServices();
 		services.updateTriples(parser, uniq, total);
+	}
+	
+	private void deleteTmpFileIfExist() {
+		new File(LODVaderProperties.TMP_FOLDER, fileName + 1).delete();
+		new File(LODVaderProperties.TMP_FOLDER, fileName + 2).delete();
 	}
 
 }

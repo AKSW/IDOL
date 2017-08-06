@@ -22,8 +22,8 @@ public class Fix {
 
 	public void fix1() {
 		MetadataParserServices service = new MetadataParserServices();
-		service.saveParser(new LODCloudParser());
-		service.saveParser(new LOVParser());
+		service.saveParser(new LODCloudParser(null));
+		service.saveParser(new LOVParser(null));
 		service.saveParser(new DataIDParser(null));
 		service.saveParser(new RE3RepositoriesParser(null, 0));
 		service.saveParser(new CLODParser(null, null));
