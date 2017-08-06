@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.comparator.ComparatorI;
 import org.aksw.idol.mongodb.collections.datasetBF.BucketDB;
 import org.aksw.idol.plugins.intersection.subset.distribution.SubsetDetectorBFIntersectImpl;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class CachedBucketService  {
 	public void clear(){
 		bfCache = null;
 	}
-	public HashMap<String, BloomFilterI> loadBucketIntoCache(Collection<String> distributions) {
+	public HashMap<String, ComparatorI> loadBucketIntoCache(Collection<String> distributions) {
 
 		// make all threads hold on for their time
 		Object lock = new Object();
@@ -88,7 +88,7 @@ public class CachedBucketService  {
 		}
 
 		// make query
-		HashMap<String, List<BloomFilterI>> queryResult = new BucketService()
+		HashMap<String, List<ComparatorI>> queryResult = new BucketService()
 				.getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionsQuery);
 		
 		logger.info(queryResult.size()+ " filter loaded from database. Total in cache: "+bfCache.size());
@@ -116,7 +116,7 @@ public class CachedBucketService  {
 		}
 		
 		// return the required filters
-		HashMap<String, BloomFilterI> r = new HashMap<>();
+		HashMap<String, ComparatorI> r = new HashMap<>();
 		for(String s : distributions){
 			r.put(s, bfCache.get(s).bf);
 			 bfCache.get(s).ttl++;
@@ -143,7 +143,7 @@ public class CachedBucketService  {
 	class BFCache {
 		int ttl = 10;
 		String distributionId;
-		BloomFilterI bf;
+		ComparatorI bf;
 	}
 
 }

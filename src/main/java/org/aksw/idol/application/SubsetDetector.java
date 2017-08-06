@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.comparator.ComparatorI;
 import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
@@ -114,7 +114,7 @@ public class SubsetDetector extends LODVaderIntersectionPlugin implements Runnab
 		 */
 		CachedBucketService bucketService = new CachedBucketService(
 				org.aksw.idol.mongodb.collections.datasetBF.BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES);
-		HashMap<String, BloomFilterI> filters = bucketService
+		HashMap<String, ComparatorI> filters = bucketService
 				.loadBucketIntoCache(targetDistributionsNamespaces.keySet());
 		logger.info(filters.size() + " filters lodaded. ");
 
@@ -138,7 +138,7 @@ public class SubsetDetector extends LODVaderIntersectionPlugin implements Runnab
 		 * Create a map of extractors
 		 */
 		for (String distribution : targetDistributionsNamespaces.keySet()) {
-			BloomFilterI bf = filters.get(distribution);
+			ComparatorI bf = filters.get(distribution);
 			SubsetExtractor extractor = new SubsetExtractor(bf);
 			extractorSet.put(distribution, extractor);
 		}
@@ -241,7 +241,7 @@ public class SubsetDetector extends LODVaderIntersectionPlugin implements Runnab
 	class SubsetExtractor implements Runnable {
 
 		HashSet<String> resources = new HashSet<>();
-		BloomFilterI bf;
+		ComparatorI bf;
 		long r = 0;
 
 		public long extractedCounter() {
@@ -252,7 +252,7 @@ public class SubsetDetector extends LODVaderIntersectionPlugin implements Runnab
 			resources.add(resource);
 		}
 
-		public SubsetExtractor(BloomFilterI bf) {
+		public SubsetExtractor(ComparatorI bf) {
 			super();
 			this.bf = bf;
 		}

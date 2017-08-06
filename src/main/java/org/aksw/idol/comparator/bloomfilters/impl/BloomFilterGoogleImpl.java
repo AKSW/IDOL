@@ -1,11 +1,11 @@
-package org.aksw.idol.bloomfilters.impl;
+package org.aksw.idol.comparator.bloomfilters.impl;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.comparator.ComparatorI;
 
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnel;
@@ -18,7 +18,7 @@ import com.google.common.hash.Funnels;
  * 
  *         Jul 4, 2014
  */
-class BloomFilterGoogleImpl implements BloomFilterI {
+class BloomFilterGoogleImpl implements ComparatorI {
 
 	// final static Logger logger =
 	// LoggerFactory.getLogger(GoogleBloomFilter.class);
@@ -126,7 +126,7 @@ class BloomFilterGoogleImpl implements BloomFilterI {
 	 * BloomFilterI)
 	 */
 	@Override
-	public Double intersection(BloomFilterI toIntersectWith) {
+	public Double intersection(ComparatorI toIntersectWith) {
 		return null;
 	}
 

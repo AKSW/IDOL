@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.comparator.ComparatorI;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
 import org.aksw.idol.mongodb.collections.datasetBF.BucketDB;
@@ -35,17 +35,17 @@ public class LinksetDetectorBFImpl extends LODVaderIntersectionPlugin{
 		super(PLUGIN_NAME);
 	}
 
-	private HashMap<String, List<BloomFilterI>> getBucketFromDatasets(List<String> distributions) {
+	private HashMap<String, List<ComparatorI>> getBucketFromDatasets(List<String> distributions) {
 
 		return new BucketService().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_SUBJECTS, distributions);
 
 	}
 	
-	private List<BloomFilterI> getBucketFromMainDistribution(String distribution) {
+	private List<ComparatorI> getBucketFromMainDistribution(String distribution) {
 
 		List<String> list = new ArrayList<String>();
 		list.add(distribution);
-		HashMap<String, List<BloomFilterI>> filters = new BucketService().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_OBJECTS, list);
+		HashMap<String, List<ComparatorI>> filters = new BucketService().getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_OBJECTS, list);
  		if(filters.size()>0){
  			return filters.values().iterator().next();
  		}
@@ -62,10 +62,10 @@ public class LinksetDetectorBFImpl extends LODVaderIntersectionPlugin{
 		HashMap<String, Double> returnMap = new HashMap<String, Double>();
 		
 		// load the buckets of the source and the target distriution
-		HashMap<String, List<BloomFilterI>> distributionsBF = getBucketFromDatasets(targetDistributionsIDs);
+		HashMap<String, List<ComparatorI>> distributionsBF = getBucketFromDatasets(targetDistributionsIDs);
 		
 		// get BF from the source distribution
-		List<BloomFilterI> mainDistributionBFs = getBucketFromMainDistribution(sourceDistribution.getID());
+		List<ComparatorI> mainDistributionBFs = getBucketFromMainDistribution(sourceDistribution.getID());
 
 		// compare all bfs
 		if(mainDistributionBFs != null)
@@ -74,9 +74,9 @@ public class LinksetDetectorBFImpl extends LODVaderIntersectionPlugin{
 			double commonTriples = 0.0;
 
 			// iterate over all BF from the main distribution
-			for (BloomFilterI mainBF : mainDistributionBFs) {
+			for (ComparatorI mainBF : mainDistributionBFs) {
 
-				for (BloomFilterI partialBF : distributionsBF.get(targetDistribution)) {
+				for (ComparatorI partialBF : distributionsBF.get(targetDistribution)) {
 					commonTriples = commonTriples + mainBF.intersection(partialBF);
 				}
 			}

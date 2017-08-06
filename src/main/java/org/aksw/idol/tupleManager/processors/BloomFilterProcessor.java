@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
-import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.comparator.ComparatorI;
+import org.aksw.idol.comparator.bloomfilters.impl.ComparatorFactory;
 import org.aksw.idol.file.FileLazyHandler;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
@@ -119,7 +119,7 @@ public class BloomFilterProcessor implements BasicProcessorInterface {
 		/**
 		 * Creating a bloom filter
 		 */
-		BloomFilterI bloomFilter = BloomFilterFactory.newBloomFilter();
+		ComparatorI bloomFilter = ComparatorFactory.newComparator();
 		bloomFilter.create(list.size(), 0.000_01);
 
 		String line;

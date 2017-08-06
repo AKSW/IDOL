@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.idol.bloomfilters;
+package org.aksw.idol.comparator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import java.io.OutputStream;
  * 
  *         Jul 3, 2014
  */
-public interface BloomFilterI {
+public interface ComparatorI {
 
 	/**
 	 * Creates a bloom filter based on the number of expected insertions and
@@ -83,7 +83,7 @@ public interface BloomFilterI {
 	 * @param toIntersectWith bloom filter to make intersection with
 	 * @return the approximate number of common elements. 
 	 */
-	public Double intersection(BloomFilterI toIntersectWith);
+	public Double intersection(ComparatorI toIntersectWith);
 	
 	
 	/**

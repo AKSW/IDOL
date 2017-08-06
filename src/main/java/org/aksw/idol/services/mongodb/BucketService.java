@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
-import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.comparator.ComparatorI;
+import org.aksw.idol.comparator.bloomfilters.impl.ComparatorFactory;
 import org.aksw.idol.mongodb.DBSuperClass;
 import org.aksw.idol.mongodb.collections.datasetBF.BucketDB;
 
@@ -41,12 +41,12 @@ public class BucketService {
 	 * @return a hashmap where the key if the distributionID and the values are
 	 *         bloom filters
 	 */
-	public HashMap<String, List<BloomFilterI>> getDistributionFilters(BucketDB.COLLECTIONS collection,
+	public HashMap<String, List<ComparatorI>> getDistributionFilters(BucketDB.COLLECTIONS collection,
 			Collection<String> distributionsIDs) {
 
 		// get all distributions within the dataset
 
-		HashMap<String, List<BloomFilterI>> buckets = new HashMap<String, List<BloomFilterI>>();
+		HashMap<String, List<ComparatorI>> buckets = new HashMap<String, List<ComparatorI>>();
 
 		// get collection
 		GridFS gfs = new GridFS(DBSuperClass.getDBInstance(), collection.toString());
@@ -59,7 +59,7 @@ public class BucketService {
 		List<GridFSDBFile> bucketsDB = gfs.find(distributions);
 
 		for (GridFSDBFile f : bucketsDB) {
-			BloomFilterI filter = BloomFilterFactory.newBloomFilter();
+			ComparatorI filter = ComparatorFactory.newComparator();
 			try {
 				filter.readFrom(f.getInputStream());
 			} catch (IOException e) {
@@ -67,7 +67,7 @@ public class BucketService {
 			}
 
 			if (buckets.get(f.get(BucketDB.DISTRIBUTION_ID).toString()) == null) {
-				List<BloomFilterI> list = new ArrayList<>();
+				List<ComparatorI> list = new ArrayList<>();
 				list.add(filter);
 				buckets.put(f.get(BucketDB.DISTRIBUTION_ID).toString(), list);
 			} else {
@@ -138,9 +138,9 @@ public class BucketService {
 		List<GridFSDBFile> gridFSObjects = gfs.find(new BasicDBObject(BucketDB.DISTRIBUTION_ID, distributionID));
 		if (gridFSObjects.size() > 0) {
 			GridFSDBFile gridFSObject = gridFSObjects.iterator().next();
-			BloomFilterI filter = null;
+			ComparatorI filter = null;
 			if (loadBF) {
-				filter = BloomFilterFactory.newBloomFilter();
+				filter = ComparatorFactory.newComparator();
 				try {
 					filter.readFrom(gridFSObject.getInputStream());
 				} catch (IOException e) {

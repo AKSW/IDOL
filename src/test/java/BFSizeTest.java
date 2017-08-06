@@ -3,8 +3,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
-import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.comparator.ComparatorI;
+import org.aksw.idol.comparator.bloomfilters.impl.ComparatorFactory;
 import org.aksw.idol.utils.Timer;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class BFSizeTest {
 	// time 1063
 	@Test
 	public void bfSizeTest(){
-		BloomFilterI bf = BloomFilterFactory.newBloomFilter();
+		ComparatorI bf = ComparatorFactory.newComparator();
 		DecimalFormat formatter = new DecimalFormat("#,###,###,###,###,###");
 		bf.create(92_000_000, 0.00001);
 		

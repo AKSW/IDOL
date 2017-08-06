@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.comparator.ComparatorI;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB.COLLECTIONS;
 import org.aksw.idol.mongodb.collections.datasetBF.BucketDB;
@@ -27,7 +27,7 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin {
 
 	public static String PLUGIN_NAME = "SUBSET_BLOOM_FILTER_DETECTOR";
 
-	public static HashMap<String, List<BloomFilterI>> bfCache = new HashMap<>();
+	public static HashMap<String, List<ComparatorI>> bfCache = new HashMap<>();
 
 	public static AtomicBoolean loading = new AtomicBoolean(false);
 
@@ -42,7 +42,7 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin {
 		super(PLUGIN_NAME);
 	}
 
-	public HashMap<String, List<BloomFilterI>>  loadBucketIntoCache(List<String> distributions) {
+	public HashMap<String, List<ComparatorI>>  loadBucketIntoCache(List<String> distributions) {
 
 		// make all threads hold on for their time
 		Object lock = new Object();
@@ -73,7 +73,7 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin {
 		}
 
 		// make query
-		HashMap<String, List<BloomFilterI>> queryResult = new BucketService()
+		HashMap<String, List<ComparatorI>> queryResult = new BucketService()
 				.getDistributionFilters(BucketDB.COLLECTIONS.BLOOM_FILTER_TRIPLES, distributionsQuery);
 
 		// update cache list
@@ -112,10 +112,10 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin {
 
 		// load the buckets of the source and the target distriution
 //		HashMap<String, List<BloomFilterI>> distributionsBF = getBucketFromDatasets(targetDistributionsIDs);
-		HashMap<String, List<BloomFilterI>> distributionsBF = loadBucketIntoCache(targetDistributionsIDs);
+		HashMap<String, List<ComparatorI>> distributionsBF = loadBucketIntoCache(targetDistributionsIDs);
 
 		// get BF from the source distribution
-		List<BloomFilterI> mainDistributionBFs = distributionsBF.get(sourceDistribution.getID());
+		List<ComparatorI> mainDistributionBFs = distributionsBF.get(sourceDistribution.getID());
 
 		// compare all bfs
 		for (String targetDistribution : targetDistributionsIDs) {
@@ -124,9 +124,9 @@ public class SubsetDetectorBFImpl extends LODVaderIntersectionPlugin {
 				double commonTriples = 0.0;
 
 				// iterate over all BF from the main distribution
-				for (BloomFilterI mainBF : mainDistributionBFs) {
+				for (ComparatorI mainBF : mainDistributionBFs) {
 
-					for (BloomFilterI partialBF : distributionsBF.get(targetDistribution)) {
+					for (ComparatorI partialBF : distributionsBF.get(targetDistribution)) {
 						commonTriples = commonTriples + mainBF.intersection(partialBF);
 					}
 				}

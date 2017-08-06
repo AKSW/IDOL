@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
-import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.comparator.ComparatorI;
+import org.aksw.idol.comparator.bloomfilters.impl.ComparatorFactory;
 import org.aksw.idol.mongodb.DBSuperClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class BucketDB {
 
 	private double fpp;
 
-	BloomFilterI bloomFilter;
+	ComparatorI bloomFilter;
 	
 	long bfByteSize;
 	
@@ -66,7 +66,7 @@ public class BucketDB {
 	}
 	
 	
-	public BucketDB(COLLECTIONS collection, BloomFilterI bf, String distributionID, int bfSequenceNr, String first, String last) {
+	public BucketDB(COLLECTIONS collection, ComparatorI bf, String distributionID, int bfSequenceNr, String first, String last) {
 		this.COLLECTION = collection;
 		setBloomFilter(bf);
 		setDistributionID(distributionID);
@@ -111,14 +111,14 @@ public class BucketDB {
 	 * @param bloomFilter 
 	 * Set the bloomFilter value.
 	 */
-	public void setBloomFilter(BloomFilterI bloomFilter) {
+	public void setBloomFilter(ComparatorI bloomFilter) {
 		this.bloomFilter = bloomFilter;
 	}
 	
 	/**
 	 * @return the bloomFilter
 	 */
-	public BloomFilterI getBloomFilter() {
+	public ComparatorI getBloomFilter() {
 		return bloomFilter;
 	}
 	

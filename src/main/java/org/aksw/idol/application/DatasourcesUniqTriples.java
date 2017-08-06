@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Collection;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
-import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.comparator.ComparatorI;
+import org.aksw.idol.comparator.bloomfilters.impl.ComparatorFactory;
 import org.aksw.idol.file.FileCacheStatement;
 import org.aksw.idol.file.FileStatementCustom;
 import org.aksw.idol.loader.LODVaderProperties;
@@ -67,7 +67,7 @@ public class DatasourcesUniqTriples {
 	
 	FileCacheStatement fileStatement2;
 
-	BloomFilterI bf = BloomFilterFactory.newBloomFilter();
+	ComparatorI comparator = ComparatorFactory.newComparator();
 
 	long uniq = 0;
 
@@ -86,7 +86,7 @@ public class DatasourcesUniqTriples {
 	public void setup(MetadataParser parser) {
 		this.parser = parser;
 
-		bf.create(bfSize, bfFpp);
+		comparator.create(bfSize, bfFpp);
 		
 		deleteTmpFileIfExist();
 
@@ -131,7 +131,7 @@ public class DatasourcesUniqTriples {
 		int c = 0;
 		
 		for (DistributionDB d : distributions) {
-			if(c<15)
+			if(c<150000)
 			try {
 				c++;
 				stream.streamAndParse(d.getDownloadUrl(), d.getFormat());
@@ -139,6 +139,7 @@ public class DatasourcesUniqTriples {
 			} catch (RDFParseException | RDFHandlerException | IOException e) {
 				e.printStackTrace();
 			}
+			logger.info("Comparator size: "+ comparator.getNumberOfElements());
 		}
 				
 		// after finishing reading all triples, close the cache file
@@ -155,8 +156,8 @@ public class DatasourcesUniqTriples {
 			logger.info("Triples on file: " + formatter.format(triplesInFile));
 			logger.info("" );
 			
-			bf = BloomFilterFactory.newBloomFilter();
-			bf.create(bfSize, bfFpp);
+			comparator = ComparatorFactory.newComparator();
+			comparator.create(bfSize, bfFpp);
 			triplesInFile = 0;
 			uniq = 0;
 			total = 0;
@@ -190,7 +191,7 @@ public class DatasourcesUniqTriples {
 	private void processStatement(Statement s, FileCacheStatement fileStatement) {
 		String triple = s.getSubject().stringValue() + " " + s.getPredicate().stringValue() + " "
 				+ s.getObject().stringValue();
-		if (!bf.compare(triple)) {
+		if (!comparator.compare(triple)) {
 			if (uniq > limit) {
 				fileStatement.writeStatement(s);
 				triplesInFile++;
@@ -199,7 +200,7 @@ public class DatasourcesUniqTriples {
 				}
 				keepProcessing = true;
 			} else {
-				bf.add(triple);
+				comparator.add(triple);
 				uniq++;
 				keepProcessing = false;
 				totalUniq++;

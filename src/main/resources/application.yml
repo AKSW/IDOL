@@ -37,13 +37,13 @@ idolproperties:
       createDatasourceBloomFilter: false
       overrideCreatedBloomFilter: false
     calculateUniqPerDataSource:
-      bloomFilterSize: 50
+      bloomFilterSize: 1000000000
       bloomFilterFpp: 0.000001
       tmpDir: /tmp/
       dataSources:
         sparqles: false
-        lov: true
-        dbpedia: false
+        lov: false
+        dbpedia: true
         lodlaundromat: false
         lodcloud: false
         re3: false

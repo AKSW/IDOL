@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.idol.bloomfilters.impl;
+package org.aksw.idol.comparator.bloomfilters.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
+import org.aksw.idol.comparator.ComparatorI;
 
 import orestes.bloomfilter.BloomFilter;
 import orestes.bloomfilter.FilterBuilder;
@@ -20,7 +20,7 @@ import orestes.bloomfilter.HashProvider.HashMethod;
  * 
  *         Sep 4, 2016
  */
-public class BloomFilterOrestesImpl implements BloomFilterI {
+public class BloomFilterOrestesImpl implements ComparatorI {
 
 	public BloomFilter<String> bf = null;
 
@@ -157,7 +157,7 @@ public class BloomFilterOrestesImpl implements BloomFilterI {
 	 * @see lodVader.bloomfilters.BloomFilterI#intersection(lodVader.bloomfilters.BloomFilterI)
 	 */
 	@Override
-	public Double intersection(BloomFilterI toIntersectWith) {
+	public Double intersection(ComparatorI toIntersectWith) {
 		
 		BloomFilter<String> newBF = bf.clone();
 		

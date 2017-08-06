@@ -5,8 +5,8 @@ package org.aksw.idol.utils;
 
 import java.util.ArrayList;
 
-import org.aksw.idol.bloomfilters.BloomFilterI;
-import org.aksw.idol.bloomfilters.impl.BloomFilterFactory;
+import org.aksw.idol.comparator.ComparatorI;
+import org.aksw.idol.comparator.bloomfilters.impl.ComparatorFactory;
 import org.aksw.idol.parsers.descriptionFileParser.DescriptionFileParserLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +26,12 @@ public class BloomFilterCache {
 	// default bloom filter fpp
 	private double fpp;
 
-	private ArrayList<BloomFilterI> caches = new ArrayList<BloomFilterI>();
+	private ArrayList<ComparatorI> caches = new ArrayList<ComparatorI>();
 
 	public BloomFilterCache(int initialSize, double bfFpp) {
 		this.initialSize = initialSize;
 		this.fpp = bfFpp;
-		BloomFilterI bf = BloomFilterFactory.newBloomFilter();
+		ComparatorI bf = ComparatorFactory.newComparator();
 		bf.create(initialSize, bfFpp);
 		caches.add(bf);
 		logger.info("New BF created! ");
@@ -45,7 +45,7 @@ public class BloomFilterCache {
 	 * @return true case the query element was found
 	 */
 	public boolean compare(String query) {
-		for (BloomFilterI cache : caches) {
+		for (ComparatorI cache : caches) {
 			if (cache.compare(query)) {
 				return true;
 			}
@@ -61,7 +61,7 @@ public class BloomFilterCache {
 	 */
 	public void add(String resource) {
 		// do not overload the BFs with a value higher than bfSize
-		for (BloomFilterI cache : caches) {
+		for (ComparatorI cache : caches) {
 			if (cache.getNumberOfElements() < initialSize) {
 				cache.add(resource);
 				return;
@@ -71,7 +71,7 @@ public class BloomFilterCache {
 		// case all caches are full, create a new one and add the
 		// list
 		try {
-			BloomFilterI cache = BloomFilterFactory.newBloomFilter();
+			ComparatorI cache = ComparatorFactory.newComparator();
 			cache.create(initialSize, fpp);
 			cache.add(resource);
 			caches.add(cache);
