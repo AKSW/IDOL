@@ -3,9 +3,9 @@ package org.aksw.idol.file;
 import java.io.IOException;
 
 import org.aksw.idol.BaseConfig;
-import org.aksw.idol.application.DatasourcesUniqTriples;
 import org.aksw.idol.properties.Properties;
-import org.aksw.idol.services.StatementService; 
+import org.aksw.idol.services.StatementService;
+import org.aksw.idol.uniq.DatasourcesUniqTriples;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired; 

@@ -42,8 +42,8 @@ idolproperties:
       tmpDir: /tmp/
       dataSources:
         sparqles: false
-        lov: false
-        dbpedia: true
+        lov: true
+        dbpedia: false
         lodlaundromat: false
         lodcloud: false
         re3: false

@@ -46,6 +46,8 @@ import org.aksw.idol.streaming.LODVStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicStatisticalDataProcessor;
 import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
 import org.aksw.idol.tupleManager.processors.SaveDumpDataProcessor;
+import org.aksw.idol.uniq.DatasourcesUniqTriples;
+import org.aksw.idol.uniq.DatasourcesUniqTriplesExternalSort;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +74,11 @@ public class Manager {
 	@Autowired
 	Properties properties;
 	
+//	@Autowired
+//	DatasourcesUniqTriples datasourcesUniqTriples;
+	
 	@Autowired
-	DatasourcesUniqTriples datasourcesUniqTriples;
+	DatasourcesUniqTriplesExternalSort datasourcesUniqTriples;
 
 	/**
 	 * How many operation to run in parallel.

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.aksw.idol.application;
+package org.aksw.idol.uniq;
 
 import java.io.File;
 import java.io.IOException;

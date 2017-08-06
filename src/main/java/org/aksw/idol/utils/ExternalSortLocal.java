@@ -85,7 +85,7 @@ public class ExternalSortLocal {
 		Runtime r = Runtime.getRuntime();
 		long allocatedMemory = r.totalMemory() - r.freeMemory();
 		long presFreeMemory = r.maxMemory() - allocatedMemory;
-		return presFreeMemory/4;
+		return presFreeMemory/2;
 	}
 
 	/**
