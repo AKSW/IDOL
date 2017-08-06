@@ -6,10 +6,12 @@ package org.aksw.idol.uniq;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -83,7 +85,7 @@ public class DatasourcesUniqTriplesExternalSort {
 
 	File file;
 
-	BufferedOutputStream out;
+	BufferedWriter out;
 
 	public void setup(MetadataParser parser) {
 		fileNameWithPath = tmpFolder + "/" + fileName;
@@ -94,7 +96,7 @@ public class DatasourcesUniqTriplesExternalSort {
 		this.parser = parser;
 		file = new File(fileNameWithPath);
 		try {
-			out = new BufferedOutputStream(new FileOutputStream(file));
+			out = new BufferedWriter(new FileWriter(file), 1024*1024);
 			countLoadingFromInternet();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -166,7 +168,7 @@ public class DatasourcesUniqTriplesExternalSort {
 		triple.append("\n");
 
 		try {
-			out.write(triple.toString().getBytes());
+			out.write(triple.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
