@@ -36,6 +36,8 @@ import org.aksw.idol.streaming.LODVStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.aksw.idol.utils.ExternalSortLocal;
 import org.aksw.idol.utils.ExternalSortLocalIDOL;
+import org.anarres.parallelgzip.ParallelGZIPInputStream;
+import org.anarres.parallelgzip.ParallelGZIPOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
@@ -98,7 +100,7 @@ public class DatasourcesUniqTriplesExternalSort {
 		new File(sortedFileNameWithPath).delete();
 		this.parser = parser;
 		try {
-			out = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(new File(fileNameWithPath)),2048));
+			out = new BufferedOutputStream(new ParallelGZIPOutputStream(new FileOutputStream(new File(fileNameWithPath)),2048));
 			countLoadingFromInternet();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -188,7 +190,7 @@ public class DatasourcesUniqTriplesExternalSort {
 	}
 
 	public long countLines(String filename) throws IOException {
-		InputStream is = new BufferedInputStream(new GZIPInputStream(new FileInputStream(filename)));
+		InputStream is = new BufferedInputStream(new ParallelGZIPInputStream(new FileInputStream(filename)));
 		try {
 			byte[] c = new byte[1024];
 			long count = 0;
