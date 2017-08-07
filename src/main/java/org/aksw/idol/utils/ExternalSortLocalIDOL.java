@@ -58,7 +58,7 @@ import com.google.code.externalsorting.StringSizeEstimator;
  */
 public class ExternalSortLocalIDOL {
 
-	static boolean usegzip = false;
+	static boolean usegzip = true;
 
 	static boolean isBz2Inputstream = true;
 
@@ -368,7 +368,7 @@ public class ExternalSortLocalIDOL {
 	 */
 	public static File sortAndSave(List<String> tmplist, Comparator<String> cmp, Charset cs, File tmpdirectory)
 			throws IOException {
-		return sortAndSave(tmplist, cmp, cs, tmpdirectory, false, false, true);
+		return sortAndSave(tmplist, cmp, cs, tmpdirectory, false, true);
 	}
 
 	/**
@@ -394,7 +394,7 @@ public class ExternalSortLocalIDOL {
 	 *             generic IO exception
 	 */
 	public static File sortAndSave(List<String> tmplist, Comparator<String> cmp, Charset cs, File tmpdirectory,
-			boolean distinct, boolean usegzip, boolean parallel) throws IOException {
+			boolean distinct, boolean parallel) throws IOException {
 		if (parallel) {
 			tmplist = tmplist.parallelStream().sorted(cmp).collect(Collectors.toCollection(ArrayList<String>::new));
 		} else {
@@ -532,12 +532,12 @@ public class ExternalSortLocalIDOL {
 						tmplist.add(line);
 						currentblocksize += StringSizeEstimator.estimatedSizeOf(line);
 					}
-					files.add(sortAndSave(tmplist, cmp, cs, tmpdirectory, distinct, usegzip, parallel));
+					files.add(sortAndSave(tmplist, cmp, cs, tmpdirectory, distinct, parallel));
 					tmplist.clear();
 				}
 			} catch (EOFException oef) {
 				if (tmplist.size() > 0) {
-					files.add(sortAndSave(tmplist, cmp, cs, tmpdirectory, distinct, usegzip, parallel));
+					files.add(sortAndSave(tmplist, cmp, cs, tmpdirectory, distinct, parallel));
 					tmplist.clear();
 				}
 			}
