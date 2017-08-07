@@ -699,8 +699,10 @@ public class ExternalSortLocalIDOL {
 	public static List<File> sortInBatch(File file, Comparator<String> cmp, int maxtmpfiles, Charset cs,
 			File tmpdirectory, boolean distinct, int numHeader) throws IOException {
 		BufferedReader fbr;
-		if (isBz2Inputstream)
-			fbr = new BufferedReader(new InputStreamReader((new BZip2CompressorInputStream(new FileInputStream(file))), cs));
+		if (isBz2Inputstream) {
+//			bzip2
+			fbr = new BufferedReader(new InputStreamReader((new GZIPInputStream(new FileInputStream(file))), cs));
+		}
 		else
 			fbr = new BufferedReader(new InputStreamReader(new FileInputStream(file), cs));
 		return sortInBatch(fbr, file.length(), cmp, maxtmpfiles, estimateAvailableMemory(), cs, tmpdirectory, distinct,

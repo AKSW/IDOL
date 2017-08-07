@@ -19,6 +19,8 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.stream.Stream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.aksw.idol.comparator.ComparatorI;
 import org.aksw.idol.comparator.bloomfilters.impl.ComparatorFactory;
@@ -34,7 +36,6 @@ import org.aksw.idol.streaming.LODVStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.aksw.idol.utils.ExternalSortLocal;
 import org.aksw.idol.utils.ExternalSortLocalIDOL;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
@@ -97,7 +98,7 @@ public class DatasourcesUniqTriplesExternalSort {
 		new File(sortedFileNameWithPath).delete();
 		this.parser = parser;
 		try {
-			out = new BufferedOutputStream(new BZip2CompressorOutputStream(new FileOutputStream(new File(fileNameWithPath))));
+			out = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(new File(fileNameWithPath)),2048));
 			countLoadingFromInternet();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -187,7 +188,7 @@ public class DatasourcesUniqTriplesExternalSort {
 	}
 
 	public long countLines(String filename) throws IOException {
-		InputStream is = new BufferedInputStream(new BZip2CompressorInputStream(new FileInputStream(filename)));
+		InputStream is = new BufferedInputStream(new GZIPInputStream(new FileInputStream(filename)));
 		try {
 			byte[] c = new byte[1024];
 			long count = 0;
