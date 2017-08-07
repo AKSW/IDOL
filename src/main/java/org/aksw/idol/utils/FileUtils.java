@@ -140,18 +140,7 @@ public class FileUtils {
 		return fileName;
 	}
 
-	public void sortFile(String file) {
 
-		try {
-			ExternalSortLocal.sort(new File(file), new File(file + ".sorted"));
-			removeFile(file);
-			Files.move(Paths.get(file + ".sorted"), Paths.get(file));
-
-			logger.info("File " + file + " sorted.");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public void removeFile(String file) {
 		new File(file).delete();

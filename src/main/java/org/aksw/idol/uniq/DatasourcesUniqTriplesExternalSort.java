@@ -33,6 +33,9 @@ import org.aksw.idol.services.mongodb.MetadataParserServices;
 import org.aksw.idol.streaming.LODVStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.aksw.idol.utils.ExternalSortLocal;
+import org.aksw.idol.utils.ExternalSortLocalIDOL;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -83,9 +86,8 @@ public class DatasourcesUniqTriplesExternalSort {
 
 	DecimalFormat formatter = new DecimalFormat("#,###,###,###,###");
 
-	File file;
-
-	BufferedWriter out;
+	BufferedOutputStream out;
+	
 
 	public void setup(MetadataParser parser) {
 		fileNameWithPath = tmpFolder + "/" + fileName;
@@ -94,9 +96,8 @@ public class DatasourcesUniqTriplesExternalSort {
 		new File(fileNameWithPath).delete();
 		new File(sortedFileNameWithPath).delete();
 		this.parser = parser;
-		file = new File(fileNameWithPath);
 		try {
-			out = new BufferedWriter(new FileWriter(file), 1024*1024);
+			out = new BufferedOutputStream(new BZip2CompressorOutputStream(new FileOutputStream(new File(fileNameWithPath))));
 			countLoadingFromInternet();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -150,8 +151,10 @@ public class DatasourcesUniqTriplesExternalSort {
 
 		// sort!
 
-		ExternalSortLocal.sort(new File(fileNameWithPath), new File(sortedFileNameWithPath));
+		ExternalSortLocalIDOL.sort(new File(fileNameWithPath), new File(sortedFileNameWithPath));
 
+		
+		
 		totalUniq = uniqLines(sortedFileNameWithPath);
 
 		updateCounter(totalUniq, totalTriples);
@@ -168,7 +171,7 @@ public class DatasourcesUniqTriplesExternalSort {
 		triple.append("\n");
 
 		try {
-			out.write(triple.toString());
+			out.write(triple.toString().getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -184,7 +187,7 @@ public class DatasourcesUniqTriplesExternalSort {
 	}
 
 	public long countLines(String filename) throws IOException {
-		InputStream is = new BufferedInputStream(new FileInputStream(filename));
+		InputStream is = new BufferedInputStream(new BZip2CompressorInputStream(new FileInputStream(filename)));
 		try {
 			byte[] c = new byte[1024];
 			long count = 0;
