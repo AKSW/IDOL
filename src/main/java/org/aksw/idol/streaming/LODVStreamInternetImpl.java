@@ -27,6 +27,7 @@ import org.aksw.idol.tupleManager.PipelineProcessor;
 import org.aksw.idol.utils.FormatsUtils;
 import org.aksw.idol.utils.SPARQLUtils;
 import org.aksw.idol.utils.URLUtils;
+import org.anarres.parallelgzip.ParallelGZIPInputStream;
 import org.aksw.idol.utils.FormatsUtils.COMPRESSION_FORMATS;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -550,10 +551,12 @@ public class LODVStreamInternetImpl implements IDOLStreamInterface {
 		return inputStream;
 	}
 
-	public GzipCompressorInputStream checkGZipInputStream(InputStream stream, COMPRESSION_FORMATS compressionFormat)
+	public ParallelGZIPInputStream checkGZipInputStream(InputStream stream, COMPRESSION_FORMATS compressionFormat)
 			throws IOException {
 		logger.info("File extension is " + compressionFormat + ", creating GzipCompressorInputStream...");
-		GzipCompressorInputStream inputStream = new GzipCompressorInputStream(new BufferedInputStream(stream), true);
+		
+		ParallelGZIPInputStream inputStream = new ParallelGZIPInputStream(new BufferedInputStream(stream));
+//		GzipCompressorInputStream inputStream = new GzipCompressorInputStream(new BufferedInputStream(stream), true);
 
 		if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.TGZ))
 			compressionFormat = FormatsUtils.COMPRESSION_FORMATS.TAR;
