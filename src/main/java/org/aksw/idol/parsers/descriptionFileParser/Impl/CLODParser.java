@@ -39,6 +39,7 @@ public class CLODParser extends MetadataParser {
 	Property formatProp = ResourceFactory.createProperty("http://lodlaundromat.org/ontology/fileExtension");
 
 	String repositoryAddress = "http://download.lodlaundromat.org";
+	String repositoryAddress2 = "";
 
 	String format;
 
@@ -48,7 +49,7 @@ public class CLODParser extends MetadataParser {
 	public CLODParser(String repositoryAddress, String format) {
 		super("CLOD_METADATA_PARSER");
 		this.format = format;
-		this.repositoryAddress = repositoryAddress;
+		this.repositoryAddress2 = repositoryAddress;
 	}
 
 	public void parse() {
@@ -57,11 +58,11 @@ public class CLODParser extends MetadataParser {
 		
 		format = formatsUtils.getJenaFormat(format);
 
-		logger.info("Trying to read dataset: " + repositoryAddress.toString());
+		logger.info("Trying to read dataset: " + repositoryAddress2.toString());
 
 		HttpURLConnection URLConnection;
 		try {
-			URLConnection = (HttpURLConnection) new URL(repositoryAddress).openConnection();
+			URLConnection = (HttpURLConnection) new URL(repositoryAddress2).openConnection();
 			URLConnection.setRequestProperty("Accept", "application/rdf+xml");
 
 			inModel.read(URLConnection.getInputStream(), null, format);
