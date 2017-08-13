@@ -32,7 +32,7 @@ import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
 import org.aksw.idol.properties.CalculateUniqPerDataSourceProperties;
 import org.aksw.idol.properties.Properties;
 import org.aksw.idol.services.mongodb.MetadataParserServices;
-import org.aksw.idol.streaming.LODVStreamInternetImpl;
+import org.aksw.idol.streaming.IDOLStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.aksw.idol.utils.ExternalSortLocal;
 import org.aksw.idol.utils.ExternalSortLocalIDOL;
@@ -124,7 +124,7 @@ public class DatasourcesUniqTriplesExternalSort {
 
 		logger.info("Counting uniq triples (streaming from the internet) for parser: " + parser.getParserName());
 
-		LODVStreamInternetImpl stream = new LODVStreamInternetImpl();
+		IDOLStreamInternetImpl stream = new IDOLStreamInternetImpl();
 		stream.getPipelineProcessor().registerProcessor(new CountProcessor());
 
 		Collection<DistributionDB> distributions = new MetadataParserServices()

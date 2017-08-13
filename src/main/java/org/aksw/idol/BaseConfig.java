@@ -2,7 +2,7 @@ package org.aksw.idol;
 
 import org.aksw.idol.application.Manager;
 import org.aksw.idol.properties.Properties;
-import org.aksw.idol.streaming.IDOLFileStream;
+import org.aksw.idol.streaming.IDOLFileStreamImpl;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class BaseConfig {
 	
 //	@Profile(value="dryrun")
 	@Bean
-	public IDOLFileStream getIDOLFileStream(){
-		return new IDOLFileStream();
+	public IDOLFileStreamImpl getIDOLFileStream(){
+		return new IDOLFileStreamImpl();
 	}
 }

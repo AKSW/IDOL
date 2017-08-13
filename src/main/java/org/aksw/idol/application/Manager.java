@@ -40,9 +40,9 @@ import org.aksw.idol.properties.DataSourcesProperties;
 import org.aksw.idol.properties.IDOLProperties;
 import org.aksw.idol.properties.ParseProperties;
 import org.aksw.idol.properties.Properties;
-import org.aksw.idol.streaming.IDOLFileStream;
+import org.aksw.idol.streaming.IDOLFileStreamImpl;
 import org.aksw.idol.streaming.IDOLStreamInterface;
-import org.aksw.idol.streaming.LODVStreamInternetImpl;
+import org.aksw.idol.streaming.IDOLStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.BasicStatisticalDataProcessor;
 import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
 import org.aksw.idol.tupleManager.processors.SaveDumpDataProcessor;
@@ -73,10 +73,10 @@ public class Manager {
 
 	@Autowired
 	Properties properties;
-	
-//	@Autowired
-//	DatasourcesUniqTriples datasourcesUniqTriples;
-	
+
+	// @Autowired
+	// DatasourcesUniqTriples datasourcesUniqTriples;
+
 	@Autowired
 	DatasourcesUniqTriplesExternalSort datasourcesUniqTriples;
 
@@ -170,7 +170,8 @@ public class Manager {
 	 * Count unique triples per datasource
 	 */
 	public void countUniqPerDatasource() {
-		DataSourcesProperties datasources = properties.getIdolproperties().getTasks().getCalculateUniqPerDataSource().getDataSources();
+		DataSourcesProperties datasources = properties.getIdolproperties().getTasks().getCalculateUniqPerDataSource()
+				.getDataSources();
 
 		if (datasources.isLodlaundromat())
 			datasourcesUniqTriples.setup(new CLODParser(null, null));
@@ -206,7 +207,7 @@ public class Manager {
 		logger.info("Parsing files...");
 
 		DescriptionFileParserLoader loader = new DescriptionFileParserLoader();
-		
+
 		ParseProperties parse = properties.getIdolproperties().getParse();
 
 		/**
@@ -538,98 +539,96 @@ public class Manager {
 			IDOLStreamInterface coreStream = null;
 
 			if (streamFromInternet)
-				coreStream = new LODVStreamInternetImpl();
+				coreStream = new IDOLStreamInternetImpl();
 			else {
-				coreStream = new IDOLFileStream(LODVaderProperties.BASE_PATH + "/raw_files/");
+				coreStream = new IDOLFileStreamImpl(LODVaderProperties.BASE_PATH + "/raw_files/");
+			}
 
-				/**
-				 * Registering statistical data processor
-				 */
-				BasicStatisticalDataProcessor basicStatisticalProcessor = null;
-				if (processStatisticalData) {
-					basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
-					coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
+			/**
+			 * Registering statistical data processor
+			 */
+			BasicStatisticalDataProcessor basicStatisticalProcessor = null;
+			if (processStatisticalData) {
+				basicStatisticalProcessor = new BasicStatisticalDataProcessor(distribution);
+				coreStream.getPipelineProcessor().registerProcessor(basicStatisticalProcessor);
+			}
+
+			/**
+			 * Registering raw data processor if there already is a file named with the same
+			 * id, do not stream again
+			 */
+			SaveDumpDataProcessor saveDumpDataProcessor = null;
+			if (createDumpOnDisk) {
+				if (overrideDumpOnDisk || !new File(LODVaderProperties.RAW_FILE_PATH + distribution.getID()).exists()) {
+					saveDumpDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
+					coreStream.getPipelineProcessor().registerProcessor(saveDumpDataProcessor);
+				} else {
+					logger.info("File: " + LODVaderProperties.RAW_FILE_PATH + distribution.getID()
+							+ " already exists. We are not overriding it.");
 				}
+			}
 
-				/**
-				 * Registering raw data processor if there already is a file named with the same
-				 * id, do not stream again
-				 */
-				SaveDumpDataProcessor saveDumpDataProcessor = null;
-				if (createDumpOnDisk) {
-					if (overrideDumpOnDisk
-							|| !new File(LODVaderProperties.RAW_FILE_PATH + distribution.getID()).exists()) {
-						saveDumpDataProcessor = new SaveDumpDataProcessor(distribution, distribution.getID());
-						coreStream.getPipelineProcessor().registerProcessor(saveDumpDataProcessor);
-					} else {
-						logger.info("File: " + LODVaderProperties.RAW_FILE_PATH + distribution.getID()
-								+ " already exists. We are not overriding it.");
-					}
-				}
+			/**
+			 * Registering bloom filter processor
+			 */
+			BloomFilterProcessor bfProcessor = null;
+			if (createBloomFilter) {
+				bfProcessor = new BloomFilterProcessor(distribution);
+				coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
+			}
 
-				/**
-				 * Registering bloom filter processor
-				 */
-				BloomFilterProcessor bfProcessor = null;
-				if (createBloomFilter) {
-					bfProcessor = new BloomFilterProcessor(distribution);
-					coreStream.getPipelineProcessor().registerProcessor(bfProcessor);
-				}
+			// start processing
+			try {
+				distribution.setStatus(DistributionStatus.STREAMING);
+				distribution.update();
 
-				// start processing
-				try {
-					distribution.setStatus(DistributionStatus.STREAMING);
-					distribution.update();
+				coreStream.startParsing(distribution);
 
-					coreStream.startParsing(distribution);
+				// after finishing processing, finalize the processors (save
+				// data, etc etc).
+				if (processStatisticalData)
+					basicStatisticalProcessor.saveStatisticalData();
 
-					// after finishing processing, finalize the processors (save
-					// data, etc etc).
-					if (processStatisticalData)
-						basicStatisticalProcessor.saveStatisticalData();
+				if (createDumpOnDisk)
+					if (saveDumpDataProcessor != null)
+						saveDumpDataProcessor.closeFile();
 
-					if (createDumpOnDisk)
-						if (saveDumpDataProcessor != null)
-							saveDumpDataProcessor.closeFile();
+				if (createBloomFilter)
+					bfProcessor.saveFilters();
 
-					if (createBloomFilter)
-						bfProcessor.saveFilters();
+				distribution.setStatus(DistributionStatus.DONE);
 
-					distribution.setStatus(DistributionStatus.DONE);
+			} catch (Exception e) {
 
-				} catch (Exception e) {
+				// e.printStackTrace();
 
-					// e.printStackTrace();
+				// case get an exception, finalize the processors (save
+				// data, etc etc).
+				if (createDumpOnDisk)
+					if (saveDumpDataProcessor != null)
+						saveDumpDataProcessor.closeFile();
 
-					// case get an exception, finalize the processors (save
-					// data, etc etc).
-					if (createDumpOnDisk)
-						if (saveDumpDataProcessor != null)
-							saveDumpDataProcessor.closeFile();
+				if (processStatisticalData)
+					basicStatisticalProcessor.saveStatisticalData();
 
-					if (processStatisticalData)
-						basicStatisticalProcessor.saveStatisticalData();
+				if (createBloomFilter)
+					bfProcessor.saveFilters();
 
-					if (createBloomFilter)
-						bfProcessor.saveFilters();
+				distribution.setLastMsg(e.getMessage());
+				distribution.setStatus(DistributionStatus.ERROR);
+				logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "
+						+ distribution.getStatus().toString() + " with error msg '" + distribution.getLastMsg() + "'.");
+			}
 
-					distribution.setLastMsg(e.getMessage());
-					distribution.setStatus(DistributionStatus.ERROR);
-					logger.error("ERROR! Distribution: " + distribution.getDownloadUrl() + " has status "
-							+ distribution.getStatus().toString() + " with error msg '" + distribution.getLastMsg()
-							+ "'.");
-				}
-
-				try {
-					distribution.update();
-				} catch (LODVaderMissingPropertiesException e) {
-					e.printStackTrace();
-
-				}
-
-				logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());
+			try {
+				distribution.update();
+			} catch (LODVaderMissingPropertiesException e) {
+				e.printStackTrace();
 
 			}
+
+			logger.info("Datasets to be processed: " + distributionsBeingProcessed.decrementAndGet());
+
 		}
 
 	}

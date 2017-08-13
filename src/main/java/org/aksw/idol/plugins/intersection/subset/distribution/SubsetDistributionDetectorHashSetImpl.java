@@ -16,7 +16,7 @@ import org.aksw.idol.exceptions.LODVaderLODGeneralException;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.plugins.intersection.LODVaderIntersectionPlugin;
-import org.aksw.idol.streaming.LODVStreamInternetImpl;
+import org.aksw.idol.streaming.IDOLStreamInternetImpl;
 import org.aksw.idol.tupleManager.processors.SaveDumpDataProcessor;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -58,7 +58,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 		HashSet<String> sourceSet = loadSetFromDisk(fileName);
 
 		if (sourceSet == null) {
-			LODVStreamInternetImpl stream = new LODVStreamInternetImpl();
+			IDOLStreamInternetImpl stream = new IDOLStreamInternetImpl();
 
 			SaveDumpDataProcessor processor = new SaveDumpDataProcessor(sourceDistribution, fileName);
 
@@ -83,7 +83,7 @@ public class SubsetDistributionDetectorHashSetImpl extends LODVaderIntersectionP
 			targetDistribution.find(true, DistributionDB.ID, targetDistributionID);
 
 			if (targetSet == null) {
-				LODVStreamInternetImpl stream = new LODVStreamInternetImpl();
+				IDOLStreamInternetImpl stream = new IDOLStreamInternetImpl();
 
 				SaveDumpDataProcessor processor = new SaveDumpDataProcessor(targetDistribution,
 						targetDistributionFileName);

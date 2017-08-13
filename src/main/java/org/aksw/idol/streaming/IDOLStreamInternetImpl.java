@@ -50,9 +50,9 @@ import org.slf4j.LoggerFactory;
 import eu.fbk.rdfpro.tql.TQL;
 import eu.fbk.rdfpro.tql.TQLParserFactory;
 
-public class LODVStreamInternetImpl implements IDOLStreamInterface {
+public class IDOLStreamInternetImpl implements IDOLStreamInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(LODVStreamInternetImpl.class);
+	final static Logger logger = LoggerFactory.getLogger(IDOLStreamInternetImpl.class);
 
 	// HTTP header fields
 	public String httpDisposition = null;
@@ -71,7 +71,7 @@ public class LODVStreamInternetImpl implements IDOLStreamInterface {
 	/**
 	 * Constructor for Class LODVaderCoreStream
 	 */
-	public LODVStreamInternetImpl() {
+	public IDOLStreamInternetImpl() {
 		PipelineProcessor pipelineProcessor = new PipelineProcessor();
 		this.pipelineProcessor = pipelineProcessor;
 	}
@@ -560,7 +560,7 @@ public class LODVStreamInternetImpl implements IDOLStreamInterface {
 
 		if (compressionFormat.equals(FormatsUtils.COMPRESSION_FORMATS.TGZ))
 			compressionFormat = FormatsUtils.COMPRESSION_FORMATS.TAR;
-		logger.info("Done creating GzipCompressorInputStream!");
+		logger.info("Done creating ParallelGZIPInputStream!");
 		return inputStream;
 	}
 

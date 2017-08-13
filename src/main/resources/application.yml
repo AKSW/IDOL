@@ -42,7 +42,7 @@ idolproperties:
       tmpDir: /tmp/
       dataSources:
         sparqles: false
-        lov: true
+        lov: false
         dbpedia: false
         lodlaundromat: false
         lodcloud: false

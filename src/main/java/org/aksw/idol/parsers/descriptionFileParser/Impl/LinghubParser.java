@@ -21,7 +21,7 @@ import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
 import org.aksw.idol.parsers.descriptionFileParser.MetadataParserI;
 import org.aksw.idol.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import org.aksw.idol.parsers.descriptionFileParser.helpers.SubsetHelper;
-import org.aksw.idol.streaming.LODVStreamInternetImpl;
+import org.aksw.idol.streaming.IDOLStreamInternetImpl;
 import org.aksw.idol.utils.FormatsUtils;
 import org.aksw.idol.utils.FormatsUtils.COMPRESSION_FORMATS;
 import org.slf4j.Logger;
@@ -89,7 +89,7 @@ public class LinghubParser extends MetadataParser{
 	@Override
 	public void parse() {
 
-		LODVStreamInternetImpl streamProcessor = new LODVStreamInternetImpl();
+		IDOLStreamInternetImpl streamProcessor = new IDOLStreamInternetImpl();
 		try {
 			streamProcessor.simpleDownload(LODVaderProperties.TMP_FOLDER + "/LingHubFile",
 					new URL(repositoryAddress).openStream());

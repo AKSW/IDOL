@@ -20,7 +20,7 @@ import org.aksw.idol.plugins.intersection.subset.distribution.SubsetDetectorBFIn
 import org.aksw.idol.plugins.intersection.subset.distribution.SubsetDistributionDetectionService;
 import org.aksw.idol.services.StatementService;
 import org.aksw.idol.services.mongodb.BucketService;
-import org.aksw.idol.streaming.IDOLFileStream;
+import org.aksw.idol.streaming.IDOLFileStreamImpl;
 import org.aksw.idol.streaming.IDOLStreamInterface;
 import org.aksw.idol.tupleManager.processors.BasicProcessorInterface;
 import org.aksw.idol.tupleManager.processors.BloomFilterProcessor;
@@ -127,7 +127,7 @@ public class BFTest {
 		rawDataProcessor.closeFile();
 
 		BloomFilterProcessor processor = new BloomFilterProcessor(distribution);
-		IDOLStreamInterface streamer = new IDOLFileStream(LODVaderProperties.RAW_FILE_PATH);
+		IDOLStreamInterface streamer = new IDOLFileStreamImpl(LODVaderProperties.RAW_FILE_PATH);
 
 		streamer.getPipelineProcessor().registerProcessor(processor);
 		try {

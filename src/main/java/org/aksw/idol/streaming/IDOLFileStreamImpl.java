@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
  * 
  *         Nov 13, 2016
  */
-public class IDOLFileStream implements IDOLStreamInterface {
+public class IDOLFileStreamImpl implements IDOLStreamInterface {
 
-	final static Logger logger = LoggerFactory.getLogger(IDOLFileStream.class);
+	final static Logger logger = LoggerFactory.getLogger(IDOLFileStreamImpl.class);
 
 	DistributionDB distribution = null;
 
@@ -31,11 +31,11 @@ public class IDOLFileStream implements IDOLStreamInterface {
 	/**
 	 * Constructor for Class LODVaderRawDataStream
 	 */
-	public IDOLFileStream(String basePath) {
+	public IDOLFileStreamImpl(String basePath) {
 		this.path = basePath;
 	}
 	
-	public IDOLFileStream() {
+	public IDOLFileStreamImpl() {
 	}
 	
 	public void setPath(String path) {

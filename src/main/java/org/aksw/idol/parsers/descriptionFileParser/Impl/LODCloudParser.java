@@ -26,7 +26,7 @@ import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
 import org.aksw.idol.parsers.descriptionFileParser.MetadataParserI;
 import org.aksw.idol.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import org.aksw.idol.parsers.descriptionFileParser.helpers.SubsetHelper;
-import org.aksw.idol.streaming.LODVStreamInternetImpl;
+import org.aksw.idol.streaming.IDOLStreamInternetImpl;
 import org.aksw.idol.utils.FormatsUtils;
 import org.aksw.idol.utils.FormatsUtils.COMPRESSION_FORMATS;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -124,7 +124,7 @@ public class LODCloudParser extends MetadataParser {
 	@Override
 	public void parse() {
 
-		LODVStreamInternetImpl streamProcessor = new LODVStreamInternetImpl();
+		IDOLStreamInternetImpl streamProcessor = new IDOLStreamInternetImpl();
 		try {
 			logger.info("Reading repository: " + repositoryAddress);
 			
