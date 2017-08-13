@@ -63,6 +63,5 @@ spring:
 logging:
   level:
     org.aksw: debug  
-    
-
+   
 #    org.springframework: debug    
