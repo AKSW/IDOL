@@ -52,7 +52,16 @@ idolproperties:
         lodstats: false
     processstatisticaldata: true
       
+server:
+  port: 8081
+  
+spring:
+  jackson:
+    serialization:
+      indent-output: true
+
 logging:
   level:
-    org.aksw.idol.parsers: debug  
+    org.aksw: debug  
+
 #    org.springframework: debug    

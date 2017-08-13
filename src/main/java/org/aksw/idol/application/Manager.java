@@ -52,6 +52,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -65,6 +66,7 @@ import com.mongodb.gridfs.GridFS;
  * 
  *         Oct 1, 2016
  */
+@Async
 public class Manager {
 
 	final static Logger logger = LoggerFactory.getLogger(Manager.class);

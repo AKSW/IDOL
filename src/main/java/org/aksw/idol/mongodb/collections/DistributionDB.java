@@ -386,7 +386,9 @@ public class DistributionDB extends DBSuperClass {
 	}
 
 	public ArrayList<String> getDatasources() {
-		return (ArrayList<String>) getField(DATASOURCE);
+		if (getField(DATASOURCE) != null)
+			return (ArrayList<String>) getField(DATASOURCE);
+		return new ArrayList<String>();
 	}
 
 	public void setDatasource(ArrayList<String> d) {
