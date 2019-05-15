@@ -661,8 +661,8 @@ public class Manager {
 		parseLODCloud = properties.getIdolproperties().getParse().getLodcloud().isStream();
 		parseRE3 = properties.getIdolproperties().getParse().getRe3().isStream();
 		parseCKANRepositories = properties.getIdolproperties().getParse().getCkanrepositories().isStream();
+		parseLodStats = properties.getIdolproperties().getParse().getLodstats().isStream();
 		parseLinghub = properties.getIdolproperties().getParse().getLinghub().isStream();
-		parseLodStats = properties.getIdolproperties().getParse().getLodcloud().isStream();
 	}
 
 }
