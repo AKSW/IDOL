@@ -7,12 +7,10 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 
 import org.aksw.idol.ontology.RDFResourcesTags;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.StmtIterator;
 
 /**
  * @author Ciro Baron Neto

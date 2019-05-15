@@ -54,5 +54,6 @@ idolproperties:
       
 logging:
   level:
-    org.aksw.idol.parsers: debug  
-#    org.springframework: debug    
+    root: DEBUG
+    org.aksw.idol.parsers: DEBUG  
+    org.springframework.web: DEBUG    

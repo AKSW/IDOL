@@ -25,19 +25,18 @@ import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.tupleManager.PipelineProcessor;
 import org.aksw.idol.utils.FormatsUtils;
-import org.aksw.idol.utils.SPARQLUtils;
-import org.aksw.idol.utils.URLUtils;
-import org.anarres.parallelgzip.ParallelGZIPInputStream;
 import org.aksw.idol.utils.FormatsUtils.COMPRESSION_FORMATS;
+import org.aksw.idol.utils.SPARQLUtils;
+import org.anarres.parallelgzip.ParallelGZIPInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.openrdf.rio.ParserConfig;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.helpers.BasicParserSettings;
+import org.openrdf.rio.helpers.NTriplesParserSettings;
 import org.openrdf.rio.jsonld.JSONLDParser;
 import org.openrdf.rio.n3.N3ParserFactory;
 import org.openrdf.rio.nquads.NQuadsParserFactory;
@@ -367,6 +366,7 @@ public class IDOLStreamInternetImpl implements IDOLStreamInterface {
 
 						try {
 							RDFParser rdfParser = getSuitableParser(rdfFormat);
+							rdfParser.getParserConfig().addNonFatalError(NTriplesParserSettings.FAIL_ON_NTRIPLES_INVALID_LINES);
 
 							simpleDownload(LODVaderProperties.TMP_FOLDER + "/" + distribution.getID(), zip);
 							try {
@@ -425,6 +425,7 @@ public class IDOLStreamInternetImpl implements IDOLStreamInterface {
 
 						try {
 							RDFParser rdfParser = getSuitableParser(rdfFormat);
+							rdfParser.getParserConfig().addNonFatalError(NTriplesParserSettings.FAIL_ON_NTRIPLES_INVALID_LINES);
 							rdfParser.parse(new FileInputStream(f), "");
 						} catch (LODVaderFormatNotAcceptedException e) {
 							e.printStackTrace();
@@ -439,6 +440,7 @@ public class IDOLStreamInternetImpl implements IDOLStreamInterface {
 		else {
 			try {
 				RDFParser rdfParser = getSuitableParser(rdfFormat);
+				rdfParser.getParserConfig().addNonFatalError(NTriplesParserSettings.FAIL_ON_NTRIPLES_INVALID_LINES);
 				rdfParser.parse(inputStream, "");
 
 			} catch (LODVaderFormatNotAcceptedException e) {

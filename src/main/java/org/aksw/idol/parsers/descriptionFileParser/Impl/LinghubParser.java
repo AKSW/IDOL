@@ -7,29 +7,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import org.aksw.idol.exceptions.LODVaderLODGeneralException;
-import org.aksw.idol.exceptions.LODVaderMissingPropertiesException;
 import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DatasetDB;
 import org.aksw.idol.mongodb.collections.DistributionDB;
-import org.aksw.idol.mongodb.collections.DistributionDB.DistributionStatus;
 import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
-import org.aksw.idol.parsers.descriptionFileParser.MetadataParserI;
 import org.aksw.idol.parsers.descriptionFileParser.helpers.LodCloudHelper;
 import org.aksw.idol.parsers.descriptionFileParser.helpers.SubsetHelper;
 import org.aksw.idol.streaming.IDOLStreamInternetImpl;
 import org.aksw.idol.utils.FormatsUtils;
 import org.aksw.idol.utils.FormatsUtils.COMPRESSION_FORMATS;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * Linghub parser

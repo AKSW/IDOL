@@ -3,26 +3,17 @@
  */
 package org.aksw.idol.parsers.descriptionFileParser.lodstats.Impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aksw.idol.ontology.RDFResourcesTags;
 import org.aksw.idol.parsers.descriptionFileParser.Sparqles.Impl.SparqlesHTMLParser;
-import org.aksw.idol.utils.ConnectionUtils;
-import org.aksw.idol.utils.FormatsUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /**
  * @author Ciro Baron Neto

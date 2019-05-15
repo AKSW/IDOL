@@ -13,17 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.aksw.idol.exceptions.LODVaderMissingPropertiesException;
-import org.aksw.idol.loader.LODVaderProperties;
 import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceDB;
 import org.aksw.idol.mongodb.collections.Resources.GeneralResourceRelationDB;
-import org.aksw.idol.utils.FileUtils;
 import org.openrdf.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
  * Class which extracts basic statistical data from the dataset (e.g.

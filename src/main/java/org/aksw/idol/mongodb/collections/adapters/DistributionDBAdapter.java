@@ -9,7 +9,6 @@ import org.aksw.idol.mongodb.collections.DistributionDB;
 import org.aksw.idol.mongodb.collections.ckanparser.CkanResourceDB;
 import org.aksw.idol.utils.FormatsUtils;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly;
 
 /**
  * @author Ciro Baron Neto

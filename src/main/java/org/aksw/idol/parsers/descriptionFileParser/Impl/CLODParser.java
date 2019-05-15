@@ -3,29 +3,22 @@ package org.aksw.idol.parsers.descriptionFileParser.Impl;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.aksw.idol.mongodb.collections.DatasetDB;
 import org.aksw.idol.mongodb.collections.DistributionDB;
-import org.aksw.idol.mongodb.collections.DistributionDB.DistributionStatus;
 import org.aksw.idol.parsers.descriptionFileParser.MetadataParser;
-import org.aksw.idol.parsers.descriptionFileParser.MetadataParserI;
 import org.aksw.idol.parsers.descriptionFileParser.helpers.SubsetHelper;
 import org.aksw.idol.utils.FormatsUtils;
 import org.aksw.idol.utils.NSUtils;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class CLODParser extends MetadataParser {
 	
