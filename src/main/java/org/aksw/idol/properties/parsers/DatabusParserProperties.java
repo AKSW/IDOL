@@ -2,7 +2,7 @@ package org.aksw.idol.properties.parsers;
 
 import java.net.URL;
 
-public class LODStatsParserProperties {
+public class DatabusParserProperties {
 	
 	public boolean stream;
 	

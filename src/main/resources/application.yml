@@ -1,5 +1,5 @@
 idolproperties:
-  nrthreads: 6
+  nrthreads: 1
   streaming: internet
 #  streaming: local
   parse:
@@ -7,7 +7,7 @@ idolproperties:
       stream: false
       url: http://sparqles.ai.wu.ac.at/api/endpoint/list
     lov:
-      stream: false
+      stream: true
       url: https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list
     dbpedia:
       stream: false
@@ -16,7 +16,7 @@ idolproperties:
       stream: false
       url: http://cirola2000.cloudapp.net/files/urls
     lodcloud: 
-      stream: true
+      stream: false
       url: http://data.dws.informatik.uni-mannheim.de/lodcloud/2014/ISWC-RDB/datacatalog_metadata.tar.gz  
     re3: 
       stream: false
@@ -28,6 +28,9 @@ idolproperties:
     lodstats: 
       stream: false
       url: http://stats.lod2.eu/sparql/
+    databus:
+      stream: true
+      url: https://databus.dbpedia.org/repo/sparql/
   tasks:
     dumpcreation:
       createDumpOnDisk: false

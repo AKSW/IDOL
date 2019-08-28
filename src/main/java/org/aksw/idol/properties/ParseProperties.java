@@ -1,12 +1,10 @@
 package org.aksw.idol.properties;
 
-import org.aksw.idol.parsers.descriptionFileParser.Impl.CKANRepositoriesParser;
-import org.aksw.idol.parsers.descriptionFileParser.Impl.LinghubParser;
 import org.aksw.idol.properties.parsers.CKANParserProperties;
 import org.aksw.idol.properties.parsers.DBpediaParserProperties;
 import org.aksw.idol.properties.parsers.LODCloudParserProperties;
 import org.aksw.idol.properties.parsers.LODLaundromatParserProperties;
-import org.aksw.idol.properties.parsers.LODStatsParserProperties;
+import org.aksw.idol.properties.parsers.DatabusParserProperties;
 import org.aksw.idol.properties.parsers.LOVParserProperties;
 import org.aksw.idol.properties.parsers.LinghubParserProperties;
 import org.aksw.idol.properties.parsers.RE3ParserProperties;
@@ -21,7 +19,7 @@ public class ParseProperties {
 	RE3ParserProperties re3 = new RE3ParserProperties();
 	CKANParserProperties ckanrepositories = new CKANParserProperties();
 	LinghubParserProperties linghub = new LinghubParserProperties();
-	LODStatsParserProperties lodstats = new LODStatsParserProperties();
+	DatabusParserProperties databus = new DatabusParserProperties();
 	public SparqlesParserProperties getSparqles() {
 		return sparqles;
 	}
@@ -71,11 +69,11 @@ public class ParseProperties {
 	public void setLinghub(LinghubParserProperties linghub) {
 		this.linghub = linghub;
 	}
-	public LODStatsParserProperties getLodstats() {
-		return lodstats;
+	public DatabusParserProperties getDatabus() {
+		return databus;
 	}
-	public void setLodstats(LODStatsParserProperties lodstats) {
-		this.lodstats = lodstats;
+	public void setDatabus(DatabusParserProperties databus) {
+		this.databus = databus;
 	}
 
 }
